@@ -17,10 +17,7 @@ import com.era7.lib.bioinfoxml.gexf.EdgeXML;
 import com.era7.lib.bioinfoxml.gexf.GexfXML;
 import com.era7.lib.bioinfoxml.gexf.GraphXML;
 import com.era7.lib.bioinfoxml.gexf.NodeXML;
-import com.era7.lib.bioinfoxml.gexf.SpellXML;
-import com.era7.lib.bioinfoxml.gexf.SpellsXML;
 import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
-import com.era7.lib.bioinfoxml.gexf.viz.VizPositionXML;
 import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
 import com.era7.lib.era7xmlapi.model.XMLElementException;
 import java.io.BufferedWriter;
@@ -46,12 +43,12 @@ public class GenerateGexfGo {
     public static int nodesCounter = 0;
     public static GoParentRel goParentRel = new GoParentRel(null);
     public static int maxTerms = 2000000;
-    public static int termsPerTxn = 1000;
+    //public static int termsPerTxn = 1000;
     public static ArrayList<String> alreadyVisitedNodes = new ArrayList<String>();
     public static VizColorXML bioColor;
     public static VizColorXML molColor;
     public static VizColorXML cellColor;
-    public static Transaction txn = null;
+    //public static Transaction txn = null;
     public static Bio4jManager manager = null;
     public static int MAX_NODE_SIZE = 50;
     public static int MIN_NODE_SIZE = 5;
@@ -62,8 +59,8 @@ public class GenerateGexfGo {
 
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("El programa espera un parametro: \n"
-                    + "1. Nombre del archivo de salida gefx\n");
+            System.out.println("This program expects one parameter: \n"
+                    + "1. Output gexf filename\n");
         } else {
 
             BufferedWriter outBuff = null;
@@ -134,24 +131,25 @@ public class GenerateGexfGo {
                 try {
                     System.out.println("creating neo4j manager...");
                     manager = new Bio4jManager(CommonData.DATABASE_FOLDER);
-                    System.out.println("getting transaction...");
-                    txn = manager.beginTransaction();
+                    //System.out.println("getting transaction...");
+                    //txn = manager.beginTransaction();
 
                     Iterator<Relationship> iterator = manager.getReferenceNode().getRelationships(new MainGoRel(null), Direction.OUTGOING).iterator();
                     while (iterator.hasNext()) {
                         GoTermNode mainGoTermNode = new GoTermNode(iterator.next().getEndNode());
                         System.out.println("getting ontology for " + mainGoTermNode.getName());
-                        if (mainGoTermNode.getName().equals("cellular_component")) {
+                        //if (mainGoTermNode.getName().equals("cellular_component")) {
                             getGoDescendants(mainGoTermNode, nodesXMLStBuilder, edgesXMLStBuilder, 1, 0);
-                        }
+                        //}
 
                     }
 
-                    txn.success();
+                    //txn.success();
                 } catch (Exception e) {
-                    txn.failure();
+                    //txn.failure();
+                    e.printStackTrace();
                 } finally {
-                    txn.finish();
+                    //txn.finish();
                     manager.shutDown();
                 }
 
@@ -176,8 +174,11 @@ public class GenerateGexfGo {
         }
     }
 
-    private static void getGoDescendants(GoTermNode parent, StringBuilder nodes,
-            StringBuilder edges, int currentLevel, int xLevelFactor) throws XMLElementException {
+    private static void getGoDescendants(GoTermNode parent,
+            StringBuilder nodes,
+            StringBuilder edges, 
+            int currentLevel,
+            int xLevelFactor) throws XMLElementException {
 
         //System.out.println("ddd");
 
@@ -185,7 +186,7 @@ public class GenerateGexfGo {
 
         NodeXML nodeXML = new NodeXML();
         nodeXML.setId(parent.getId());
-        nodeXML.setLabel(parent.getName().substring(nodesCounter));
+        nodeXML.setLabel(parent.getName());
 
         if (parent.getNamespace().equals(GoTermNode.BIOLOGICAL_PROCESS_NAMESPACE)) {
             nodeXML.setColor(new VizColorXML((Element) bioColor.getRoot().clone()));
@@ -216,11 +217,11 @@ public class GenerateGexfGo {
 
         nodeXML.setAttvalues(attValuesXML);
 
-        if (nodesCounter % termsPerTxn == 0) {
-            txn.success();
-            txn.finish();
-            txn = manager.beginTransaction();
-        }
+//        if (nodesCounter % termsPerTxn == 0) {
+//            txn.success();
+//            txn.finish();
+//            txn = manager.beginTransaction();
+//        }
 
         int subNodesCounter = 1;
 
@@ -229,6 +230,7 @@ public class GenerateGexfGo {
         while (iterator.hasNext()) {
 
             goParentRel = new GoParentRel(iterator.next());
+            
             EdgeXML edge = new EdgeXML();
             edge.setId(String.valueOf(edgesIdCounter++));
             edge.setTarget(parent.getId());
@@ -243,7 +245,7 @@ public class GenerateGexfGo {
             edge.setStart("2011-01-" + tempSt);
             //edges.addEdge(edge);
 
-            edges.append((edge.toString() + "\n"));
+            edges.append((edge.toString() + "\n"));                       
 
             if (!alreadyVisitedNodes.contains(childGo.getId())) {
                 //System.out.println("bbb");
@@ -264,14 +266,15 @@ public class GenerateGexfGo {
         //setting node size proportional to label length
         VizSizeXML goSize = new VizSizeXML();
         goSize.setValue(nodeXML.getLabel().length());
-        if (subNodesCounter > MAX_NODE_SIZE) {
-            goSize.setValue(MAX_NODE_SIZE);
-        }
+//        if (subNodesCounter > MAX_NODE_SIZE) {
+//            goSize.setValue(MAX_NODE_SIZE);
+//        }
 //        if(currentLevel < MIN_NODE_SIZE){
 //            goSize.setValue(MIN_NODE_SIZE);
 //        }else{
 //            goSize.setValue(currentLevel);
 //        }
+        goSize.setValue(MIN_NODE_SIZE);
         nodeXML.setSize(goSize);
 
 //        VizPositionXML goPosition = new VizPositionXML();
