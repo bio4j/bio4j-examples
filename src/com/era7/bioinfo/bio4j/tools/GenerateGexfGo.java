@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import org.jdom.Element;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.Transaction;
 
 /**
  *
@@ -86,7 +85,8 @@ public class GenerateGexfGo {
 
                 outBuff.write("<?xml version=\"1.0\" encoding=\"UTF8\"?>" + "\n");
                 outBuff.write("<" + GexfXML.TAG_NAME + ">\n");
-                outBuff.write("<" + GraphXML.TAG_NAME + " defaultedgetype=\"directed\" mode=\"dynamic\" timeformat=\"date\">\n");
+                //outBuff.write("<" + GraphXML.TAG_NAME + " defaultedgetype=\"directed\" mode=\"dynamic\" timeformat=\"date\">\n");
+                outBuff.write("<" + GraphXML.TAG_NAME + " defaultedgetype=\"directed\" >\n");
 
                 //GexfXML gexfXML = new GexfXML();
 
@@ -295,12 +295,12 @@ public class GenerateGexfGo {
 //        spells.addSpell(spell);
 //        nodeXML.setSpells(spells);
 
-        nodeXML.setEnd(DEFAULT_END);
-        String tempSt = String.valueOf(currentLevel);
-        if (currentLevel < 10) {
-            tempSt = "0" + tempSt;
-        }
-        nodeXML.setStart("2011-01-" + tempSt);
+//        nodeXML.setEnd(DEFAULT_END);
+//        String tempSt = String.valueOf(currentLevel);
+//        if (currentLevel < 10) {
+//            tempSt = "0" + tempSt;
+//        }
+//        nodeXML.setStart("2011-01-" + tempSt);
 
         //nodes.addNode(nodeXML);
         nodes.append((nodeXML.toString() + "\n"));
