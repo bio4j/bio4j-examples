@@ -6,7 +6,7 @@ package com.era7.bioinfo.bio4j.tools;
 
 import com.era7.bioinfo.bio4j.CommonData;
 import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
-import com.era7.bioinfo.bio4jmodel.relationships.go.GoParentRel;
+import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.lib.bioinfoxml.gexf.AttValueXML;
 import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
@@ -168,7 +168,7 @@ public class ExportGoSetsToGephi {
             System.out.println("creating neo4j manager...");
             Bio4jManager manager = new Bio4jManager(CommonData.DATABASE_FOLDER);
 
-            RelationshipIndex goParentRelIndex = manager.getGoParentRelIndex();
+            RelationshipIndex isAGoRelIndex = manager.getIsAGoRelIndex();
             Index<Node> goTermIdIndex = manager.getGoTermIdIndex();
 
             HashMap<String, NodeXML> nodesToBeExported = new HashMap<String, NodeXML>();
@@ -232,7 +232,7 @@ public class ExportGoSetsToGephi {
                 goToRootSavingNodes(nodesToBeExported,
                         edgesToBeExported,
                         currentGoTermNode,
-                        goParentRelIndex,
+                        isAGoRelIndex,
                         generalTermsColor);
             }
 
@@ -268,7 +268,7 @@ public class ExportGoSetsToGephi {
     private static void goToRootSavingNodes(HashMap<String, NodeXML> nodesToBeExported,
             List<EdgeXML> edgesToBeExported,
             GoTermNode currentNode,
-            RelationshipIndex goParentRelIndex,
+            RelationshipIndex isAGoRelIndex,
             VizColorXML generalNodeColor) throws XMLElementException {
 
         NodeXML currentNodeXML = nodesToBeExported.get(currentNode.getId());
@@ -290,7 +290,7 @@ public class ExportGoSetsToGephi {
             nodesToBeExported.put(currentNode.getId(), currentNodeXML);
         }
 
-        IndexHits<Relationship> hits = goParentRelIndex.get(GoParentRel.GO_PARENT_REL_INDEX, String.valueOf(currentNode.getNode().getId()));
+        IndexHits<Relationship> hits = isAGoRelIndex.get(IsAGoRel.IS_A_REL_INDEX, String.valueOf(currentNode.getNode().getId()));
 
         Iterator<Relationship> relIterator = hits.iterator();
 
@@ -315,7 +315,7 @@ public class ExportGoSetsToGephi {
             }
             
 
-            goToRootSavingNodes(nodesToBeExported, edgesToBeExported, parentNode, goParentRelIndex, generalNodeColor);
+            goToRootSavingNodes(nodesToBeExported, edgesToBeExported, parentNode, isAGoRelIndex, generalNodeColor);
 
         }
 

@@ -7,7 +7,7 @@ package com.era7.bioinfo.bio4j.tools;
 import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
 import com.era7.bioinfo.bio4jmodel.relationships.go.MainGoRel;
 import com.era7.bioinfo.bio4j.CommonData;
-import com.era7.bioinfo.bio4jmodel.relationships.go.GoParentRel;
+import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.lib.bioinfoxml.gexf.AttValueXML;
 import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
@@ -40,7 +40,7 @@ public class GenerateGexfGo {
 
     public static int edgesIdCounter = 0;
     public static int nodesCounter = 0;
-    public static GoParentRel goParentRel = new GoParentRel(null);
+    public static IsAGoRel isAGorel = new IsAGoRel(null);
     public static int maxTerms = 2000000;
     //public static int termsPerTxn = 1000;
     public static ArrayList<String> alreadyVisitedNodes = new ArrayList<String>();
@@ -225,24 +225,24 @@ public class GenerateGexfGo {
 
         int subNodesCounter = 1;
 
-        Iterator<Relationship> iterator = parent.getNode().getRelationships(goParentRel, Direction.INCOMING).iterator();
+        Iterator<Relationship> iterator = parent.getNode().getRelationships(isAGorel, Direction.INCOMING).iterator();
         int xPosition = 0;
         while (iterator.hasNext()) {
 
-            goParentRel = new GoParentRel(iterator.next());
+            isAGorel = new IsAGoRel(iterator.next());
             
             EdgeXML edge = new EdgeXML();
             edge.setId(String.valueOf(edgesIdCounter++));
             edge.setTarget(parent.getId());
-            GoTermNode childGo = new GoTermNode(goParentRel.getRelationship().getStartNode());
+            GoTermNode childGo = new GoTermNode(isAGorel.getRelationship().getStartNode());
             edge.setSource(childGo.getId());
             edge.setType(EdgeXML.DIRECTED_TYPE);
-            edge.setEnd(DEFAULT_END);
-            String tempSt = String.valueOf(currentLevel);
-            if (currentLevel < 10) {
-                tempSt = "0" + tempSt;
-            }
-            edge.setStart("2011-01-" + tempSt);
+            //edge.setEnd(DEFAULT_END);
+//            String tempSt = String.valueOf(currentLevel);
+//            if (currentLevel < 10) {
+//                tempSt = "0" + tempSt;
+//            }
+//            edge.setStart("2011-01-" + tempSt);
             //edges.addEdge(edge);
 
             edges.append((edge.toString() + "\n"));                       
