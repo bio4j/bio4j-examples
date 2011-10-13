@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.HashMap;
+import java.util.Iterator;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -43,18 +44,34 @@ public class GetNodeAndRelsStatistics {
 
             try {
 
+                BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("logFile")));
+
                 manager = new Bio4jManager(args[0]);
 
                 GraphDatabaseService graphService = manager.getGraphService();
 
                 HashMap<String, Integer[]> nodesMap = new HashMap<String, Integer[]>();
                 HashMap<String, Integer[]> relationshipsMap = new HashMap<String, Integer[]>();
-                
-                int counter = 0;
+
+                int nCounter = 0;
+                int rCounter = 0;
 
                 for (Node node : graphService.getAllNodes()) {
 
-                    String nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
+                    String nodeType = "unknown";
+
+                    try {
+                        nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
+                    } catch (org.neo4j.graphdb.NotFoundException ex) {
+
+                        System.out.println("Node with no node type specified... :(");
+                        System.out.println("Its properties are:\n");
+                        Iterator<String> iterator = node.getPropertyKeys().iterator();
+                        while (iterator.hasNext()) {
+                            System.out.println(iterator.next());
+                        }
+                    }
+
                     Integer[] nodeCounter = nodesMap.get(nodeType);
 
                     if (nodeCounter == null) {
@@ -86,24 +103,36 @@ public class GetNodeAndRelsStatistics {
 
                         }
 
+                        rCounter++;
+
+                        if (rCounter % 1000 == 0) {
+                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
+                            logBuff.write(nCounter + " " + rCounter + "\n");
+                            logBuff.flush();
+                        }
+
                     }
-                    
-                    if(counter % 100000 == 0){
-                        System.out.println(counter + " nodes analyzed!");
+
+                    if (nCounter % 1000 == 0) {
+                        System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
+                        logBuff.write(nCounter + " " + rCounter + "\n");
+                        logBuff.flush();
                     }
-                    
+
+                    nCounter++;
+
                 }
 
                 System.out.println("Writing nodes file.....");
-                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));                
+                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));
                 outBuff.write("NODE_NAME\tABSOLUTE_VALUE\n");
                 for (String nodeKey : nodesMap.keySet()) {
                     outBuff.write(nodeKey + "\t" + nodesMap.get(nodeKey) + "\n");
-                }                
+                }
                 outBuff.close();
-                
+
                 System.out.println("Writing relationships file.....");
-                outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelStatistics.txt")));    
+                outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelStatistics.txt")));
                 outBuff.write("RELATIONSHIP_NAME\tABSOLUTE_VALUE\n");
                 for (String relKey : relationshipsMap.keySet()) {
                     outBuff.write(relKey + "\t" + relationshipsMap.get(relKey) + "\n");
@@ -111,8 +140,10 @@ public class GetNodeAndRelsStatistics {
                 outBuff.close();
 
                 System.out.println("Done! :)");
-                
-                
+
+                logBuff.close();
+
+
 
             } catch (Exception e) {
                 e.printStackTrace();
