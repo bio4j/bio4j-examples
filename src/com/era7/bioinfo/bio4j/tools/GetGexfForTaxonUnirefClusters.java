@@ -28,6 +28,8 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.jdom.Element;
 import org.neo4j.graphdb.Direction;
@@ -85,6 +87,7 @@ public class GetGexfForTaxonUnirefClusters  implements Executable{
             Map<String, ProteinNode> proteinMap = new HashMap<String, ProteinNode>();
             Map<String, OrganismNode> organismMap = new HashMap<String, OrganismNode>();
             Map<String, GenomeElementNode> genomeElementMap = new HashMap<String, GenomeElementNode>();
+            Map<String, List<ProteinNode>> unirefClusters = new HashMap<String, List<ProteinNode>>();
 
             System.out.println("Getting taxon and descendants...");
 
@@ -96,19 +99,31 @@ public class GetGexfForTaxonUnirefClusters  implements Executable{
             for (String proteinKey : proteinMap.keySet()) {
 
                 ProteinNode proteinNode = proteinMap.get(proteinKey);
+                
+                List<ProteinNode> unirefClusterList = new LinkedList<ProteinNode>();
+                unirefClusters.put(proteinKey, unirefClusterList);
+                
+                System.out.println("Getting cluster for protein:" + proteinKey);
 
                 if (unirefCluster == 50) {
-                    for (ProteinNode proteinNode1 : proteinNode.getUniref50ClusterThisProteinBelongsTo()) {
-                        proteinMap.put(proteinNode1.getAccession(), proteinNode1);
+                    
+                    List<ProteinNode> uniref50Cluster = proteinNode.getUniref50ClusterThisProteinBelongsTo();
+                    System.out.println("it has " + uniref50Cluster.size() + " members");
+                    
+                    for (ProteinNode proteinNode1 : uniref50Cluster) {
+                        unirefClusterList.add(proteinNode1);
                         organismMap.put(proteinNode1.getOrganism().getScientificName(), proteinNode1.getOrganism());
                         for (GenomeElementNode genomeElementNode : proteinNode1.getGenomeElements()) {
                             genomeElementMap.put(genomeElementNode.getVersion(), genomeElementNode);
                         }
                     }
                 } else if (unirefCluster == 90) {
+                    
+                    List<ProteinNode> uniref90Cluster = proteinNode.getUniref90ClusterThisProteinBelongsTo();
+                    System.out.println("it has " + uniref90Cluster.size() + " members");
 
-                    for (ProteinNode proteinNode1 : proteinNode.getUniref90ClusterThisProteinBelongsTo()) {
-                        proteinMap.put(proteinNode1.getAccession(), proteinNode1);
+                    for (ProteinNode proteinNode1 : uniref90Cluster) {
+                        unirefClusterList.add(proteinNode1);
                         organismMap.put(proteinNode1.getOrganism().getScientificName(), proteinNode1.getOrganism());
                         for (GenomeElementNode genomeElementNode : proteinNode1.getGenomeElements()) {
                             genomeElementMap.put(genomeElementNode.getVersion(), genomeElementNode);
@@ -116,9 +131,12 @@ public class GetGexfForTaxonUnirefClusters  implements Executable{
                     }
 
                 } else if (unirefCluster == 100) {
+                    
+                    List<ProteinNode> uniref100Cluster = proteinNode.getUniref100ClusterThisProteinBelongsTo();
+                    System.out.println("it has " + uniref100Cluster.size() + " members");
 
-                    for (ProteinNode proteinNode1 : proteinNode.getUniref100ClusterThisProteinBelongsTo()) {
-                        proteinMap.put(proteinNode1.getAccession(), proteinNode1);
+                    for (ProteinNode proteinNode1 : uniref100Cluster) {
+                        unirefClusterList.add(proteinNode1);
                         organismMap.put(proteinNode1.getOrganism().getScientificName(), proteinNode1.getOrganism());
                         for (GenomeElementNode genomeElementNode : proteinNode1.getGenomeElements()) {
                             genomeElementMap.put(genomeElementNode.getVersion(), genomeElementNode);
@@ -126,6 +144,15 @@ public class GetGexfForTaxonUnirefClusters  implements Executable{
                     }
 
                 }
+            }
+            
+            System.out.println("Adding proteins from clusters...");
+            //adding proteins from associated clusters to proteinMap
+            for (String tempProtKey : unirefClusters.keySet()) {
+                List<ProteinNode> list = unirefClusters.get(tempProtKey);
+                for (ProteinNode tempProtNode : list) {
+                    proteinMap.put(tempProtNode.getAccession(), tempProtNode);
+                }                        
             }
 
 
