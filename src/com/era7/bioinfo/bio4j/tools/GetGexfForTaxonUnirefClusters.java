@@ -13,6 +13,7 @@ import com.era7.bioinfo.bio4jmodel.relationships.ncbi.NCBITaxonRel;
 import com.era7.bioinfo.bio4jmodel.relationships.protein.ProteinOrganismRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import com.era7.lib.bioinfoxml.gexf.AttValueXML;
 import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
 import com.era7.lib.bioinfoxml.gexf.AttributeXML;
@@ -24,6 +25,7 @@ import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,19 +37,28 @@ import org.neo4j.graphdb.Relationship;
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class GetGexfForTaxonUnirefClusters {
+public class GetGexfForTaxonUnirefClusters  implements Executable{
 
     public static int MAX_NODE_SIZE = 50;
     public static int MIN_NODE_SIZE = 5;
 
-    public static void main(String[] args) {
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
+    
+    public static void main(String[] args){
 
 
         if (args.length != 4) {
 
             System.out.println("This program expects four parameters:\n"
                     + "1. Bio4j DB folder\n"
-                    + "2. Organism NCBI Taxonomy ID\n"
+                    + "2. Organism scientific name (the one specified in Uniprot)\n"
                     + "3. Uniref Cluster (one of these values: 50,90,100\n"
                     + "4. Output GEXF file name");
 
@@ -55,7 +66,7 @@ public class GetGexfForTaxonUnirefClusters {
         } else {
 
             String dbFolder = args[0];
-            String organismNCBIID = args[1];
+            String organismScientificName = args[1];
             int unirefCluster = Integer.parseInt(args[2]);
             File outFile = new File(args[3]);
 
@@ -66,7 +77,8 @@ public class GetGexfForTaxonUnirefClusters {
 
             System.out.println("Getting organism node...");
 
-            OrganismNode organismNode = nodeRetriever.getOrganismByNCBITaxonomyId(organismNCBIID);
+            OrganismNode organismNode = nodeRetriever.getOrganismByScientificName(organismScientificName);
+            //OrganismNode organismNode = nodeRetriever.getOrganismByNCBITaxonomyId(organismNCBIID);
 
             System.out.println("Organism scientific name: " + organismNode.getScientificName());
 
@@ -248,7 +260,7 @@ public class GetGexfForTaxonUnirefClusters {
                     NodeXML genomeElemNodeXML = new NodeXML();
                     genomeElemNodeXML.setId(genomeElemNode.getVersion());
                     genomeElemNodeXML.setLabel(genomeElemNode.getVersion());
-                    genomeElemNodeXML.setColor(new VizColorXML((Element) organismColor.asJDomElement().clone()));
+                    genomeElemNodeXML.setColor(new VizColorXML((Element) genomeElemColor.asJDomElement().clone()));
 
                     AttValuesXML genomeElemAttValuesXML = new AttValuesXML();
 
