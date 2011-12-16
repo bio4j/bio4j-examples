@@ -27,11 +27,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import org.jdom.Element;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
@@ -95,12 +96,20 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
             Map<String, ProteinNode> proteinMap = new HashMap<String, ProteinNode>();
             Map<String, OrganismNode> organismMap = new HashMap<String, OrganismNode>();
             Map<String, GenomeElementNode> genomeElementMap = new HashMap<String, GenomeElementNode>();
-            Map<String, List<ProteinNode>> unirefClusters = new HashMap<String, List<ProteinNode>>();
+            //Map<String, List<ProteinNode>> unirefClusters = new HashMap<String, List<ProteinNode>>();
+
+            Map<String, ProteinNode> representantsMap = new HashMap<String, ProteinNode>();
+            Map<String, Integer> representantsCounterMap = new HashMap<String, Integer>();
 
             //----Here are stored the counters for the number of protein/organism/... links-----
-            Map<String, Integer> clusterProteinsLinkedMap = new HashMap<String, Integer>();
-            Map<String, Integer> organismProteinsLinkedMap = new HashMap<String, Integer>();
-            Map<String, Integer> genomeElementProteinsLinkedMap = new HashMap<String, Integer>();
+            //Map<String, Integer> clusterProteinsLinkedMap = new HashMap<String, Integer>();
+            Map<String, Integer> organismProteinsCounterMap = new HashMap<String, Integer>();
+            Map<String, Integer> genomeElementProteinsCounterMap = new HashMap<String, Integer>();
+
+
+            Map<String, Set<String>> unirefClusterOrganismLinks = new HashMap<String, Set<String>>(); //keys are representant accessions
+            Map<String, Set<String>> unirefClusterGenomeElementsLinks = new HashMap<String, Set<String>>(); //keys are representant accessions
+
 
 
             System.out.println("Starting to write the output file...");
@@ -135,8 +144,8 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                     ProteinNode proteinNode = proteinMap.get(proteinKey);
 
-                    List<ProteinNode> unirefClusterList = new LinkedList<ProteinNode>();
-                    unirefClusters.put(proteinKey, unirefClusterList);
+                    //List<ProteinNode> unirefClusterList = new LinkedList<ProteinNode>();
+                    //unirefClusters.put(proteinKey, unirefClusterList);
 
                     System.out.println("Getting cluster for protein:" + proteinKey);
 
@@ -147,6 +156,7 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                         unirefCluster = proteinNode.getUniref50ClusterThisProteinBelongsTo();
 
+                        //---looking for representant---
                         for (ProteinNode tempProt : unirefCluster) {
                             if (tempProt.isUniref50Representant()) {
                                 clusterRepresentant = tempProt;
@@ -158,6 +168,7 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                         unirefCluster = proteinNode.getUniref90ClusterThisProteinBelongsTo();
 
+                        //---looking for representant---
                         for (ProteinNode tempProt : unirefCluster) {
                             if (tempProt.isUniref90Representant()) {
                                 clusterRepresentant = tempProt;
@@ -169,6 +180,7 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                         unirefCluster = proteinNode.getUniref100ClusterThisProteinBelongsTo();
 
+                        //---looking for representant---
                         for (ProteinNode tempProt : unirefCluster) {
                             if (tempProt.isUniref100Representant()) {
                                 clusterRepresentant = tempProt;
@@ -179,7 +191,21 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
                     }
 
                     //---counter for number of proteins linked to protein-----------
-                    clusterProteinsLinkedMap.put(clusterRepresentant.getAccession(), unirefCluster.size());
+                    //clusterProteinsLinkedMap.put(clusterRepresentant.getAccession(), unirefCluster.size());
+
+                    representantsCounterMap.put(clusterRepresentant.getAccession(), unirefCluster.size());
+                    representantsMap.put(clusterRepresentant.getAccession(), clusterRepresentant);
+
+                    Set<String> organismLinks = unirefClusterOrganismLinks.get(clusterRepresentant.getAccession());
+                    if (organismLinks == null) {
+                        organismLinks = new HashSet<String>();
+                        unirefClusterOrganismLinks.put(clusterRepresentant.getAccession(), organismLinks);
+                    }
+                    Set<String> genomeElemLinks = unirefClusterGenomeElementsLinks.get(clusterRepresentant.getAccession());
+                    if (genomeElemLinks == null) {
+                        genomeElemLinks = new HashSet<String>();
+                        unirefClusterGenomeElementsLinks.put(clusterRepresentant.getAccession(), genomeElemLinks);
+                    }
 
                     System.out.println("it has " + unirefCluster.size() + " members");
 
@@ -187,54 +213,62 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                         ProteinNode proteinNode1 = unirefCluster.get(i);
 
-                        unirefClusterList.add(proteinNode1);
+                        //unirefClusterList.add(proteinNode1);
+
+                        OrganismNode protOrganism = proteinNode1.getOrganism();
                         
                         //adding protein organism to the map
-                        organismMap.put(proteinNode1.getOrganism().getNcbiTaxonomyId(), proteinNode1.getOrganism());
+                        organismMap.put(protOrganism.getNcbiTaxonomyId(), protOrganism);
+
+                        //storing link between uniref cluster and organism
+                        organismLinks.add(protOrganism.getNcbiTaxonomyId());
+                      
                         //adding genome elements linked to the protein to their respective map
                         for (GenomeElementNode genomeElementNode : proteinNode1.getGenomeElements()) {
+                            //storing link between uniref cluster and genome element                            
+                            genomeElemLinks.add(genomeElementNode.getVersion());
                             genomeElementMap.put(genomeElementNode.getVersion(), genomeElementNode);
                         }
 
                         //----if this protein is not the representant, we link it to the cluster representant------
-                        if (!clusterRepresentant.getAccession().equals(proteinNode1.getAccession())) {
-
-                            clusterProteinsLinkedMap.put(proteinNode1.getAccession(), 1);
-
-                            EdgeXML edge = new EdgeXML();
-                            edge.setId(String.valueOf(edgesIdCounter++));
-                            edge.setSource(proteinNode1.getAccession());
-                            edge.setTarget(clusterRepresentant.getAccession());
-                            edge.setType(EdgeXML.DIRECTED_TYPE);
-
-                            AttValuesXML edgeAttValuesXML = new AttValuesXML();
-
-                            AttValueXML edgeIDAttValueXML = new AttValueXML();
-                            edgeIDAttValueXML.setFor(0);
-                            edgeIDAttValueXML.setValue("" + edgesIdCounter);
-                            edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
-                            AttValueXML edgeTypeAttValueXML = new AttValueXML();
-                            edgeTypeAttValueXML.setFor(1);
-                            edgeTypeAttValueXML.setValue(UNIREF_CLUSTER_RELATIONSHIP);
-                            edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
-
-                            edge.setAttvalues(edgeAttValuesXML);
-
-                            edgesXMLStBuilder.append((edge.toString() + "\n"));
-                        }
+//                        if (!clusterRepresentant.getAccession().equals(proteinNode1.getAccession())) {
+//
+//                            //clusterProteinsLinkedMap.put(proteinNode1.getAccession(), 1);
+//
+//                            EdgeXML edge = new EdgeXML();
+//                            edge.setId(String.valueOf(edgesIdCounter++));
+//                            edge.setSource(proteinNode1.getAccession());
+//                            edge.setTarget(clusterRepresentant.getAccession());
+//                            edge.setType(EdgeXML.DIRECTED_TYPE);
+//
+//                            AttValuesXML edgeAttValuesXML = new AttValuesXML();
+//
+//                            AttValueXML edgeIDAttValueXML = new AttValueXML();
+//                            edgeIDAttValueXML.setFor(0);
+//                            edgeIDAttValueXML.setValue("" + edgesIdCounter);
+//                            edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
+//                            AttValueXML edgeTypeAttValueXML = new AttValueXML();
+//                            edgeTypeAttValueXML.setFor(1);
+//                            edgeTypeAttValueXML.setValue(UNIREF_CLUSTER_RELATIONSHIP);
+//                            edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
+//
+//                            edge.setAttvalues(edgeAttValuesXML);
+//
+//                            edgesXMLStBuilder.append((edge.toString() + "\n"));
+//                        }
 
                     }
                 }
 
-                System.out.println("Adding proteins from clusters...");
+                //System.out.println("Adding proteins from clusters...");
 
                 //--------------adding proteins from associated clusters to proteinMap----------
-                for (String tempProtKey : unirefClusters.keySet()) {
-                    List<ProteinNode> list = unirefClusters.get(tempProtKey);
-                    for (ProteinNode tempProtNode : list) {
-                        proteinMap.put(tempProtNode.getAccession(), tempProtNode);
-                    }
-                }
+//                for (String tempProtKey : unirefClusters.keySet()) {
+//                    List<ProteinNode> list = unirefClusters.get(tempProtKey);
+//                    for (ProteinNode tempProtNode : list) {
+//                        proteinMap.put(tempProtNode.getAccession(), tempProtNode);
+//                    }
+//                }
                 //-------------------------------------------------------------------------------
 
 
@@ -246,25 +280,23 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
                 //-----------PROTEIN NODES----------------------------
 
                 //------loop through all proteins involved--------------
-                for (String protKey : proteinMap.keySet()) {
+                //for (String protKey : proteinMap.keySet()) {
+                
+                System.out.println("Looping through representants....");
+                for (String protKey : representantsMap.keySet()) {
 
-                    ProteinNode protNode = proteinMap.get(protKey);
+                    //ProteinNode protNode = proteinMap.get(protKey);
+                    ProteinNode protNode = representantsMap.get(protKey);
                     NodeXML protNodeXML = new NodeXML();
                     protNodeXML.setId(protNode.getAccession());
-                    protNodeXML.setLabel(protNode.getFullName());
+                    //protNodeXML.setLabel(protNode.getFullName());
+                    protNodeXML.setLabel(protNode.getAccession());
                     protNodeXML.setColor(new VizColorXML((Element) proteinColor.asJDomElement().clone()));
-
-                    OrganismNode orgNode = protNode.getOrganism();
-                    Integer orgCounter = organismProteinsLinkedMap.get(orgNode.getNcbiTaxonomyId());
-                    if (orgCounter == null) {
-                        organismProteinsLinkedMap.put(orgNode.getNcbiTaxonomyId(), 1);
-                    } else {
-                        organismProteinsLinkedMap.put(orgNode.getNcbiTaxonomyId(), orgCounter + 1);
-                    }
 
                     //------protein node size--------
                     VizSizeXML protSize = new VizSizeXML();
-                    Integer linksCount = clusterProteinsLinkedMap.get(protKey);
+                    //Integer linksCount = clusterProteinsLinkedMap.get(protKey);
+                    Integer linksCount = representantsCounterMap.get(protKey);
                     if (linksCount < MIN_NODE_SIZE) {
                         protSize.setValue(MIN_NODE_SIZE);
                     } else if (linksCount >= MAX_NODE_SIZE) {
@@ -296,55 +328,68 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                     nodesXMLStBuilder.append((protNodeXML.toString() + "\n"));
 
-                    //-------------------------------------------------------------
-                    //----------------Protein-Organism-edge-----------------------
-                    EdgeXML edge = new EdgeXML();
-                    edge.setId(String.valueOf(edgesIdCounter++));
-                    edge.setSource(protNode.getAccession());
-                    edge.setTarget(orgNode.getNcbiTaxonomyId());
-                    edge.setType(EdgeXML.DIRECTED_TYPE);
+                    Set<String> organismSet = unirefClusterOrganismLinks.get(protKey);
 
-                    AttValuesXML edgeAttValuesXML = new AttValuesXML();
+                    for (String organismKey : organismSet) {
 
-                    AttValueXML edgeIDAttValueXML = new AttValueXML();
-                    edgeIDAttValueXML.setFor(0);
-                    edgeIDAttValueXML.setValue("" + edgesIdCounter);
-                    edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
-                    AttValueXML edgeTypeAttValueXML = new AttValueXML();
-                    edgeTypeAttValueXML.setFor(1);
-                    edgeTypeAttValueXML.setValue(PROTEIN_ORGANISM_RELATIONSHIP);
-                    edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
-
-                    edge.setAttvalues(edgeAttValuesXML);
-
-                    edgesXMLStBuilder.append((edge.toString() + "\n"));
-                    //-------------------------------------------------------------
-                    //-------------------------------------------------------------
-
-                    for (GenomeElementNode genomeElementNode : protNode.getGenomeElements()) {
-
-                        Integer genomElemCounter = genomeElementProteinsLinkedMap.get(genomeElementNode.getVersion());
-                        if (genomElemCounter == null) {
-                            genomeElementProteinsLinkedMap.put(genomeElementNode.getVersion(), 1);
+                        Integer orgCounter = organismProteinsCounterMap.get(organismKey);
+                        if (orgCounter == null) {
+                            organismProteinsCounterMap.put(organismKey, 1);
                         } else {
-                            genomeElementProteinsLinkedMap.put(genomeElementNode.getVersion(), genomElemCounter + 1);
+                            organismProteinsCounterMap.put(organismKey, orgCounter + 1);
+                        }
+
+                        //-------------------------------------------------------------
+                        //----------------Protein-Organism-edge-----------------------
+                        EdgeXML edge = new EdgeXML();
+                        edge.setId(String.valueOf(edgesIdCounter++));
+                        edge.setSource(protNode.getAccession());
+                        edge.setTarget(organismKey);
+                        edge.setType(EdgeXML.DIRECTED_TYPE);
+
+                        AttValuesXML edgeAttValuesXML = new AttValuesXML();
+
+                        AttValueXML edgeIDAttValueXML = new AttValueXML();
+                        edgeIDAttValueXML.setFor(0);
+                        edgeIDAttValueXML.setValue("" + edgesIdCounter);
+                        edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
+                        AttValueXML edgeTypeAttValueXML = new AttValueXML();
+                        edgeTypeAttValueXML.setFor(1);
+                        edgeTypeAttValueXML.setValue(PROTEIN_ORGANISM_RELATIONSHIP);
+                        edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
+
+                        edge.setAttvalues(edgeAttValuesXML);
+
+                        edgesXMLStBuilder.append((edge.toString() + "\n"));
+                        //-------------------------------------------------------------
+                        //-------------------------------------------------------------
+                    }
+
+                    Set<String> genomeElemsSet = unirefClusterGenomeElementsLinks.get(protKey);
+                    for (String genomeElemKey : genomeElemsSet) {
+
+                        Integer genomElemCounter = genomeElementProteinsCounterMap.get(genomeElemKey);
+                        if (genomElemCounter == null) {
+                            genomeElementProteinsCounterMap.put(genomeElemKey, 1);
+                        } else {
+                            genomeElementProteinsCounterMap.put(genomeElemKey, genomElemCounter + 1);
                         }
 
                         //-------------------------------------------------------------
                         //----------------Protein-GenomeElement-edge-----------------------
-                        edge = new EdgeXML();
+                        EdgeXML edge = new EdgeXML();
                         edge.setId(String.valueOf(edgesIdCounter++));
                         edge.setSource(protNode.getAccession());
-                        edge.setTarget(genomeElementNode.getVersion());
+                        edge.setTarget(genomeElemKey);
                         edge.setType(EdgeXML.DIRECTED_TYPE);
 
-                        edgeAttValuesXML = new AttValuesXML();
+                        AttValuesXML edgeAttValuesXML = new AttValuesXML();
 
-                        edgeIDAttValueXML = new AttValueXML();
+                        AttValueXML edgeIDAttValueXML = new AttValueXML();
                         edgeIDAttValueXML.setFor(0);
                         edgeIDAttValueXML.setValue("" + edgesIdCounter);
                         edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
-                        edgeTypeAttValueXML = new AttValueXML();
+                        AttValueXML edgeTypeAttValueXML = new AttValueXML();
                         edgeTypeAttValueXML.setFor(1);
                         edgeTypeAttValueXML.setValue(PROTEIN_GENOME_ELEMENT_RELATIONSHIP);
                         edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
@@ -356,10 +401,13 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
                         //-------------------------------------------------------------
                     }
 
+
+
                 }
 
                 //-----------ORGANISM NODES----------------------------
 
+                System.out.println("Looping through organisms....");
                 for (String organismKey : organismMap.keySet()) {
 
                     OrganismNode tempOrganismNode = organismMap.get(organismKey);
@@ -370,7 +418,8 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                     //------organism node size--------
                     VizSizeXML organismSize = new VizSizeXML();
-                    Integer linksCount = organismProteinsLinkedMap.get(organismKey);
+                    
+                    Integer linksCount = organismProteinsCounterMap.get(organismKey);
                     if (linksCount < MIN_NODE_SIZE) {
                         organismSize.setValue(MIN_NODE_SIZE);
                     } else if (linksCount >= MAX_NODE_SIZE) {
@@ -406,6 +455,7 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                 //-----------GENOME ELEMENT NODES----------------------------
 
+                System.out.println("Looping through genome elements....");
                 for (String genomeElemKey : genomeElementMap.keySet()) {
 
                     GenomeElementNode genomeElemNode = genomeElementMap.get(genomeElemKey);
@@ -416,7 +466,7 @@ public class GetGexfForTaxonUnirefClusters implements Executable {
 
                     //------genome element node size--------
                     VizSizeXML genomElemSize = new VizSizeXML();
-                    Integer linksCount = genomeElementProteinsLinkedMap.get(genomeElemKey);
+                    Integer linksCount = genomeElementProteinsCounterMap.get(genomeElemKey);
                     if (linksCount < MIN_NODE_SIZE) {
                         genomElemSize.setValue(MIN_NODE_SIZE);
                     } else if (linksCount >= MAX_NODE_SIZE) {
