@@ -89,7 +89,6 @@ public class GetGexfForGenomeElementUnirefClusters implements Executable {
 
             System.out.println("Genome element version: " + genomeElementNode.getVersion());
 
-            Map<String, ProteinNode> proteinMap = new HashMap<String, ProteinNode>();
             Map<String, OrganismNode> organismMap = new HashMap<String, OrganismNode>();
             Map<String, GenomeElementNode> genomeElementMap = new HashMap<String, GenomeElementNode>();
             //Map<String, List<ProteinNode>> unirefClusters = new HashMap<String, List<ProteinNode>>();
@@ -227,7 +226,6 @@ public class GetGexfForGenomeElementUnirefClusters implements Executable {
                 System.out.println("Looping through representants....");
                 for (String protKey : representantsMap.keySet()) {
 
-                    //ProteinNode protNode = proteinMap.get(protKey);
                     ProteinNode protNode = representantsMap.get(protKey);
                     NodeXML protNodeXML = new NodeXML();
                     protNodeXML.setId(protNode.getAccession());
@@ -428,7 +426,7 @@ public class GetGexfForGenomeElementUnirefClusters implements Executable {
 
                     AttValueXML nameAttValueXML = new AttValueXML();
                     nameAttValueXML.setFor(1);
-                    nameAttValueXML.setValue(genomeElemNode.getVersion());
+                    nameAttValueXML.setValue(genomeElemNode.getDefinition());
                     genomeElemAttValuesXML.addAttValue(nameAttValueXML);
 
                     AttValueXML nodeTypeAttValueXML = new AttValueXML();
@@ -455,6 +453,14 @@ public class GetGexfForGenomeElementUnirefClusters implements Executable {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            
+            System.out.println("done!");
+
+            System.out.println("Shutting down manager..");
+
+            manager.shutDown();
+
+            System.out.println("Cool! :)");
 
         }
     }
