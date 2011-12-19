@@ -41,12 +41,17 @@ public class FindInteractionPaths implements Executable {
             NodeRetriever nodeRetriever = new NodeRetriever(manager);
             int maxDepth = Integer.parseInt(args[2]);
             
-            ProteinNode sourceProt = nodeRetriever.getProteinNodeByAccession(args[0]);
-            ProteinNode targetProt = nodeRetriever.getProteinNodeByAccession(args[1]);
+            String prot1St = args[0];
+            String prot2St = args[1];
+            ProteinNode sourceProt = nodeRetriever.getProteinNodeByAccession(prot1St);
+            ProteinNode targetProt = nodeRetriever.getProteinNodeByAccession(prot2St);
             
-            System.out.println("Looking for possible paths...");
+            System.out.println("Looking for possible paths from " + prot1St + " to " + prot2St + " ...");
             
-            List<List<String>> results = InteractionsPathFinder.findShortestInteractionPath(sourceProt, targetProt, maxDepth, 5);
+            List<List<String>> results = InteractionsPathFinder.findShortestInteractionPath(sourceProt, 
+                    targetProt, 
+                    maxDepth, 
+                    5);
             
             System.out.println("donee!");
             

@@ -44,7 +44,7 @@ public class InteractionsPathFinder {
             
             if(pathIterator.hasNext()){
                             
-                boolean isNode = false;
+                boolean isNode = true;
                 while(pathIterator.hasNext()){
                     if(isNode){
                         proteinsList.add(new ProteinNode((Node)pathIterator.next()).getAccession());
