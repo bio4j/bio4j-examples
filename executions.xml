@@ -1,0 +1,22 @@
+<scheduled_executions>	
+	<!--
+	<execution>
+		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForTaxonUnirefClusters</class_full_name>
+		<arguments>
+			<argument>bio4jdb</argument>
+			<argument>Enterococcus faecalis</argument>
+			<argument>100</argument>
+			<argument>tests.gexf</argument>
+		</arguments>
+	</execution>
+	-->
+	<execution>
+		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForGenomeElementUnirefClusters</class_full_name>
+		<arguments>
+			<argument>bio4jdb</argument>
+			<argument>NC_008821.1</argument>
+			<argument>100</argument>
+			<argument>tests.gexf</argument>
+		</arguments>
+	</execution>
+</scheduled_executions>
