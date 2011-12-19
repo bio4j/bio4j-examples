@@ -9,7 +9,7 @@
 			<argument>tests.gexf</argument>
 		</arguments>
 	</execution>
-	-->
+	
 	<execution>
 		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForGenomeElementUnirefClusters</class_full_name>
 		<arguments>
@@ -35,6 +35,17 @@
 			<argument>NC_008821.1</argument>
 			<argument>50</argument>
 			<argument>NC_008821_1_uniref50.gexf</argument>
+		</arguments>
+	</execution>
+	-->
+	<execution>
+		<class_full_name>com.era7.bioinfo.bio4j.tools.algo.FindInteractionPaths</class_full_name>
+		<arguments>
+			<argument>Q91ZR3</argument>
+			<argument>P18847</argument>
+			<argument>4</argument>
+			<argument>bio4jdb</argument>
+			<argument>interactionPaths.txt</argument>
 		</arguments>
 	</execution>
 </scheduled_executions>
