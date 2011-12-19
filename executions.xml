@@ -16,7 +16,25 @@
 			<argument>bio4jdb</argument>
 			<argument>NC_008821.1</argument>
 			<argument>100</argument>
-			<argument>tests.gexf</argument>
+			<argument>NC_008821_1_uniref100.gexf</argument>
+		</arguments>
+	</execution>
+	<execution>
+		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForGenomeElementUnirefClusters</class_full_name>
+		<arguments>
+			<argument>bio4jdb</argument>
+			<argument>NC_008821.1</argument>
+			<argument>90</argument>
+			<argument>NC_008821_1_uniref90.gexf</argument>
+		</arguments>
+	</execution>
+	<execution>
+		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForGenomeElementUnirefClusters</class_full_name>
+		<arguments>
+			<argument>bio4jdb</argument>
+			<argument>NC_008821.1</argument>
+			<argument>50</argument>
+			<argument>NC_008821_1_uniref50.gexf</argument>
 		</arguments>
 	</execution>
 </scheduled_executions>
