@@ -62,4 +62,20 @@ public class InteractionsPathFinder {
         return results;
 
     }
+
+
+    public static Iterator<Path> getAllSimpleInteractionPathsBetweenProteins(ProteinNode proteinSource,
+            ProteinNode proteinTarget,
+            int maxDepth){
+               
+        
+        PathFinder<Path> finder = GraphAlgoFactory.allSimplePaths(
+                Traversal.expanderForTypes(new ProteinProteinInteractionRel(null), Direction.INCOMING), maxDepth);
+        
+        Iterator<Path> paths = finder.findAllPaths(proteinSource.getNode(), proteinTarget.getNode()).iterator();
+        
+        return paths;
+        
+    }
+
 }
