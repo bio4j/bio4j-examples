@@ -21,6 +21,7 @@ import com.era7.bioinfo.bioinfoneo4j.BasicEntity;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import org.neo4j.graphdb.Direction;
@@ -44,17 +45,20 @@ public class GetNodeAndRelsStatistics {
 
             try {
 
-                BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("logFile")));
+                BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("GetNodeAndRelsStatistics.log")));
 
                 manager = new Bio4jManager(args[0]);
 
                 GraphDatabaseService graphService = manager.getGraphService();
 
-                HashMap<String, Integer[]> nodesMap = new HashMap<String, Integer[]>();
-                HashMap<String, Integer[]> relationshipsMap = new HashMap<String, Integer[]>();
+                HashMap<String, Integer> nodesMap = new HashMap<String, Integer>();
+                HashMap<String, Integer> relationshipsMap = new HashMap<String, Integer>();
 
                 int nCounter = 0;
-                int rCounter = 0;
+                //int rCounter = 0;
+                
+                long startTime = new Date().getTime();
+                        
 
                 for (Node node : graphService.getAllNodes()) {
 
@@ -72,51 +76,60 @@ public class GetNodeAndRelsStatistics {
                         }
                     }
 
-                    Integer[] nodeCounter = nodesMap.get(nodeType);
+                    Integer nodeCounter = nodesMap.get(nodeType);
 
                     if (nodeCounter == null) {
 
-                        Integer[] miniArray = new Integer[1];
-                        miniArray[0] = 1;
-                        nodesMap.put(nodeType, miniArray);
+                        nodeCounter = new Integer(1);
+                        nodesMap.put(nodeType, nodeCounter);
 
                     } else {
 
-                        nodeCounter[0] = nodeCounter[0] + 1;
+                        nodesMap.put(nodeType, (nodeCounter + 1));
 
                     }
 
-                    for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+//                    for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+//
+//                        String relType = rel.getType().name();
+//                        Integer relCounter = relationshipsMap.get(relType);
+//
+//                        if (relCounter == null) {
+//
+//                            relCounter = new Integer(1);
+//                            relationshipsMap.put(relType, relCounter);
+//
+//                        } else {
+//
+//                            relationshipsMap.put(relType, (relCounter + 1));
+//
+//                        }
+//
+//                        rCounter++;
 
-                        String relType = rel.getType().name();
-                        Integer[] relCounter = relationshipsMap.get(relType);
+//                        if (rCounter % 10000 == 0) {
+//                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
+//                            logBuff.write(nCounter + " " + rCounter + "\n");
+//                            logBuff.flush();
+//                        }
+//
+//                    }
 
-                        if (relCounter == null) {
-
-                            Integer[] miniArray = new Integer[1];
-                            miniArray[0] = 1;
-                            relationshipsMap.put(relType, miniArray);
-
-                        } else {
-
-                            relCounter[0] = relCounter[0] + 1;
-
-                        }
-
-                        rCounter++;
-
-                        if (rCounter % 1000 == 0) {
-                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
-                            logBuff.write(nCounter + " " + rCounter + "\n");
-                            logBuff.flush();
-                        }
-
-                    }
-
-                    if (nCounter % 1000 == 0) {
-                        System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
-                        logBuff.write(nCounter + " " + rCounter + "\n");
+                    if (nCounter % 100000 == 0) {
+                        
+                        long currentTime = new Date().getTime();
+                        long difference = currentTime - startTime;
+                        double seconds = difference / 1000.0;                        
+                        
+                        //System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
+                        //logBuff.write(nCounter + " " + rCounter + "\n");
+                        //System.out.println(nCounter + " nodes " + rCounter + " rels. " + seconds + " seconds...");
+                        //logBuff.write(nCounter + "\t" + rCounter + "\t" + seconds +  "\n");
+                        System.out.println(nCounter + " nodes " + seconds + " seconds...");
+                        logBuff.write(nCounter + "\t" + seconds +  "\n");
                         logBuff.flush();
+                        
+                        startTime = currentTime;
                     }
 
                     nCounter++;

@@ -56,10 +56,10 @@ public class FindArticlesAndJournalsFromSwissProtCitations {
             
             ProteinNode protNode = new ProteinNode(relIt.next().getStartNode());
             
-            System.out.println("Analyzing protein: " + protNode.getAccession());
+            //System.out.println("Analyzing protein: " + protNode.getAccession());
             
             List<ArticleNode> articles = protNode.getArticleCitations();
-            System.out.println("There are " + articles.size() + " article citations.");
+            //System.out.println("There are " + articles.size() + " article citations.");
             for (ArticleNode articleNode : articles) {
                 
                 String articleTitle = articleNode.getTitle();
@@ -71,16 +71,21 @@ public class FindArticlesAndJournalsFromSwissProtCitations {
                 Set<String> journalArtsSet = journalArticlesMap.get(journalName);
                 if(journalArtsSet == null){
                     journalArtsSet = new HashSet<String>();
-                    journalArticlesMap.put(journalName, journalSet);
+                    journalArticlesMap.put(journalName, journalArtsSet);
                 }
                 
                 journalArtsSet.add(articleTitle);
             }
             
-            if(proteinCounter % 10 == 0){
+            if(proteinCounter % 100 == 0){
                 System.out.println(proteinCounter + " proteins analyzed...");
                 System.out.println(articleSet.size() + " articles found so far");
                 System.out.println(journalSet.size() + " journals found so far");
+                
+                System.out.println("First article: " + articleSet.iterator().next());
+                System.out.println("First journal: " + journalSet.iterator().next());
+                //System.out.println("First journal: " + journalArticlesMap.get(journalArticlesMap.keySet().iterator().next()));
+                        
             }
         }
         
@@ -88,14 +93,18 @@ public class FindArticlesAndJournalsFromSwissProtCitations {
                 
         manager.shutDown();
         
+        System.out.println("Writing output file...");
         
         BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File(args[1])));
         
         for (String journalName : journalArticlesMap.keySet()) {
-            outBuff.write(journalName + "\t" + journalArticlesMap.get(journalName).size()); 
+            outBuff.write(journalName + "\t" + journalArticlesMap.get(journalName).size() + "\n"); 
         }
         
         outBuff.close();
+        
+        
+        System.out.println("Done! ;)");
         
     }
     
