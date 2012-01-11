@@ -54,97 +54,102 @@ public class GetNodeAndRelsStatistics {
                 HashMap<String, Integer> nodesMap = new HashMap<String, Integer>();
                 HashMap<String, Integer> relationshipsMap = new HashMap<String, Integer>();
 
-                int nCounter = 0;
-                //int rCounter = 0;
-                
+                //int nCounter = 0;
+                int rCounter = 0;
+
                 long startTime = new Date().getTime();
-                        
+
 
                 for (Node node : graphService.getAllNodes()) {
 
-                    String nodeType = "unknown";
-
-                    try {
-                        nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
-                    } catch (org.neo4j.graphdb.NotFoundException ex) {
-
-                        System.out.println("Node with no node type specified... :(");
-                        System.out.println("Its properties are:\n");
-                        Iterator<String> iterator = node.getPropertyKeys().iterator();
-                        while (iterator.hasNext()) {
-                            System.out.println(iterator.next());
-                        }
-                    }
-
-                    Integer nodeCounter = nodesMap.get(nodeType);
-
-                    if (nodeCounter == null) {
-
-                        nodeCounter = new Integer(1);
-                        nodesMap.put(nodeType, nodeCounter);
-
-                    } else {
-
-                        nodesMap.put(nodeType, (nodeCounter + 1));
-
-                    }
-
-//                    for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+//                    String nodeType = "unknown";
 //
-//                        String relType = rel.getType().name();
-//                        Integer relCounter = relationshipsMap.get(relType);
+//                    try {
+//                        nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
+//                    } catch (org.neo4j.graphdb.NotFoundException ex) {
 //
-//                        if (relCounter == null) {
-//
-//                            relCounter = new Integer(1);
-//                            relationshipsMap.put(relType, relCounter);
-//
-//                        } else {
-//
-//                            relationshipsMap.put(relType, (relCounter + 1));
-//
+//                        System.out.println("Node with no node type specified... :(");
+//                        System.out.println("Its properties are:\n");
+//                        Iterator<String> iterator = node.getPropertyKeys().iterator();
+//                        while (iterator.hasNext()) {
+//                            System.out.println(iterator.next());
 //                        }
+//                    }
 //
-//                        rCounter++;
+//                    Integer nodeCounter = nodesMap.get(nodeType);
+//
+//                    if (nodeCounter == null) {
+//
+//                        nodeCounter = new Integer(1);
+//                        nodesMap.put(nodeType, nodeCounter);
+//
+//                    } else {
+//
+//                        nodesMap.put(nodeType, (nodeCounter + 1));
+//
+//                    }
+
+                    for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
+
+                        String relType = rel.getType().name();
+                        Integer relCounter = relationshipsMap.get(relType);
+
+                        if (relCounter == null) {
+
+                            relCounter = new Integer(1);
+                            relationshipsMap.put(relType, relCounter);
+
+                        } else {
+
+                            relationshipsMap.put(relType, (relCounter + 1));
+
+                        }
+
+                        rCounter++;
 
 //                        if (rCounter % 10000 == 0) {
 //                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
 //                            logBuff.write(nCounter + " " + rCounter + "\n");
 //                            logBuff.flush();
 //                        }
-//
-//                    }
 
-                    if (nCounter % 100000 == 0) {
-                        
-                        long currentTime = new Date().getTime();
-                        long difference = currentTime - startTime;
-                        double seconds = difference / 1000.0;                        
-                        
-                        //System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
-                        //logBuff.write(nCounter + " " + rCounter + "\n");
-                        //System.out.println(nCounter + " nodes " + rCounter + " rels. " + seconds + " seconds...");
-                        //logBuff.write(nCounter + "\t" + rCounter + "\t" + seconds +  "\n");
-                        System.out.println(nCounter + " nodes " + seconds + " seconds...");
-                        logBuff.write(nCounter + "\t" + seconds +  "\n");
-                        logBuff.flush();
-                        
-                        startTime = currentTime;
+                        if (rCounter % 100000 == 0) {
+
+                            long currentTime = new Date().getTime();
+                            long difference = currentTime - startTime;
+                            double seconds = difference / 1000.0;
+
+                            //System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
+                            //logBuff.write(nCounter + " " + rCounter + "\n");
+                            //System.out.println(nCounter + " nodes " + rCounter + " rels. " + seconds + " seconds...");
+                            //logBuff.write(nCounter + "\t" + rCounter + "\t" + seconds +  "\n");
+//                        System.out.println(nCounter + " nodes " + seconds + " seconds...");
+//                        logBuff.write(nCounter + "\t" + seconds +  "\n");
+                            System.out.println(rCounter + " relationships " + seconds + " seconds...");
+                            logBuff.write(rCounter + "\t" + seconds + "\n");
+                            logBuff.flush();
+
+                            startTime = currentTime;
+                        }
+
                     }
 
-                    nCounter++;
+
+
+//                    nCounter++;
 
                 }
 
-                System.out.println("Writing nodes file.....");
-                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));
-                outBuff.write("NODE_NAME\tABSOLUTE_VALUE\n");
-                for (String nodeKey : nodesMap.keySet()) {
-                    outBuff.write(nodeKey + "\t" + nodesMap.get(nodeKey) + "\n");
-                }
-                outBuff.close();
+//                System.out.println("Writing nodes file.....");
+//                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));
+//                outBuff.write("NODE_NAME\tABSOLUTE_VALUE\n");
+//                for (String nodeKey : nodesMap.keySet()) {
+//                    outBuff.write(nodeKey + "\t" + nodesMap.get(nodeKey) + "\n");
+//                }
+//                outBuff.close();
 
                 System.out.println("Writing relationships file.....");
+                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelationshipsStatistics.txt")));
                 outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelStatistics.txt")));
                 outBuff.write("RELATIONSHIP_NAME\tABSOLUTE_VALUE\n");
                 for (String relKey : relationshipsMap.keySet()) {

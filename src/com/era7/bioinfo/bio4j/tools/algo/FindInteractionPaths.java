@@ -21,7 +21,7 @@ import org.neo4j.graphdb.PropertyContainer;
 import org.openide.util.Exceptions;
 
 /**
- *
+ * This program finds interaction paths between two proteins with a set of customizable parameters
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
 public class FindInteractionPaths implements Executable {

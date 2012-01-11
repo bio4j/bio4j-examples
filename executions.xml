@@ -41,10 +41,11 @@
 	<execution>
 		<class_full_name>com.era7.bioinfo.bio4j.tools.algo.FindInteractionPaths</class_full_name>
 		<arguments>
-			<argument>Q91ZR3</argument>
-			<argument>P18847</argument>
-			<argument>4</argument>
+			<argument>P29590</argument>
+			<argument>P29590</argument>
+			<argument>20</argument>
 			<argument>bio4jdb</argument>
+			<argument>50</argument>
 			<argument>interactionPaths.txt</argument>
 		</arguments>
 	</execution>
