@@ -102,24 +102,28 @@ public class ExportGoSetsToGephi {
         VizColorXML coincidenceColor;
         VizColorXML generalTermsColor;
 
+        //orange
         annotatorTermsColor = new VizColorXML();
         annotatorTermsColor.setR(241);
         annotatorTermsColor.setG(134);
         annotatorTermsColor.setB(21);
         annotatorTermsColor.setA(255);
 
+        //blue
         slimTermsColor = new VizColorXML();
         slimTermsColor.setR(21);
         slimTermsColor.setG(155);
         slimTermsColor.setB(241);
         slimTermsColor.setA(243);
 
+        //dark grey
         coincidenceColor = new VizColorXML();
         coincidenceColor.setR(21);
         coincidenceColor.setG(15);
         coincidenceColor.setB(23);
         coincidenceColor.setA(23);
 
+        //green
         generalTermsColor = new VizColorXML();
         generalTermsColor.setR(34);
         generalTermsColor.setG(177);
