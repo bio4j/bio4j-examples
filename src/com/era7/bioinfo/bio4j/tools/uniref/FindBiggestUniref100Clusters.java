@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeMap;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -27,17 +26,19 @@ import org.neo4j.graphdb.Relationship;
  */
 public class FindBiggestUniref100Clusters {
 
-   
+    
     public static void main(String[] args) throws IOException {
 
-        if (args.length != 3) {
+        if (args.length != 4) {
             System.out.println("This program expects the following parameters:\n"
                     + "1. Bio4j DB folder\n"
                     + "2. Bio4j DB config parameters file (neo4j.properties)\n"
-                    + "3. Output results file name (txt)\n");
+                    + "3. Output results file name (txt)\n"
+                    + "4. Minimum cluster size (integer)\n");
         } else {
 
             File outFile = new File(args[2]);
+            int minimumClusterLength = Integer.parseInt(args[3]);
 
             BufferedWriter outBuff = new BufferedWriter(new FileWriter(outFile));
 
@@ -63,13 +64,15 @@ public class FindBiggestUniref100Clusters {
                         clusterLength++;
                     }
 
-                    list.add(new ProteinCounter(protein.getAccession(), clusterLength));
+                    if(clusterLength >= minimumClusterLength){
+                        list.add(new ProteinCounter(protein.getAccession(), clusterLength));
+                    }                    
                 }
 
                 protCounter++;
 
                 if (protCounter % 10000 == 0) {
-                    System.out.println(protCounter + " proteins analyzed... ");
+                    System.out.println(protCounter + " proteins analyzed... " + " list.size() = " + list.size());
                 }
             }
 
@@ -83,7 +86,7 @@ public class FindBiggestUniref100Clusters {
             
             System.out.println("Writing now the size of all clusters!");
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = list.size()-1; i >= 0 ; i--) {
                 ProteinCounter proteinCounter = list.get(i);
                 outBuff.write(proteinCounter.protein + "\t" + proteinCounter.counter + "\n");
             }

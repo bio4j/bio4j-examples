@@ -71,7 +71,7 @@
     nbproject/build-impl.xml file. 
 
     -->
-    <target name="-post-jar">
+<!--    <target name="-post-jar">
         <jar jarfile="jars/GetNodeAndRelsStatistics.jar">
             <zipfileset src="${dist.jar}" excludes="META-INF/*" />
             <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
@@ -80,7 +80,7 @@
                 <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.GetNodeAndRelsStatistics"/>
             </manifest>
         </jar>
-    </target>
+    </target>-->
 <!--    <target name="-post-jar">
         <jar jarfile="jars/CreateSimpleDBModel.jar">
             <zipfileset src="${dist.jar}" excludes="META-INF/*" />
@@ -161,4 +161,24 @@
             </manifest>
         </jar>
     </target>-->
+<!--    <target name="-post-jar">
+        <jar jarfile="jars/FindBiggestUniref100Clusters.jar">
+            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
+            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
+                        excludes="META-INF/*" />   
+            <manifest>
+                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.uniref.FindBiggestUniref100Clusters"/>
+            </manifest>
+        </jar>
+    </target>-->
+    <target name="-post-jar">
+        <jar jarfile="jars/LowestCommonAncestorTest.jar">
+            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
+            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
+                        excludes="META-INF/*" />   
+            <manifest>
+                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.taxonomy.LowestCommonAncestorTest"/>
+            </manifest>
+        </jar>
+    </target>
 </project>
