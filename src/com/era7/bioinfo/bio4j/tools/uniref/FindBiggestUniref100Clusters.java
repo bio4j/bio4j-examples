@@ -7,7 +7,6 @@ package com.era7.bioinfo.bio4j.tools.uniref;
 import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
 import com.era7.bioinfo.bio4jmodel.relationships.uniref.UniRef100MemberRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
-import com.google.common.collect.Collections2;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;

@@ -4,10 +4,10 @@
  */
 package com.era7.bioinfo.bio4j.tools.taxonomy;
 
+import com.era7.bioinfo.bio4j.tools.algo.TaxonomyAlgo;
 import com.era7.bioinfo.bio4jmodel.nodes.ncbi.NCBITaxonNode;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
-import com.era7.bioinfo.bio4jmodel.util.TaxonomyAlgo;
 import java.util.LinkedList;
 
 /**
@@ -27,7 +27,7 @@ public class LowestCommonAncestorTest {
             nodes.add(nodeRetriever.getNCBITaxonByTaxId(args[i]));            
         }
         
-        NCBITaxonNode commonAncestor = TaxonomyAlgo.lowerCommonAncestor(nodes);
+        NCBITaxonNode commonAncestor = TaxonomyAlgo.lowestCommonAncestor(nodes);
         
         System.out.println("Common ancestor: " + commonAncestor.getScientificName() + " , " + commonAncestor.getTaxId());
         
