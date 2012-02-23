@@ -20,6 +20,7 @@ import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
 import com.era7.bioinfo.bio4jmodel.relationships.go.MainGoRel;
 import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import com.era7.lib.bioinfoxml.gexf.AttValueXML;
 import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
 import com.era7.lib.bioinfoxml.gexf.AttributeXML;
@@ -47,7 +48,7 @@ import org.neo4j.graphdb.Relationship;
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class GenerateGexfWholeGo {
+public class GenerateGexfWholeGo implements Executable{
 
     public static int edgesIdCounter = 0;
     public static int nodesCounter = 0;
@@ -64,6 +65,15 @@ public class GenerateGexfWholeGo {
     public static int X_LEVEL_FACTOR = 10;
     public static String DEFAULT_END = "2011-01-31";
     public static String DEFAULT_START = "2011-01-01";
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
 
     public static void main(String[] args) {
         if (args.length != 2) {

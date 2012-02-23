@@ -19,6 +19,7 @@ package com.era7.bioinfo.bio4j.tools.gephi;
 import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
 import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import com.era7.lib.bioinfoxml.gexf.AttValueXML;
 import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
 import com.era7.lib.bioinfoxml.gexf.AttributeXML;
@@ -56,7 +57,16 @@ import org.openide.util.Exceptions;
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class ExportGoSlimToGexf {
+public class ExportGoSlimToGexf implements Executable{
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
 
     private static long edgesIdCounter = 0;
 

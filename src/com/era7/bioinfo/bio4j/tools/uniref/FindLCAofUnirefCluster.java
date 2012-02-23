@@ -21,7 +21,9 @@ import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
 import com.era7.bioinfo.bio4jmodel.nodes.ncbi.NCBITaxonNode;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,10 +32,18 @@ import java.util.List;
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class FindLCAofUnirefCluster {
+public class FindLCAofUnirefCluster implements Executable{
 
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
         if (args.length != 3) {
             System.out.println("This program expects the following parameters:\n"

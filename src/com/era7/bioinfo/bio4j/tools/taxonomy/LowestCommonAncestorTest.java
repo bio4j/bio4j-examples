@@ -20,13 +20,24 @@ import com.era7.bioinfo.bio4j.tools.algo.TaxonomyAlgo;
 import com.era7.bioinfo.bio4jmodel.nodes.ncbi.NCBITaxonNode;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class LowestCommonAncestorTest {
+public class LowestCommonAncestorTest implements Executable{
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
     
     public static void main(String args[]){
         

@@ -19,10 +19,12 @@ package com.era7.bioinfo.bio4j.tools.uniref;
 import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
 import com.era7.bioinfo.bio4jmodel.relationships.uniref.UniRef100MemberRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,15 +32,25 @@ import java.util.List;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class FindBiggestUniref100Clusters {
+public class FindBiggestUniref100Clusters implements Executable{
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
 
     
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
 
         if (args.length != 4) {
             System.out.println("This program expects the following parameters:\n"
@@ -47,65 +59,67 @@ public class FindBiggestUniref100Clusters {
                     + "3. Output results file name (txt)\n"
                     + "4. Minimum cluster size (integer)\n");
         } else {
+            BufferedWriter outBuff = null;
+            try {
+                
+                File outFile = new File(args[2]);
+                
+                int minimumClusterLength = Integer.parseInt(args[3]);
+                
+                outBuff = new BufferedWriter(new FileWriter(outFile));
+                Bio4jManager manager = new Bio4jManager(args[0], args[1], true);
+                
+                List<ProteinCounter> list = new LinkedList<ProteinCounter>();
+                int protCounter = 0;
+                
+                //--looping through all proteins--
+                Iterator<Node> iterator = manager.getNodeTypeIndex().get(Bio4jManager.NODE_TYPE_INDEX_NAME, ProteinNode.NODE_TYPE).iterator();
+                UniRef100MemberRel uniRef100MemberRel = new UniRef100MemberRel(null);
+                while (iterator.hasNext()) {
+                    ProteinNode protein = new ProteinNode(iterator.next());
+                    if (protein.isUniref100Representant()) {
+                        int clusterLength = 1;
 
-            File outFile = new File(args[2]);
-            int minimumClusterLength = Integer.parseInt(args[3]);
+                        Iterator<Relationship> relIterator = protein.getNode().getRelationships(Direction.OUTGOING, uniRef100MemberRel).iterator();
+                        while (relIterator.hasNext()) {
+                            relIterator.next();
+                            clusterLength++;
+                        }
 
-            BufferedWriter outBuff = new BufferedWriter(new FileWriter(outFile));
-
-            Bio4jManager manager = new Bio4jManager(args[0], args[1], true);
-
-            List<ProteinCounter> list = new LinkedList<ProteinCounter>();
-
-            int protCounter = 0;
-
-            //--looping through all proteins--
-            Iterator<Node> iterator = manager.getNodeTypeIndex().get(Bio4jManager.NODE_TYPE_INDEX_NAME, ProteinNode.NODE_TYPE).iterator();
-
-            UniRef100MemberRel uniRef100MemberRel = new UniRef100MemberRel(null);
-
-            while (iterator.hasNext()) {
-                ProteinNode protein = new ProteinNode(iterator.next());
-                if (protein.isUniref100Representant()) {
-                    int clusterLength = 1;
-
-                    Iterator<Relationship> relIterator = protein.getNode().getRelationships(Direction.OUTGOING, uniRef100MemberRel).iterator();
-                    while (relIterator.hasNext()) {
-                        relIterator.next();
-                        clusterLength++;
+                        if(clusterLength >= minimumClusterLength){
+                            list.add(new ProteinCounter(protein.getAccession(), clusterLength));
+                        }                    
                     }
 
-                    if(clusterLength >= minimumClusterLength){
-                        list.add(new ProteinCounter(protein.getAccession(), clusterLength));
-                    }                    
+                    protCounter++;
+
+                    if (protCounter % 10000 == 0) {
+                        System.out.println(protCounter + " proteins analyzed... " + " list.size() = " + list.size());
+                    }
                 }
-
-                protCounter++;
-
-                if (protCounter % 10000 == 0) {
-                    System.out.println(protCounter + " proteins analyzed... " + " list.size() = " + list.size());
+                manager.shutDown();
+                System.out.println("Done!");
+                System.out.println("Sorting values...");
+                Collections.sort(list);
+                
+                System.out.println("Writing now the size of all clusters!");
+                for (int i = list.size()-1; i >= 0 ; i--) {
+                    ProteinCounter proteinCounter = list.get(i);
+                    outBuff.write(proteinCounter.protein + "\t" + proteinCounter.counter + "\n");
+                }
+                
+                outBuff.close();
+                System.out.println("Done ;)");
+                
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } finally {
+                try {
+                    outBuff.close();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
             }
-
-            manager.shutDown();
-
-            System.out.println("Done!");
-            
-            System.out.println("Sorting values...");
-            
-            Collections.sort(list);
-            
-            System.out.println("Writing now the size of all clusters!");
-
-            for (int i = list.size()-1; i >= 0 ; i--) {
-                ProteinCounter proteinCounter = list.get(i);
-                outBuff.write(proteinCounter.protein + "\t" + proteinCounter.counter + "\n");
-            }
-            
-            
-            outBuff.close();
-            
-            System.out.println("Done ;)");
         }
 
     }
