@@ -202,7 +202,7 @@ public class CreateSimpleDBModel implements Executable{
                 
                 ReplaceableAttribute namePropertyAtt = new ReplaceableAttribute();
                 namePropertyAtt.setName(nameProperty);
-                namePropertyAtt.setValue(columns[6]);
+                namePropertyAtt.setValue(columns[5]);
                 attributes.add(namePropertyAtt);
                 
                 ReplaceableAttribute dataSourceAtt = new ReplaceableAttribute();
