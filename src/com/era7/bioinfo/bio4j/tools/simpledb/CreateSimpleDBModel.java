@@ -73,6 +73,7 @@ public class CreateSimpleDBModel implements Executable{
             String inRels = header[2];
             String outRels = header[3];
             String javadocUrl = header[4];
+            String dataSource = header[5];
 
             System.out.println("reading nodes file....");
 
@@ -121,6 +122,11 @@ public class CreateSimpleDBModel implements Executable{
                 javadocAtt.setValue(columns[4]);
                 attributes.add(javadocAtt);
                 
+                ReplaceableAttribute dataSourceAtt = new ReplaceableAttribute();
+                dataSourceAtt.setName(dataSource);
+                dataSourceAtt.setValue(columns[5]);
+                attributes.add(dataSourceAtt);
+                
                 ReplaceableAttribute itemTypeAtt = new ReplaceableAttribute();
                 itemTypeAtt.setName(ITEM_TYPE_ATTRIBUTE);
                 itemTypeAtt.setValue(ITEM_TYPE_NODE);
@@ -146,6 +152,8 @@ public class CreateSimpleDBModel implements Executable{
             String startNodes = header[2];
             String endNodes = header[3];
             javadocUrl = header[4];
+            String nameProperty = header[5];
+            dataSource = header[6];
 
             System.out.println("reading relationships file...");
 
@@ -191,6 +199,16 @@ public class CreateSimpleDBModel implements Executable{
                 javadocAtt.setName(javadocUrl);
                 javadocAtt.setValue(columns[4]);
                 attributes.add(javadocAtt);
+                
+                ReplaceableAttribute namePropertyAtt = new ReplaceableAttribute();
+                namePropertyAtt.setName(nameProperty);
+                namePropertyAtt.setValue(columns[6]);
+                attributes.add(namePropertyAtt);
+                
+                ReplaceableAttribute dataSourceAtt = new ReplaceableAttribute();
+                dataSourceAtt.setName(dataSource);
+                dataSourceAtt.setValue(columns[6]);
+                attributes.add(dataSourceAtt);
                 
                 ReplaceableAttribute itemTypeAtt = new ReplaceableAttribute();
                 itemTypeAtt.setName(ITEM_TYPE_ATTRIBUTE);
@@ -310,6 +328,7 @@ public class CreateSimpleDBModel implements Executable{
             String propertyType = header[2];
             String indexed = header[3];
             indexName = header[4];
+            indexType = header[5];
 
             System.out.println("reading node properties file...");
             
@@ -319,7 +338,7 @@ public class CreateSimpleDBModel implements Executable{
                 
                 PutAttributesRequest putAttributesRequest = new PutAttributesRequest();
                 putAttributesRequest.setDomainName(BIO4J_DOMAIN);
-                putAttributesRequest.setItemName(columns[1]);
+                putAttributesRequest.setItemName(columns[0] + "_" + columns[1]);
                 
                 List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 
@@ -345,8 +364,13 @@ public class CreateSimpleDBModel implements Executable{
                 
                 ReplaceableAttribute indexNameAtt = new ReplaceableAttribute();
                 indexNameAtt.setName(indexName);
-                indexNameAtt.setValue(columns[3]);
+                indexNameAtt.setValue(columns[4]);
                 attributes.add(indexNameAtt);
+                
+                ReplaceableAttribute indexTypeAtt = new ReplaceableAttribute();
+                indexTypeAtt.setName(indexType);
+                indexTypeAtt.setValue(columns[5]);
+                attributes.add(indexTypeAtt);
 
                 ReplaceableAttribute itemTypeAtt = new ReplaceableAttribute();
                 itemTypeAtt.setName(ITEM_TYPE_ATTRIBUTE);
@@ -377,7 +401,7 @@ public class CreateSimpleDBModel implements Executable{
                 
                 PutAttributesRequest putAttributesRequest = new PutAttributesRequest();
                 putAttributesRequest.setDomainName(BIO4J_DOMAIN);
-                putAttributesRequest.setItemName(columns[1]);
+                putAttributesRequest.setItemName(columns[0] + "_" + columns[1]);
                 
                 List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 
