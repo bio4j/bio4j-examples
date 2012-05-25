@@ -28,6 +28,7 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.helpers.collection.MapUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -49,7 +50,7 @@ public class GetNodeAndRelsStatistics {
 
                 BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("GetNodeAndRelsStatistics.log")));
 
-                manager = new Bio4jManager(args[0], args[1], true);
+                manager = new Bio4jManager(args[0], MapUtil.load(new File(args[1])), true);
 
                 GraphDatabaseService graphService = manager.getGraphService();
 

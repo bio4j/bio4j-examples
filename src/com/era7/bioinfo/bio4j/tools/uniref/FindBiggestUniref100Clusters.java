@@ -32,6 +32,7 @@ import java.util.List;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.helpers.collection.MapUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -67,7 +68,7 @@ public class FindBiggestUniref100Clusters implements Executable{
                 int minimumClusterLength = Integer.parseInt(args[3]);
                 
                 outBuff = new BufferedWriter(new FileWriter(outFile));
-                Bio4jManager manager = new Bio4jManager(args[0], args[1], true);
+                Bio4jManager manager = new Bio4jManager(args[0], MapUtil.load(new File(args[1])), true);
                 
                 List<ProteinCounter> list = new LinkedList<ProteinCounter>();
                 int protCounter = 0;
