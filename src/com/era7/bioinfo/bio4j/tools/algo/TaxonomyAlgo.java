@@ -55,6 +55,9 @@ public class TaxonomyAlgo {
             if(!firstAncestors.isEmpty()){
                 lowerCommonAncestor = firstAncestors.get(0);
             }
+            
+            //------freeing space---------
+            firstAncestors.clear();
         }        
         
         return lowerCommonAncestor;
