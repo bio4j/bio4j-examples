@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2011  "Bio4j"
+ * Copyright (C) 2010-2012  "Bio4j"
  *
  * This file is part of Bio4j
  *
@@ -24,27 +24,13 @@ import com.era7.bioinfo.bio4jmodel.relationships.protein.ProteinOrganismRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.bioinfoxml.gexf.AttValueXML;
-import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
-import com.era7.lib.bioinfoxml.gexf.AttributeXML;
-import com.era7.lib.bioinfoxml.gexf.AttributesXML;
-import com.era7.lib.bioinfoxml.gexf.EdgeXML;
-import com.era7.lib.bioinfoxml.gexf.GexfXML;
-import com.era7.lib.bioinfoxml.gexf.GraphXML;
-import com.era7.lib.bioinfoxml.gexf.NodeXML;
+import com.era7.lib.bioinfoxml.gexf.*;
 import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
 import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import java.util.Set;
+import java.util.*;
 import org.jdom.Element;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
