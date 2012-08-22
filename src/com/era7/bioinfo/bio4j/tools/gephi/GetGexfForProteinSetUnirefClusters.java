@@ -28,7 +28,6 @@ import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
 import java.io.*;
 import java.util.*;
 import org.jdom.Element;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -68,7 +67,7 @@ public class GetGexfForProteinSetUnirefClusters implements Executable {
 
 
         } else {
-            BufferedReader reader = null;
+            BufferedReader reader;
 
             try {
 
@@ -139,312 +138,314 @@ public class GetGexfForProteinSetUnirefClusters implements Executable {
 
                     ProteinNode proteinNode = nodeRetriever.getProteinNodeByAccession(currentProteinAccession);
 
-                    List<ProteinNode> unirefCluster = null;
-                    ProteinNode clusterRepresentant = null;
+                    if (proteinNode != null) {
+                        
+                        List<ProteinNode> unirefCluster = null;
+                        ProteinNode clusterRepresentant = null;
 
-                    if (unirefClusterNumber == 50) {
+                        if (unirefClusterNumber == 50) {
 
-                        unirefCluster = proteinNode.getUniref50ClusterThisProteinBelongsTo();
+                            unirefCluster = proteinNode.getUniref50ClusterThisProteinBelongsTo();
 
-                        //---looking for representant---
-                        for (ProteinNode tempProt : unirefCluster) {
-                            if (tempProt.isUniref50Representant()) {
-                                clusterRepresentant = tempProt;
-                                break;
+                            //---looking for representant---
+                            for (ProteinNode tempProt : unirefCluster) {
+                                if (tempProt.isUniref50Representant()) {
+                                    clusterRepresentant = tempProt;
+                                    break;
+                                }
+                            }
+
+                        } else if (unirefClusterNumber == 90) {
+
+                            unirefCluster = proteinNode.getUniref90ClusterThisProteinBelongsTo();
+
+                            //---looking for representant---
+                            for (ProteinNode tempProt : unirefCluster) {
+                                if (tempProt.isUniref90Representant()) {
+                                    clusterRepresentant = tempProt;
+                                    break;
+                                }
+                            }
+
+                        } else if (unirefClusterNumber == 100) {
+
+                            unirefCluster = proteinNode.getUniref100ClusterThisProteinBelongsTo();
+
+                            //---looking for representant---
+                            for (ProteinNode tempProt : unirefCluster) {
+                                if (tempProt.isUniref100Representant()) {
+                                    clusterRepresentant = tempProt;
+                                    break;
+                                }
                             }
                         }
 
-                    } else if (unirefClusterNumber == 90) {
+                        //----updating representants counter and map----
+                        representantsCounterMap.put(clusterRepresentant.getAccession(), unirefCluster.size());
+                        representantsMap.put(clusterRepresentant.getAccession(), clusterRepresentant);
 
-                        unirefCluster = proteinNode.getUniref90ClusterThisProteinBelongsTo();
-
-                        //---looking for representant---
-                        for (ProteinNode tempProt : unirefCluster) {
-                            if (tempProt.isUniref90Representant()) {
-                                clusterRepresentant = tempProt;
-                                break;
-                            }
+                        Set<String> organismLinks = unirefClusterOrganismLinks.get(clusterRepresentant.getAccession());
+                        if (organismLinks == null) {
+                            organismLinks = new HashSet<String>();
+                            unirefClusterOrganismLinks.put(clusterRepresentant.getAccession(), organismLinks);
+                        }
+                        Set<String> genomeElemLinks = unirefClusterGenomeElementsLinks.get(clusterRepresentant.getAccession());
+                        if (genomeElemLinks == null) {
+                            genomeElemLinks = new HashSet<String>();
+                            unirefClusterGenomeElementsLinks.put(clusterRepresentant.getAccession(), genomeElemLinks);
                         }
 
-                    } else if (unirefClusterNumber == 100) {
+                        System.out.println("it has " + unirefCluster.size() + " members");
 
-                        unirefCluster = proteinNode.getUniref100ClusterThisProteinBelongsTo();
+                        //----looping through the Uniref cluster searching for different organisms and Genome Elements----
+                        for (int i = 0; i < unirefCluster.size(); i++) {
 
-                        //---looking for representant---
-                        for (ProteinNode tempProt : unirefCluster) {
-                            if (tempProt.isUniref100Representant()) {
-                                clusterRepresentant = tempProt;
-                                break;
-                            }
-                        }
-                    }
+                            ProteinNode proteinNode1 = unirefCluster.get(i);
 
-                    //----updating representants counter and map----
-                    representantsCounterMap.put(clusterRepresentant.getAccession(), unirefCluster.size());
-                    representantsMap.put(clusterRepresentant.getAccession(), clusterRepresentant);
+                            OrganismNode protOrganism = proteinNode1.getOrganism();
 
-                    Set<String> organismLinks = unirefClusterOrganismLinks.get(clusterRepresentant.getAccession());
-                    if (organismLinks == null) {
-                        organismLinks = new HashSet<String>();
-                        unirefClusterOrganismLinks.put(clusterRepresentant.getAccession(), organismLinks);
-                    }
-                    Set<String> genomeElemLinks = unirefClusterGenomeElementsLinks.get(clusterRepresentant.getAccession());
-                    if (genomeElemLinks == null) {
-                        genomeElemLinks = new HashSet<String>();
-                        unirefClusterGenomeElementsLinks.put(clusterRepresentant.getAccession(), genomeElemLinks);
-                    }
+                            //adding protein organism to the map
+                            organismMap.put(protOrganism.getNcbiTaxonomyId(), protOrganism);
 
-                    System.out.println("it has " + unirefCluster.size() + " members");
+                            //storing link between uniref cluster and organism
+                            organismLinks.add(protOrganism.getNcbiTaxonomyId());
 
-                    //----looping through the Uniref cluster searching for different organisms and Genome Elements----
-                    for (int i = 0; i < unirefCluster.size(); i++) {
-
-                        ProteinNode proteinNode1 = unirefCluster.get(i);
-
-                        OrganismNode protOrganism = proteinNode1.getOrganism();
-
-                        //adding protein organism to the map
-                        organismMap.put(protOrganism.getNcbiTaxonomyId(), protOrganism);
-
-                        //storing link between uniref cluster and organism
-                        organismLinks.add(protOrganism.getNcbiTaxonomyId());
-
-                        //adding genome elements linked to the protein to their respective map
-                        for (GenomeElementNode tempGenomeElemNode : proteinNode1.getGenomeElements()) {
-                            //storing link between uniref cluster and genome element                            
-                            genomeElemLinks.add(tempGenomeElemNode.getVersion());
-                            genomeElementMap.put(tempGenomeElemNode.getVersion(), tempGenomeElemNode);
-                        }
-
-
-                    }
-
-                    System.out.println("Looping through representants....");
-                    for (String protKey : representantsMap.keySet()) {
-
-                        ProteinNode protNode = representantsMap.get(protKey);
-                        NodeXML protNodeXML = new NodeXML();
-                        protNodeXML.setId(protNode.getAccession());
-                        //protNodeXML.setLabel(protNode.getFullName());
-                        protNodeXML.setLabel(protNode.getAccession());
-                        protNodeXML.setColor(new VizColorXML((Element) proteinColor.asJDomElement().clone()));
-
-                        //------protein node size--------
-                        VizSizeXML protSize = new VizSizeXML();
-                        //Integer linksCount = clusterProteinsLinkedMap.get(protKey);
-                        Integer linksCount = representantsCounterMap.get(protKey);
-                        if (linksCount < MIN_NODE_SIZE) {
-                            protSize.setValue(MIN_NODE_SIZE);
-                        } else if (linksCount >= MAX_NODE_SIZE) {
-                            protSize.setValue(MAX_NODE_SIZE);
-                        } else {
-                            protSize.setValue(linksCount);
-                        }
-                        protNodeXML.setSize(protSize);
-                        //---------------------------
-
-                        AttValuesXML protAttValuesXML = new AttValuesXML();
-
-                        AttValueXML protAccessionAttValueXML = new AttValueXML();
-                        protAccessionAttValueXML.setFor(0);
-                        protAccessionAttValueXML.setValue(protNode.getAccession());
-                        protAttValuesXML.addAttValue(protAccessionAttValueXML);
-
-                        AttValueXML nameAttValueXML = new AttValueXML();
-                        nameAttValueXML.setFor(1);
-                        nameAttValueXML.setValue(protNode.getFullName());
-                        protAttValuesXML.addAttValue(nameAttValueXML);
-
-                        AttValueXML nodeTypeAttValueXML = new AttValueXML();
-                        nodeTypeAttValueXML.setFor(2);
-                        nodeTypeAttValueXML.setValue("Protein");
-                        protAttValuesXML.addAttValue(nodeTypeAttValueXML);
-
-                        protNodeXML.setAttvalues(protAttValuesXML);
-
-                        nodesXMLStBuilder.append((protNodeXML.toString() + "\n"));
-
-                        Set<String> organismSet = unirefClusterOrganismLinks.get(protKey);
-
-                        for (String organismKey : organismSet) {
-
-                            Integer orgCounter = organismProteinsCounterMap.get(organismKey);
-                            if (orgCounter == null) {
-                                organismProteinsCounterMap.put(organismKey, 1);
-                            } else {
-                                organismProteinsCounterMap.put(organismKey, orgCounter + 1);
+                            //adding genome elements linked to the protein to their respective map
+                            for (GenomeElementNode tempGenomeElemNode : proteinNode1.getGenomeElements()) {
+                                //storing link between uniref cluster and genome element                            
+                                genomeElemLinks.add(tempGenomeElemNode.getVersion());
+                                genomeElementMap.put(tempGenomeElemNode.getVersion(), tempGenomeElemNode);
                             }
 
-                            //-------------------------------------------------------------
-                            //----------------Protein-Organism-edge-----------------------
-                            EdgeXML edge = new EdgeXML();
-                            edge.setId(String.valueOf(edgesIdCounter++));
-                            edge.setSource(protNode.getAccession());
-                            edge.setTarget(organismKey);
-                            edge.setType(EdgeXML.DIRECTED_TYPE);
-
-                            AttValuesXML edgeAttValuesXML = new AttValuesXML();
-
-                            AttValueXML edgeIDAttValueXML = new AttValueXML();
-                            edgeIDAttValueXML.setFor(0);
-                            edgeIDAttValueXML.setValue("" + edgesIdCounter);
-                            edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
-                            AttValueXML edgeTypeAttValueXML = new AttValueXML();
-                            edgeTypeAttValueXML.setFor(1);
-                            edgeTypeAttValueXML.setValue(PROTEIN_ORGANISM_RELATIONSHIP);
-                            edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
-
-                            edge.setAttvalues(edgeAttValuesXML);
-
-                            edgesXMLStBuilder.append((edge.toString() + "\n"));
-                            //-------------------------------------------------------------
-                            //-------------------------------------------------------------
                         }
-
-                        Set<String> genomeElemsSet = unirefClusterGenomeElementsLinks.get(protKey);
-                        for (String genomeElemKey : genomeElemsSet) {
-
-                            Integer genomElemCounter = genomeElementProteinsCounterMap.get(genomeElemKey);
-                            if (genomElemCounter == null) {
-                                genomeElementProteinsCounterMap.put(genomeElemKey, 1);
-                            } else {
-                                genomeElementProteinsCounterMap.put(genomeElemKey, genomElemCounter + 1);
-                            }
-
-                            //-------------------------------------------------------------
-                            //----------------Protein-GenomeElement-edge-----------------------
-                            EdgeXML edge = new EdgeXML();
-                            edge.setId(String.valueOf(edgesIdCounter++));
-                            edge.setSource(protNode.getAccession());
-                            edge.setTarget(genomeElemKey);
-                            edge.setType(EdgeXML.DIRECTED_TYPE);
-
-                            AttValuesXML edgeAttValuesXML = new AttValuesXML();
-
-                            AttValueXML edgeIDAttValueXML = new AttValueXML();
-                            edgeIDAttValueXML.setFor(0);
-                            edgeIDAttValueXML.setValue("" + edgesIdCounter);
-                            edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
-                            AttValueXML edgeTypeAttValueXML = new AttValueXML();
-                            edgeTypeAttValueXML.setFor(1);
-                            edgeTypeAttValueXML.setValue(PROTEIN_GENOME_ELEMENT_RELATIONSHIP);
-                            edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
-
-                            edge.setAttvalues(edgeAttValuesXML);
-
-                            edgesXMLStBuilder.append((edge.toString() + "\n"));
-                            //-------------------------------------------------------------
-                            //-------------------------------------------------------------
-                        }
-
-                        //-----------ORGANISM NODES----------------------------
-
-                        System.out.println("Looping through organisms....");
-                        for (String organismKey : organismMap.keySet()) {
-
-                            OrganismNode tempOrganismNode = organismMap.get(organismKey);
-                            NodeXML organismNodeXML = new NodeXML();
-                            organismNodeXML.setId(tempOrganismNode.getNcbiTaxonomyId());
-                            organismNodeXML.setLabel(tempOrganismNode.getScientificName());
-                            organismNodeXML.setColor(new VizColorXML((Element) organismColor.asJDomElement().clone()));
-
-                            //------organism node size--------
-                            VizSizeXML organismSize = new VizSizeXML();
-
-                            linksCount = organismProteinsCounterMap.get(organismKey);
-                            if (linksCount < MIN_NODE_SIZE) {
-                                organismSize.setValue(MIN_NODE_SIZE);
-                            } else if (linksCount >= MAX_NODE_SIZE) {
-                                organismSize.setValue(MAX_NODE_SIZE);
-                            } else {
-                                organismSize.setValue(linksCount);
-                            }
-                            organismNodeXML.setSize(organismSize);
-                            //---------------------------
-
-                            AttValuesXML organismAttValuesXML = new AttValuesXML();
-
-                            AttValueXML organismIdAttValueXML = new AttValueXML();
-                            organismIdAttValueXML.setFor(0);
-                            organismIdAttValueXML.setValue(tempOrganismNode.getNcbiTaxonomyId());
-                            organismAttValuesXML.addAttValue(organismIdAttValueXML);
-
-                            nameAttValueXML = new AttValueXML();
-                            nameAttValueXML.setFor(1);
-                            nameAttValueXML.setValue(tempOrganismNode.getScientificName());
-                            organismAttValuesXML.addAttValue(nameAttValueXML);
-
-                            nodeTypeAttValueXML = new AttValueXML();
-                            nodeTypeAttValueXML.setFor(2);
-                            nodeTypeAttValueXML.setValue("Organism");
-                            organismAttValuesXML.addAttValue(nodeTypeAttValueXML);
-
-                            organismNodeXML.setAttvalues(organismAttValuesXML);
-
-                            nodesXMLStBuilder.append((organismNodeXML.toString() + "\n"));
-
-                        }
-
-                        //-----------GENOME ELEMENT NODES----------------------------
-
-                        System.out.println("Looping through genome elements....");
-                        for (String genomeElemKey : genomeElementMap.keySet()) {
-
-                            GenomeElementNode genomeElemNode = genomeElementMap.get(genomeElemKey);
-                            NodeXML genomeElemNodeXML = new NodeXML();
-                            genomeElemNodeXML.setId(genomeElemNode.getVersion());
-                            genomeElemNodeXML.setLabel(genomeElemNode.getVersion());
-                            genomeElemNodeXML.setColor(new VizColorXML((Element) genomeElemColor.asJDomElement().clone()));
-
-                            //------genome element node size--------
-                            VizSizeXML genomElemSize = new VizSizeXML();
-                            linksCount = genomeElementProteinsCounterMap.get(genomeElemKey);
-                            if (linksCount < MIN_NODE_SIZE) {
-                                genomElemSize.setValue(MIN_NODE_SIZE);
-                            } else if (linksCount >= MAX_NODE_SIZE) {
-                                genomElemSize.setValue(MAX_NODE_SIZE);
-                            } else {
-                                genomElemSize.setValue(linksCount);
-                            }
-                            genomeElemNodeXML.setSize(genomElemSize);
-                            //---------------------------
-
-                            AttValuesXML genomeElemAttValuesXML = new AttValuesXML();
-
-                            AttValueXML genomeElemVersionAttValueXML = new AttValueXML();
-                            genomeElemVersionAttValueXML.setFor(0);
-                            genomeElemVersionAttValueXML.setValue(genomeElemNode.getVersion());
-                            genomeElemAttValuesXML.addAttValue(genomeElemVersionAttValueXML);
-
-                            nameAttValueXML = new AttValueXML();
-                            nameAttValueXML.setFor(1);
-                            nameAttValueXML.setValue(genomeElemNode.getDefinition());
-                            genomeElemAttValuesXML.addAttValue(nameAttValueXML);
-
-                            nodeTypeAttValueXML = new AttValueXML();
-                            nodeTypeAttValueXML.setFor(2);
-                            nodeTypeAttValueXML.setValue("GenomeElement");
-                            genomeElemAttValuesXML.addAttValue(nodeTypeAttValueXML);
-
-                            genomeElemNodeXML.setAttvalues(genomeElemAttValuesXML);
-
-                            nodesXMLStBuilder.append((genomeElemNodeXML.toString() + "\n"));
-
-                        }
-
-
-                        outBuff.write(nodesXMLStBuilder.toString() + "</nodes>\n");
-                        outBuff.write(edgesXMLStBuilder.toString() + "</edges>\n");
-
-                        outBuff.write("</" + GraphXML.TAG_NAME + ">\n");
-                        outBuff.write("</" + GexfXML.TAG_NAME + ">\n");
-                        outBuff.close();
-
-
-
+                        
+                    }else{
+                        System.out.println("WARNING: There was no protein found for accession: " + currentProteinAccession);
                     }
 
                 }
+
+                System.out.println("Looping through representants....");
+                for (String protKey : representantsMap.keySet()) {
+
+                    ProteinNode protNode = representantsMap.get(protKey);
+                    NodeXML protNodeXML = new NodeXML();
+                    protNodeXML.setId(protNode.getAccession());
+                    //protNodeXML.setLabel(protNode.getFullName());
+                    protNodeXML.setLabel(protNode.getAccession());
+                    protNodeXML.setColor(new VizColorXML((Element) proteinColor.asJDomElement().clone()));
+
+                    //------protein node size--------
+                    VizSizeXML protSize = new VizSizeXML();
+                    //Integer linksCount = clusterProteinsLinkedMap.get(protKey);
+                    Integer linksCount = representantsCounterMap.get(protKey);
+                    if (linksCount < MIN_NODE_SIZE) {
+                        protSize.setValue(MIN_NODE_SIZE);
+                    } else if (linksCount >= MAX_NODE_SIZE) {
+                        protSize.setValue(MAX_NODE_SIZE);
+                    } else {
+                        protSize.setValue(linksCount);
+                    }
+                    protNodeXML.setSize(protSize);
+                    //---------------------------
+
+                    AttValuesXML protAttValuesXML = new AttValuesXML();
+
+                    AttValueXML protAccessionAttValueXML = new AttValueXML();
+                    protAccessionAttValueXML.setFor(0);
+                    protAccessionAttValueXML.setValue(protNode.getAccession());
+                    protAttValuesXML.addAttValue(protAccessionAttValueXML);
+
+                    AttValueXML nameAttValueXML = new AttValueXML();
+                    nameAttValueXML.setFor(1);
+                    nameAttValueXML.setValue(protNode.getFullName());
+                    protAttValuesXML.addAttValue(nameAttValueXML);
+
+                    AttValueXML nodeTypeAttValueXML = new AttValueXML();
+                    nodeTypeAttValueXML.setFor(2);
+                    nodeTypeAttValueXML.setValue("Protein");
+                    protAttValuesXML.addAttValue(nodeTypeAttValueXML);
+
+                    protNodeXML.setAttvalues(protAttValuesXML);
+
+                    nodesXMLStBuilder.append((protNodeXML.toString() + "\n"));
+
+                    Set<String> organismSet = unirefClusterOrganismLinks.get(protKey);
+
+                    for (String organismKey : organismSet) {
+
+                        Integer orgCounter = organismProteinsCounterMap.get(organismKey);
+                        if (orgCounter == null) {
+                            organismProteinsCounterMap.put(organismKey, 1);
+                        } else {
+                            organismProteinsCounterMap.put(organismKey, orgCounter + 1);
+                        }
+
+                        //-------------------------------------------------------------
+                        //----------------Protein-Organism-edge-----------------------
+                        EdgeXML edge = new EdgeXML();
+                        edge.setId(String.valueOf(edgesIdCounter++));
+                        edge.setSource(protNode.getAccession());
+                        edge.setTarget(organismKey);
+                        edge.setType(EdgeXML.DIRECTED_TYPE);
+
+                        AttValuesXML edgeAttValuesXML = new AttValuesXML();
+
+                        AttValueXML edgeIDAttValueXML = new AttValueXML();
+                        edgeIDAttValueXML.setFor(0);
+                        edgeIDAttValueXML.setValue("" + edgesIdCounter);
+                        edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
+                        AttValueXML edgeTypeAttValueXML = new AttValueXML();
+                        edgeTypeAttValueXML.setFor(1);
+                        edgeTypeAttValueXML.setValue(PROTEIN_ORGANISM_RELATIONSHIP);
+                        edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
+
+                        edge.setAttvalues(edgeAttValuesXML);
+
+                        edgesXMLStBuilder.append((edge.toString() + "\n"));
+                        //-------------------------------------------------------------
+                        //-------------------------------------------------------------
+                    }
+
+                    Set<String> genomeElemsSet = unirefClusterGenomeElementsLinks.get(protKey);
+                    for (String genomeElemKey : genomeElemsSet) {
+
+                        Integer genomElemCounter = genomeElementProteinsCounterMap.get(genomeElemKey);
+                        if (genomElemCounter == null) {
+                            genomeElementProteinsCounterMap.put(genomeElemKey, 1);
+                        } else {
+                            genomeElementProteinsCounterMap.put(genomeElemKey, genomElemCounter + 1);
+                        }
+
+                        //-------------------------------------------------------------
+                        //----------------Protein-GenomeElement-edge-----------------------
+                        EdgeXML edge = new EdgeXML();
+                        edge.setId(String.valueOf(edgesIdCounter++));
+                        edge.setSource(protNode.getAccession());
+                        edge.setTarget(genomeElemKey);
+                        edge.setType(EdgeXML.DIRECTED_TYPE);
+
+                        AttValuesXML edgeAttValuesXML = new AttValuesXML();
+
+                        AttValueXML edgeIDAttValueXML = new AttValueXML();
+                        edgeIDAttValueXML.setFor(0);
+                        edgeIDAttValueXML.setValue("" + edgesIdCounter);
+                        edgeAttValuesXML.addAttValue(edgeIDAttValueXML);
+                        AttValueXML edgeTypeAttValueXML = new AttValueXML();
+                        edgeTypeAttValueXML.setFor(1);
+                        edgeTypeAttValueXML.setValue(PROTEIN_GENOME_ELEMENT_RELATIONSHIP);
+                        edgeAttValuesXML.addAttValue(edgeTypeAttValueXML);
+
+                        edge.setAttvalues(edgeAttValuesXML);
+
+                        edgesXMLStBuilder.append((edge.toString() + "\n"));
+                        //-------------------------------------------------------------
+                        //-------------------------------------------------------------
+                    }
+                }
+
+                //-----------ORGANISM NODES----------------------------
+
+                System.out.println("Looping through organisms....");
+                for (String organismKey : organismMap.keySet()) {
+
+                    OrganismNode tempOrganismNode = organismMap.get(organismKey);
+                    NodeXML organismNodeXML = new NodeXML();
+                    organismNodeXML.setId(tempOrganismNode.getNcbiTaxonomyId());
+                    organismNodeXML.setLabel(tempOrganismNode.getScientificName());
+                    organismNodeXML.setColor(new VizColorXML((Element) organismColor.asJDomElement().clone()));
+
+                    //------organism node size--------
+                    VizSizeXML organismSize = new VizSizeXML();
+
+                    int linksCount = organismProteinsCounterMap.get(organismKey);
+                    if (linksCount < MIN_NODE_SIZE) {
+                        organismSize.setValue(MIN_NODE_SIZE);
+                    } else if (linksCount >= MAX_NODE_SIZE) {
+                        organismSize.setValue(MAX_NODE_SIZE);
+                    } else {
+                        organismSize.setValue(linksCount);
+                    }
+                    organismNodeXML.setSize(organismSize);
+                    //---------------------------
+
+                    AttValuesXML organismAttValuesXML = new AttValuesXML();
+
+                    AttValueXML organismIdAttValueXML = new AttValueXML();
+                    organismIdAttValueXML.setFor(0);
+                    organismIdAttValueXML.setValue(tempOrganismNode.getNcbiTaxonomyId());
+                    organismAttValuesXML.addAttValue(organismIdAttValueXML);
+
+                    AttValueXML nameAttValueXML = new AttValueXML();
+                    nameAttValueXML.setFor(1);
+                    nameAttValueXML.setValue(tempOrganismNode.getScientificName());
+                    organismAttValuesXML.addAttValue(nameAttValueXML);
+
+                    AttValueXML nodeTypeAttValueXML = new AttValueXML();
+                    nodeTypeAttValueXML.setFor(2);
+                    nodeTypeAttValueXML.setValue("Organism");
+                    organismAttValuesXML.addAttValue(nodeTypeAttValueXML);
+
+                    organismNodeXML.setAttvalues(organismAttValuesXML);
+
+                    nodesXMLStBuilder.append((organismNodeXML.toString() + "\n"));
+
+                }
+
+                //-----------GENOME ELEMENT NODES----------------------------
+
+                System.out.println("Looping through genome elements....");
+                for (String genomeElemKey : genomeElementMap.keySet()) {
+
+                    GenomeElementNode genomeElemNode = genomeElementMap.get(genomeElemKey);
+                    NodeXML genomeElemNodeXML = new NodeXML();
+                    genomeElemNodeXML.setId(genomeElemNode.getVersion());
+                    genomeElemNodeXML.setLabel(genomeElemNode.getVersion());
+                    genomeElemNodeXML.setColor(new VizColorXML((Element) genomeElemColor.asJDomElement().clone()));
+
+                    //------genome element node size--------
+                    VizSizeXML genomElemSize = new VizSizeXML();
+                    int linksCount = genomeElementProteinsCounterMap.get(genomeElemKey);
+                    if (linksCount < MIN_NODE_SIZE) {
+                        genomElemSize.setValue(MIN_NODE_SIZE);
+                    } else if (linksCount >= MAX_NODE_SIZE) {
+                        genomElemSize.setValue(MAX_NODE_SIZE);
+                    } else {
+                        genomElemSize.setValue(linksCount);
+                    }
+                    genomeElemNodeXML.setSize(genomElemSize);
+                    //---------------------------
+
+                    AttValuesXML genomeElemAttValuesXML = new AttValuesXML();
+
+                    AttValueXML genomeElemVersionAttValueXML = new AttValueXML();
+                    genomeElemVersionAttValueXML.setFor(0);
+                    genomeElemVersionAttValueXML.setValue(genomeElemNode.getVersion());
+                    genomeElemAttValuesXML.addAttValue(genomeElemVersionAttValueXML);
+
+                    AttValueXML nameAttValueXML = new AttValueXML();
+                    nameAttValueXML.setFor(1);
+                    nameAttValueXML.setValue(genomeElemNode.getDefinition());
+                    genomeElemAttValuesXML.addAttValue(nameAttValueXML);
+
+                    AttValueXML nodeTypeAttValueXML = new AttValueXML();
+                    nodeTypeAttValueXML.setFor(2);
+                    nodeTypeAttValueXML.setValue("GenomeElement");
+                    genomeElemAttValuesXML.addAttValue(nodeTypeAttValueXML);
+
+                    genomeElemNodeXML.setAttvalues(genomeElemAttValuesXML);
+
+                    nodesXMLStBuilder.append((genomeElemNodeXML.toString() + "\n"));
+
+                }
+
+
+                outBuff.write(nodesXMLStBuilder.toString() + "</nodes>\n");
+                outBuff.write(edgesXMLStBuilder.toString() + "</edges>\n");
+
+                outBuff.write("</" + GraphXML.TAG_NAME + ">\n");
+                outBuff.write("</" + GexfXML.TAG_NAME + ">\n");
+                outBuff.close();
 
                 System.out.println("done!");
 
@@ -455,7 +456,7 @@ public class GetGexfForProteinSetUnirefClusters implements Executable {
 
 
             } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
+                ex.printStackTrace();
             }
 
             System.out.println("Cool! :)");
