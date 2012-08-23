@@ -17,11 +17,7 @@
 package com.era7.bioinfo.bio4j.tools.uniprot;
 
 import com.era7.bioinfo.bio4j.CommonData;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 
 /**
  *
@@ -50,7 +46,7 @@ public class SplitUniprotXmlFile {
                 outBuff.write("<entries>\n");
 
                 BufferedReader reader = new BufferedReader(new FileReader(inFile));
-                String line = null;
+                String line;
 
                 while ((line = reader.readLine()) != null) {
                     if (line.trim().startsWith("<" + CommonData.ENTRY_TAG_NAME)) {

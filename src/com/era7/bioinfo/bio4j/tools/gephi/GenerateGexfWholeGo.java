@@ -17,18 +17,11 @@
 package com.era7.bioinfo.bio4j.tools.gephi;
 
 import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
-import com.era7.bioinfo.bio4jmodel.relationships.go.MainGoRel;
 import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
+import com.era7.bioinfo.bio4jmodel.relationships.go.MainGoRel;
 import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.bioinfoxml.gexf.AttValueXML;
-import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
-import com.era7.lib.bioinfoxml.gexf.AttributeXML;
-import com.era7.lib.bioinfoxml.gexf.AttributesXML;
-import com.era7.lib.bioinfoxml.gexf.EdgeXML;
-import com.era7.lib.bioinfoxml.gexf.GexfXML;
-import com.era7.lib.bioinfoxml.gexf.GraphXML;
-import com.era7.lib.bioinfoxml.gexf.NodeXML;
+import com.era7.lib.bioinfoxml.gexf.*;
 import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
 import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
 import com.era7.lib.era7xmlapi.model.XMLElementException;
@@ -82,7 +75,7 @@ public class GenerateGexfWholeGo implements Executable{
                     + "2. Output gexf filename\n");
         } else {
 
-            BufferedWriter outBuff = null;
+            BufferedWriter outBuff;
             try {
 
                 bioColor = new VizColorXML();

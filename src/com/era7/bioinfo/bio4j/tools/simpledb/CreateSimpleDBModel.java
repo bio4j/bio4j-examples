@@ -65,7 +65,7 @@ public class CreateSimpleDBModel implements Executable{
             //-----------------reading nodes...-----------------
             File nodesFiles = new File(NODES_FILENAME);
             BufferedReader reader = new BufferedReader(new FileReader(nodesFiles));
-            String line = null;
+            String line;
             //header line
             String[] header = reader.readLine().split("\t");
             String nodeName = header[0];

@@ -6,8 +6,6 @@ package com.era7.bioinfo.bio4j.tools.gephi;
 
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import org.gephi.graph.api.GraphController;

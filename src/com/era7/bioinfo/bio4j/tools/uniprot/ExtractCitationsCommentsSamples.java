@@ -18,18 +18,8 @@ package com.era7.bioinfo.bio4j.tools.uniprot;
 
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import com.era7.lib.era7xmlapi.model.XMLElement;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 import org.jdom.Element;
 import org.openide.util.Exceptions;
 
