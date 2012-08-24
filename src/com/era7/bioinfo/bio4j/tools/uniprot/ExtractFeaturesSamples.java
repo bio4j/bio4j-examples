@@ -41,8 +41,8 @@ public class ExtractFeaturesSamples implements Executable{
     public static void main(String[] args) {
 
         if (args.length != 1) {
-            System.out.println("El programa espera un parametro: \n"
-                    + "1. Nombre del archivo xml a importar \n");
+            System.out.println("This program expects the following parameters: \n"
+                    + "1. Input XML file \n");
         } else {
             BufferedWriter outBuff = null;
             

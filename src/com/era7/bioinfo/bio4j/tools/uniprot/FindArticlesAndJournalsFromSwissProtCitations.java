@@ -49,9 +49,10 @@ public class FindArticlesAndJournalsFromSwissProtCitations implements Executable
 
     public static void main(String[] args) {
 
-        if (args.length != 1) {
+        if (args.length != 2) {
             System.out.println("This program expects the following parameters:\n"
-                    + "1. Bio4j DB folder");
+                    + "1. Bio4j DB folder\n"
+                    + "2. Output TXT file");
         } else {
             BufferedWriter outBuff = null;
 
