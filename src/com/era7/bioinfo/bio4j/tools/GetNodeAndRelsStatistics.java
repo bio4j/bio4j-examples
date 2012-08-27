@@ -39,7 +39,7 @@ public class GetNodeAndRelsStatistics {
 
     public static void main(String[] args) {
         if (args.length != 2) {
-            System.out.println("This program expects one parameter: \n"
+            System.out.println("This program expects the following parameters: \n"
                     + "1. Bio4j DB folder\n"
                     + "2. Config Properties file (neo4j.properties)");
         } else {

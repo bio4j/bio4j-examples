@@ -16,12 +16,7 @@
  */
 package com.era7.bioinfo.bio4j.tools;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -45,7 +40,7 @@ public class RemoveRepetitionsFromPPICircuits {
             try {
                 
                 BufferedReader buff = new BufferedReader(new FileReader(new File(args[0])));
-                String line = null;
+                String line;
                 
                 BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File(args[1])));
                 BufferedWriter protBuff = new BufferedWriter(new FileWriter(new File(args[2])));
