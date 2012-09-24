@@ -16,11 +16,13 @@
  */
 package com.era7.bioinfo.bio4j.tools;
 
-import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
 import com.era7.bioinfo.bioinfoneo4j.BasicEntity;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,17 +30,30 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.helpers.collection.MapUtil;
+import org.neo4j.tooling.GlobalGraphOperations;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class GetNodeAndRelsStatistics {
+public class GetNodeAndRelsStatistics implements Executable{
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
 
     public static void main(String[] args) {
-        if (args.length != 1) {
-            System.out.println("This program expects one parameter: \n"
-                    + "1. Bio4j DB folder\n");
+        if (args.length != 2) {
+            System.out.println("This program expects the following parameters: \n"
+                    + "1. Bio4j DB folder\n"
+                    + "2. Config Properties file (neo4j.properties)");
         } else {
 
             Bio4jManager manager = null;
@@ -47,47 +62,49 @@ public class GetNodeAndRelsStatistics {
 
                 BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("GetNodeAndRelsStatistics.log")));
 
-                manager = new Bio4jManager(args[0]);
+                manager = new Bio4jManager(args[0], MapUtil.load(new File(args[1])), true);
 
                 GraphDatabaseService graphService = manager.getGraphService();
 
                 HashMap<String, Integer> nodesMap = new HashMap<String, Integer>();
                 HashMap<String, Integer> relationshipsMap = new HashMap<String, Integer>();
 
-                //int nCounter = 0;
+                int nCounter = 0;
                 int rCounter = 0;
 
                 long startTime = new Date().getTime();
+                
+                GlobalGraphOperations globalGraphOperations = GlobalGraphOperations.at(graphService);
 
 
-                for (Node node : graphService.getAllNodes()) {
+                for (Node node : globalGraphOperations.getAllNodes()) {
 
-//                    String nodeType = "unknown";
-//
-//                    try {
-//                        nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
-//                    } catch (org.neo4j.graphdb.NotFoundException ex) {
-//
-//                        System.out.println("Node with no node type specified... :(");
-//                        System.out.println("Its properties are:\n");
-//                        Iterator<String> iterator = node.getPropertyKeys().iterator();
-//                        while (iterator.hasNext()) {
-//                            System.out.println(iterator.next());
-//                        }
-//                    }
-//
-//                    Integer nodeCounter = nodesMap.get(nodeType);
-//
-//                    if (nodeCounter == null) {
-//
-//                        nodeCounter = new Integer(1);
-//                        nodesMap.put(nodeType, nodeCounter);
-//
-//                    } else {
-//
-//                        nodesMap.put(nodeType, (nodeCounter + 1));
-//
-//                    }
+                    String nodeType = "unknown";
+
+                    try {
+                        nodeType = String.valueOf(node.getProperty(BasicEntity.NODE_TYPE_PROPERTY));
+                    } catch (org.neo4j.graphdb.NotFoundException ex) {
+
+                        System.out.println("Node with no node type specified... :(");
+                        System.out.println("Its properties are:\n");
+                        Iterator<String> iterator = node.getPropertyKeys().iterator();
+                        while (iterator.hasNext()) {
+                            System.out.println(iterator.next());
+                        }
+                    }
+
+                    Integer nodeCounter = nodesMap.get(nodeType);
+
+                    if (nodeCounter == null) {
+
+                        nodeCounter = new Integer(1);
+                        nodesMap.put(nodeType, nodeCounter);
+
+                    } else {
+
+                        nodesMap.put(nodeType, (nodeCounter + 1));
+
+                    }
 
                     for (Relationship rel : node.getRelationships(Direction.OUTGOING)) {
 
@@ -107,11 +124,11 @@ public class GetNodeAndRelsStatistics {
 
                         rCounter++;
 
-//                        if (rCounter % 10000 == 0) {
-//                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
-//                            logBuff.write(nCounter + " " + rCounter + "\n");
-//                            logBuff.flush();
-//                        }
+                        if (rCounter % 100000 == 0) {
+                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed! (current nodeType = " + nodeType + ")");
+                            logBuff.write(nCounter + " " + rCounter + "\n");
+                            logBuff.flush();
+                        }
 
                         if (rCounter % 100000 == 0) {
 
@@ -119,12 +136,12 @@ public class GetNodeAndRelsStatistics {
                             long difference = currentTime - startTime;
                             double seconds = difference / 1000.0;
 
-                            //System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
-                            //logBuff.write(nCounter + " " + rCounter + "\n");
-                            //System.out.println(nCounter + " nodes " + rCounter + " rels. " + seconds + " seconds...");
-                            //logBuff.write(nCounter + "\t" + rCounter + "\t" + seconds +  "\n");
-//                        System.out.println(nCounter + " nodes " + seconds + " seconds...");
-//                        logBuff.write(nCounter + "\t" + seconds +  "\n");
+                            System.out.println(nCounter + " nodes and " + rCounter + " rels analyzed!");
+                            logBuff.write(nCounter + " " + rCounter + "\n");
+                            System.out.println(nCounter + " nodes " + rCounter + " rels. " + seconds + " seconds...");
+                            logBuff.write(nCounter + "\t" + rCounter + "\t" + seconds + "\n");
+                            System.out.println(nCounter + " nodes " + seconds + " seconds...");
+                            logBuff.write(nCounter + "\t" + seconds + "\n");
                             System.out.println(rCounter + " relationships " + seconds + " seconds...");
                             logBuff.write(rCounter + "\t" + seconds + "\n");
                             logBuff.flush();
@@ -136,20 +153,19 @@ public class GetNodeAndRelsStatistics {
 
 
 
-//                    nCounter++;
+                    nCounter++;
 
                 }
 
-//                System.out.println("Writing nodes file.....");
-//                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));
-//                outBuff.write("NODE_NAME\tABSOLUTE_VALUE\n");
-//                for (String nodeKey : nodesMap.keySet()) {
-//                    outBuff.write(nodeKey + "\t" + nodesMap.get(nodeKey) + "\n");
-//                }
-//                outBuff.close();
+                System.out.println("Writing nodes file.....");
+                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jNodeStatistics.txt")));
+                outBuff.write("NODE_NAME\tABSOLUTE_VALUE\n");
+                for (String nodeKey : nodesMap.keySet()) {
+                    outBuff.write(nodeKey + "\t" + nodesMap.get(nodeKey) + "\n");
+                }
+                outBuff.close();
 
                 System.out.println("Writing relationships file.....");
-                BufferedWriter outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelationshipsStatistics.txt")));
                 outBuff = new BufferedWriter(new FileWriter(new File("Bio4jRelStatistics.txt")));
                 outBuff.write("RELATIONSHIP_NAME\tABSOLUTE_VALUE\n");
                 for (String relKey : relationshipsMap.keySet()) {
@@ -164,7 +180,7 @@ public class GetNodeAndRelsStatistics {
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                Exceptions.printStackTrace(e);
             } finally {
 
                 manager.shutDown();

@@ -25,7 +25,9 @@ public class CreateSimpleDBModel {
 
     public static final String BIO4J_DOMAIN = "bio4j";
     public static final String NODES_FILENAME = "NodesBio4j.txt";
+    public static final String NODE_PROPERTIES_FILENAME = "NodePropertiesBio4j.txt";
     public static final String RELATIONSHIPS_FILENAME = "RelationshipsBio4j.txt";
+    public static final String RELATIONSHIP_PROPERTIES_FILENAME = "RelationshipPropertiesBio4j.txt";
     public static final String NODE_INDEXES_FILENAME = "NodeIndexesBio4j.txt";
     public static final String RELATIONSHIP_INDEXES_FILENAME = "RelationshipIndexesBio4j.txt";
     public static final String EMPTY_CHARACTER = "-";
@@ -34,6 +36,8 @@ public class CreateSimpleDBModel {
     public static final String ITEM_TYPE_RELATIONSHIP = "relationship";
     public static final String ITEM_TYPE_NODE_INDEX = "node_index";
     public static final String ITEM_TYPE_RELATIONSHIP_INDEX = "relationship_index";
+    public static final String ITEM_TYPE_NODE_PROPERTY = "node_property";
+    public static final String ITEM_TYPE_RELATIONSHIP_PROPERTY = "relationship_property";
 
     public static void main(String[] args) {
 
@@ -265,7 +269,7 @@ public class CreateSimpleDBModel {
                 List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 
                 ReplaceableAttribute relNameAtt = new ReplaceableAttribute();
-                relNameAtt.setName(nodeName);
+                relNameAtt.setName(relName);
                 relNameAtt.setValue(columns[0]);
                 attributes.add(relNameAtt);
                 
@@ -284,6 +288,114 @@ public class CreateSimpleDBModel {
                 simpleDBClient.putAttributes(putAttributesRequest);
                 
             }
+            reader.close();
+            
+            //-----------reading node properties.... ----------------
+            File nodePropsFile = new File(NODE_PROPERTIES_FILENAME);
+            reader = new BufferedReader(new FileReader(nodePropsFile));
+            //header line
+            header = reader.readLine().split("\t");
+            nodeName = header[0];
+            String propertyName = header[1];
+            String propertyType = header[2];
+            String indexed = header[3];
+            indexName = header[4];
+
+            System.out.println("reading node properties file...");
+            
+            while ((line = reader.readLine()) != null) {
+
+                String[] columns = line.split("\t");
+                
+                PutAttributesRequest putAttributesRequest = new PutAttributesRequest();
+                putAttributesRequest.setDomainName(BIO4J_DOMAIN);
+                putAttributesRequest.setItemName(columns[1]);
+                
+                List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
+
+                ReplaceableAttribute nodeNameAtt = new ReplaceableAttribute();
+                nodeNameAtt.setName(nodeName);
+                nodeNameAtt.setValue(columns[0]);
+                attributes.add(nodeNameAtt);
+                
+                ReplaceableAttribute propertyNameAtt = new ReplaceableAttribute();
+                propertyNameAtt.setName(propertyName);
+                propertyNameAtt.setValue(columns[1]);
+                attributes.add(propertyNameAtt);
+                
+                ReplaceableAttribute propertyTypeAtt = new ReplaceableAttribute();
+                propertyTypeAtt.setName(propertyType);
+                propertyTypeAtt.setValue(columns[2]);
+                attributes.add(propertyTypeAtt);
+                
+                ReplaceableAttribute indexedAtt = new ReplaceableAttribute();
+                indexedAtt.setName(indexed);
+                indexedAtt.setValue(columns[3]);
+                attributes.add(indexedAtt);
+                
+                ReplaceableAttribute indexNameAtt = new ReplaceableAttribute();
+                indexNameAtt.setName(indexName);
+                indexNameAtt.setValue(columns[3]);
+                attributes.add(indexNameAtt);
+
+                ReplaceableAttribute itemTypeAtt = new ReplaceableAttribute();
+                itemTypeAtt.setName(ITEM_TYPE_ATTRIBUTE);
+                itemTypeAtt.setValue(ITEM_TYPE_NODE_PROPERTY);
+                attributes.add(itemTypeAtt);
+                
+                putAttributesRequest.setAttributes(attributes);
+
+                simpleDBClient.putAttributes(putAttributesRequest);
+            }
+
+            reader.close();
+            
+            //-----------reading relationship properties.... ----------------
+            File relPropsFile = new File(RELATIONSHIP_PROPERTIES_FILENAME);
+            reader = new BufferedReader(new FileReader(relPropsFile));
+            //header line
+            header = reader.readLine().split("\t");
+            String relationshipName = header[0];
+            propertyName = header[1];
+            propertyType = header[2];
+
+            System.out.println("reading relationship properties file...");
+            
+            while ((line = reader.readLine()) != null) {
+
+                String[] columns = line.split("\t");
+                
+                PutAttributesRequest putAttributesRequest = new PutAttributesRequest();
+                putAttributesRequest.setDomainName(BIO4J_DOMAIN);
+                putAttributesRequest.setItemName(columns[1]);
+                
+                List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
+
+                ReplaceableAttribute relNameAtt = new ReplaceableAttribute();
+                relNameAtt.setName(relationshipName);
+                relNameAtt.setValue(columns[0]);
+                attributes.add(relNameAtt);
+                
+                ReplaceableAttribute propertyNameAtt = new ReplaceableAttribute();
+                propertyNameAtt.setName(propertyName);
+                propertyNameAtt.setValue(columns[1]);
+                attributes.add(propertyNameAtt);
+                
+                ReplaceableAttribute propertyTypeAtt = new ReplaceableAttribute();
+                propertyTypeAtt.setName(propertyType);
+                propertyTypeAtt.setValue(columns[2]);
+                attributes.add(propertyTypeAtt);
+
+                ReplaceableAttribute itemTypeAtt = new ReplaceableAttribute();
+                itemTypeAtt.setName(ITEM_TYPE_ATTRIBUTE);
+                itemTypeAtt.setValue(ITEM_TYPE_RELATIONSHIP_PROPERTY);
+                attributes.add(itemTypeAtt);
+                
+                putAttributesRequest.setAttributes(attributes);
+
+                simpleDBClient.putAttributes(putAttributesRequest);
+            }
+
             reader.close();
             
             
