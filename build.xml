@@ -71,76 +71,10 @@
     nbproject/build-impl.xml file. 
 
     -->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/GetNodeAndRelsStatistics.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.GetNodeAndRelsStatistics"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/CreateSimpleDBModel.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/BioinfoAWS-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.simpledb.CreateSimpleDBModel"/>
-            </manifest>
-        </jar>
-    </target>-->
     <target name="-post-jar">
-        <jar jarfile="jars/DeleteSimpleDBModel.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/BioinfoAWS-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.simpledb.DeleteSimpleDBModel"/>
-            </manifest>
-        </jar>
-    </target>
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/ExportGoSetsToGexf.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <zipfileset src="lib/Era7BioinfoXML-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />                        
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.ExportGoSetsToGephi"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/GetGexfForTaxonUnirefClusters.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <zipfileset src="lib/Era7BioinfoXML-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />                        
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.gephi.GetGexfForTaxonUnirefClusters"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/GetGexfForGenomeElementUnirefClusters.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />
-            <zipfileset src="lib/Era7BioinfoXML-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />                        
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.gephi.GetGexfForGenomeElementUnirefClusters"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
         <jar jarfile="jars/ExecuteBio4jTool.jar">
             <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
+            <zipfileset src="lib/Bio4j-0.8-jar-with-dependencies.jar"
                         excludes="META-INF/*" />
             <zipfileset src="lib/Era7BioinfoXML-1.0-jar-with-dependencies.jar"
                         excludes="META-INF/*" />    
@@ -152,45 +86,5 @@
                 <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.ExecuteBio4jTool"/>
             </manifest>
         </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/FindArticlesAndJournalsFromSwissProtCitations.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />   
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.FindArticlesAndJournalsFromSwissProtCitations"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/FindBiggestUniref100Clusters.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />   
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.uniref.FindBiggestUniref100Clusters"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/LowestCommonAncestorTest.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />   
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.taxonomy.LowestCommonAncestorTest"/>
-            </manifest>
-        </jar>
-    </target>-->
-<!--    <target name="-post-jar">
-        <jar jarfile="jars/FindLCAofUnirefCluster.jar">
-            <zipfileset src="${dist.jar}" excludes="META-INF/*" />
-            <zipfileset src="lib/Bio4jModel-1.0-jar-with-dependencies.jar"
-                        excludes="META-INF/*" />   
-            <manifest>
-                <attribute name="Main-Class" value="com.era7.bioinfo.bio4j.tools.uniref.FindLCAofUnirefCluster"/>
-            </manifest>
-        </jar>
-    </target>   -->
+    </target>
 </project>
