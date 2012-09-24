@@ -16,9 +16,9 @@
  */
 package com.era7.bioinfo.bio4j.tools.uniref;
 
-import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
-import com.era7.bioinfo.bio4jmodel.relationships.uniref.UniRef100MemberRel;
-import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.model.nodes.ProteinNode;
+import com.era7.bioinfo.bio4j.model.relationships.uniref.UniRef100MemberRel;
+import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
 import java.io.File;

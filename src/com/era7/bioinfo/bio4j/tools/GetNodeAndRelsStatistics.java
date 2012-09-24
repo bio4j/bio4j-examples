@@ -16,11 +16,13 @@
  */
 package com.era7.bioinfo.bio4j.tools;
 
-import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
 import com.era7.bioinfo.bioinfoneo4j.BasicEntity;
+import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,13 +31,23 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.helpers.collection.MapUtil;
+import org.neo4j.tooling.GlobalGraphOperations;
 import org.openide.util.Exceptions;
 
 /**
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class GetNodeAndRelsStatistics {
+public class GetNodeAndRelsStatistics implements Executable{
+    
+    @Override
+    public void execute(ArrayList<String> array) {
+        String[] args = new String[array.size()];
+        for (int i = 0; i < array.size(); i++) {
+            args[i] = array.get(i);
+        }
+        main(args);
+    }
 
     public static void main(String[] args) {
         if (args.length != 2) {
@@ -61,9 +73,11 @@ public class GetNodeAndRelsStatistics {
                 int rCounter = 0;
 
                 long startTime = new Date().getTime();
+                
+                GlobalGraphOperations globalGraphOperations = GlobalGraphOperations.at(graphService);
 
 
-                for (Node node : graphService.getAllNodes()) {
+                for (Node node : globalGraphOperations.getAllNodes()) {
 
                     String nodeType = "unknown";
 

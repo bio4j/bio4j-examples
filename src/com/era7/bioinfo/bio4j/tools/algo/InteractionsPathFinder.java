@@ -16,8 +16,8 @@
  */
 package com.era7.bioinfo.bio4j.tools.algo;
 
-import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
-import com.era7.bioinfo.bio4jmodel.relationships.protein.ProteinProteinInteractionRel;
+import com.era7.bioinfo.bio4j.model.nodes.ProteinNode;
+import com.era7.bioinfo.bio4j.model.relationships.protein.ProteinProteinInteractionRel;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

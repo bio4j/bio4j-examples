@@ -16,13 +16,12 @@
  */
 package com.era7.bioinfo.bio4j.tools.uniref;
 
+import com.era7.bioinfo.bio4j.model.nodes.ProteinNode;
+import com.era7.bioinfo.bio4j.model.nodes.ncbi.NCBITaxonNode;
+import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.model.util.NodeRetriever;
 import com.era7.bioinfo.bio4j.tools.algo.TaxonomyAlgo;
-import com.era7.bioinfo.bio4jmodel.nodes.ProteinNode;
-import com.era7.bioinfo.bio4jmodel.nodes.ncbi.NCBITaxonNode;
-import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
-import com.era7.bioinfo.bio4jmodel.util.NodeRetriever;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
