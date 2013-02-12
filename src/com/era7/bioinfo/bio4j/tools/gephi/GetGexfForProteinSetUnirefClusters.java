@@ -16,11 +16,11 @@
  */
 package com.era7.bioinfo.bio4j.tools.gephi;
 
-import com.era7.bioinfo.bio4j.model.nodes.OrganismNode;
-import com.era7.bioinfo.bio4j.model.nodes.ProteinNode;
-import com.era7.bioinfo.bio4j.model.nodes.refseq.GenomeElementNode;
-import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
-import com.era7.bioinfo.bio4j.model.util.NodeRetriever;
+import com.era7.bioinfo.bio4j.neo4j.model.nodes.OrganismNode;
+import com.era7.bioinfo.bio4j.neo4j.model.nodes.ProteinNode;
+import com.era7.bioinfo.bio4j.neo4j.model.nodes.refseq.GenomeElementNode;
+import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.neo4j.model.util.NodeRetriever;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import com.era7.lib.bioinfoxml.gexf.*;
 import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;

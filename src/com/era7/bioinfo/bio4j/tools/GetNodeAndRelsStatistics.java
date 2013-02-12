@@ -16,7 +16,7 @@
  */
 package com.era7.bioinfo.bio4j.tools;
 
-import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
 import com.era7.bioinfo.bioinfoneo4j.BasicEntity;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
@@ -30,9 +30,7 @@ import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.helpers.collection.MapUtil;
 import org.neo4j.tooling.GlobalGraphOperations;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -62,7 +60,7 @@ public class GetNodeAndRelsStatistics implements Executable{
 
                 BufferedWriter logBuff = new BufferedWriter(new FileWriter(new File("GetNodeAndRelsStatistics.log")));
 
-                manager = new Bio4jManager(args[0], MapUtil.load(new File(args[1])), true);
+                manager = new Bio4jManager(args[0]);
 
                 GraphDatabaseService graphService = manager.getGraphService();
 
@@ -180,7 +178,7 @@ public class GetNodeAndRelsStatistics implements Executable{
 
 
             } catch (Exception e) {
-                Exceptions.printStackTrace(e);
+                e.printStackTrace();
             } finally {
 
                 manager.shutDown();
