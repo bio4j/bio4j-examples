@@ -16,7 +16,7 @@
  */
 package com.era7.bioinfo.bio4j.tools.algo;
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.ncbi.NCBITaxonNode;
+import com.era7.bioinfo.bio4j.model.nodes.ncbi.NCBITaxonNode;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -37,7 +37,7 @@
 			<argument>NC_008821_1_uniref50.gexf</argument>
 		</arguments>
 	</execution>
-	
+	-->
 	<execution>
 		<class_full_name>com.era7.bioinfo.bio4j.tools.algo.FindInteractionPaths</class_full_name>
 		<arguments>
@@ -47,16 +47,6 @@
 			<argument>bio4jdb</argument>
 			<argument>50</argument>
 			<argument>interactionPaths.txt</argument>
-		</arguments>
-	</execution>
-	-->
-	<execution>
-		<class_full_name>com.era7.bioinfo.bio4j.tools.gephi.GetGexfForProteinSetUnirefClusters</class_full_name>
-		<arguments>
-			<argument>bio4jdb</argument>
-			<argument>LSPS_evalue_0.txt</argument>
-			<argument>90</argument>
-			<argument>outputTest.gexf</argument>
 		</arguments>
 	</execution>
 </scheduled_executions>
