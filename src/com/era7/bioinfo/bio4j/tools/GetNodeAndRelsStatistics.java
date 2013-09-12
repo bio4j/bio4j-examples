@@ -16,7 +16,7 @@
  */
 package com.era7.bioinfo.bio4j.tools;
 
-import com.era7.bioinfo.bio4j.model.util.Bio4jManager;
+import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
 import com.era7.bioinfo.bioinfoneo4j.BasicEntity;
 import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
