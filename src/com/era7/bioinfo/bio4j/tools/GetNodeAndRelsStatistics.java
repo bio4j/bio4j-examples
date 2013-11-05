@@ -314,17 +314,21 @@ public class GetNodeAndRelsStatistics implements Executable {
     }
 
     private static int countNodes(String nodeType, Bio4jManager manager, HashMap<String, Integer> relsMap) {
-        int counter = 0;
+        int counter;
         System.out.println("Looking for " + nodeType + " ...");
         IndexHits<Node> hits = manager.getNodeTypeIndex().get(Bio4jManager.NODE_TYPE_INDEX_NAME, nodeType);
         counter = hits.size();
         Iterator<Node> iterator = hits.iterator();
         int tempCounter = 0;
+        System.out.println("counter = " + counter);
         while (iterator.hasNext()) {
+            System.out.println("inside iterator 1...");
             Node node = iterator.next();
             Iterator<Relationship> relIt = node.getRelationships(Direction.INCOMING).iterator();
             while(relIt.hasNext()){
+                System.out.println("inside iterator 2...");
                 String relName = relIt.next().getType().name();
+                System.out.println("relName = " + relName);
                 Integer relCounter = relsMap.get(relName);
                 if(relCounter == null){
                     relsMap.put(relName, 1);
@@ -332,8 +336,9 @@ public class GetNodeAndRelsStatistics implements Executable {
                     relsMap.put(relName, relCounter+1);
                 }
                 tempCounter++;
-                if((tempCounter % 10000) == 0){
+                if((tempCounter % 10) == 0){
                     System.out.println(tempCounter + " rels counted...");
+                    System.out.println("Last rel found: " + relName);
                 }
             }
         }
