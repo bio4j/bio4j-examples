@@ -1,0 +1,1 @@
+This program expects an arbitrary number of NCBI taxon nodes IDs as parameters, (at least two nodes are expected).
