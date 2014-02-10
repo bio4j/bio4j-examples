@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.era7.bioinfo.bio4j.tools.gephi;
+package com.ohnosequences.bio4j.tools.gephi;
 
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.io.exporter.api.ExportController;
@@ -22,6 +22,8 @@ import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
+
+import com.ohnosequences.util.Executable;
 
 /**
  *

@@ -14,29 +14,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.gephi;
+package com.ohnosequences.bio4j.tools.gephi;
 
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.GoTermNode;
-import com.era7.bioinfo.bio4j.neo4j.model.relationships.go.IsAGoRel;
-import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.bioinfoxml.gexf.*;
-import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
-import com.era7.lib.bioinfoxml.go.GOSlimXML;
-import com.era7.lib.bioinfoxml.go.GoAnnotationXML;
-import com.era7.lib.bioinfoxml.go.GoTermXML;
-import com.era7.lib.era7xmlapi.model.XMLElement;
-import com.era7.lib.era7xmlapi.model.XMLElementException;
 import java.io.*;
 import java.util.*;
-import org.jdom.Element;
+
+import org.jdom2.Element;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.RelationshipIndex;
-import org.openide.util.Exceptions;
+
+import com.ohnosequences.bio4j.neo4j.model.nodes.GoTermNode;
+import com.ohnosequences.bio4j.neo4j.model.relationships.go.IsAGoRel;
+import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
+import com.ohnosequences.util.Executable;
+import com.ohnosequences.xml.api.model.XMLElement;
+import com.ohnosequences.xml.api.model.XMLElementException;
+import com.ohnosequences.xml.model.gexf.AttValueXML;
+import com.ohnosequences.xml.model.gexf.AttValuesXML;
+import com.ohnosequences.xml.model.gexf.AttributeXML;
+import com.ohnosequences.xml.model.gexf.AttributesXML;
+import com.ohnosequences.xml.model.gexf.EdgeXML;
+import com.ohnosequences.xml.model.gexf.GexfXML;
+import com.ohnosequences.xml.model.gexf.GraphXML;
+import com.ohnosequences.xml.model.gexf.NodeXML;
+import com.ohnosequences.xml.model.gexf.viz.VizColorXML;
+import com.ohnosequences.xml.model.go.GOSlimXML;
+import com.ohnosequences.xml.model.go.GoAnnotationXML;
+import com.ohnosequences.xml.model.go.GoTermXML;
 
 /**
  *
@@ -101,7 +109,7 @@ public class ExportGoSlimToGexf implements Executable{
 
 
         } catch (Exception e) {
-            Exceptions.printStackTrace(e);
+            e.printStackTrace();
         }
     }
 
@@ -278,7 +286,7 @@ public class ExportGoSlimToGexf implements Executable{
 
 
         } catch (Exception e) {
-            Exceptions.printStackTrace(e);
+            e.printStackTrace();
         }
 
     }
