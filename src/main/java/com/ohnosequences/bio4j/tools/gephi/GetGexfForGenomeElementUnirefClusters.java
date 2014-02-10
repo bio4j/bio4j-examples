@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.gephi;
+package com.ohnosequences.bio4j.tools.gephi;
 
 import com.era7.bioinfo.bio4j.neo4j.model.nodes.OrganismNode;
 import com.era7.bioinfo.bio4j.neo4j.model.nodes.ProteinNode;

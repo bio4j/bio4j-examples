@@ -14,17 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.gephi;
+package com.ohnosequences.bio4j.tools.gephi;
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.GoTermNode;
-import com.era7.bioinfo.bio4j.neo4j.model.relationships.go.IsAGoRel;
-import com.era7.bioinfo.bio4j.neo4j.model.relationships.go.MainGoRel;
-import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.bioinfoxml.gexf.*;
-import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
-import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
-import com.era7.lib.era7xmlapi.model.XMLElementException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -33,9 +24,27 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdom.Element;
+
+import org.jdom2.Element;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
+
+import com.ohnosequences.bio4j.neo4j.model.nodes.GoTermNode;
+import com.ohnosequences.bio4j.neo4j.model.relationships.go.IsAGoRel;
+import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
+import com.ohnosequences.bio4j.neo4j.model.util.NodeRetriever;
+import com.ohnosequences.util.Executable;
+import com.ohnosequences.xml.api.model.XMLElementException;
+import com.ohnosequences.xml.model.gexf.AttValueXML;
+import com.ohnosequences.xml.model.gexf.AttValuesXML;
+import com.ohnosequences.xml.model.gexf.AttributeXML;
+import com.ohnosequences.xml.model.gexf.AttributesXML;
+import com.ohnosequences.xml.model.gexf.EdgeXML;
+import com.ohnosequences.xml.model.gexf.GexfXML;
+import com.ohnosequences.xml.model.gexf.GraphXML;
+import com.ohnosequences.xml.model.gexf.NodeXML;
+import com.ohnosequences.xml.model.gexf.viz.VizColorXML;
+import com.ohnosequences.xml.model.gexf.viz.VizSizeXML;
 
 /**
  *
@@ -128,13 +137,20 @@ public class GenerateGexfWholeGo implements Executable{
                 try {
                     System.out.println("creating neo4j manager...");
                     manager = new Bio4jManager(args[0]);
+                    NodeRetriever nodeRetriever = new NodeRetriever(manager);
 
-                    Iterator<Relationship> iterator = manager.getReferenceNode().getRelationships(new MainGoRel(null), Direction.OUTGOING).iterator();
-                    while (iterator.hasNext()) {
-                        GoTermNode mainGoTermNode = new GoTermNode(iterator.next().getEndNode());
-                        System.out.println("getting ontology for " + mainGoTermNode.getName());
-                        getGoDescendants(mainGoTermNode, nodesXMLStBuilder, edgesXMLStBuilder, 1, 0);  
-                    }
+                    GoTermNode molecularFunctionNode = nodeRetriever.getMolecularFunctionGoTerm();
+                    System.out.println("getting ontology for " + molecularFunctionNode.getName());
+                    getGoDescendants(molecularFunctionNode, nodesXMLStBuilder, edgesXMLStBuilder, 1, 0);  
+                    
+                    GoTermNode biologicalProcessNode = nodeRetriever.getBiologicalProcessGoTerm();
+                    System.out.println("getting ontology for " + biologicalProcessNode.getName());
+                    getGoDescendants(biologicalProcessNode, nodesXMLStBuilder, edgesXMLStBuilder, 1, 0);  
+                    
+                    GoTermNode cellularComponentNode = nodeRetriever.getCellularComponentGoTerm();
+                    System.out.println("getting ontology for " + cellularComponentNode.getName());
+                    getGoDescendants(cellularComponentNode, nodesXMLStBuilder, edgesXMLStBuilder, 1, 0);  
+                    
 
                 } catch (Exception e) {
                     Logger.getLogger(GenerateGexfWholeGo.class.getName()).log(Level.SEVERE, null, e);
