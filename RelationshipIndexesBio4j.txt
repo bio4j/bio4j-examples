@@ -1,3 +1,0 @@
-RELATIONSHIP_NAME	INDEX_NAME
-IsAGo	is_a_rel_index
-SubcellularLocationParent	subcellular_location_parent_rel_index
