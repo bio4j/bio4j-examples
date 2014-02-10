@@ -16,23 +16,32 @@
  */
 package com.ohnosequences.bio4j.tools.gephi;
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.OrganismNode;
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.ProteinNode;
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.refseq.GenomeElementNode;
-import com.era7.bioinfo.bio4j.neo4j.model.relationships.protein.ProteinGenomeElementRel;
-import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.bioinfo.bio4j.neo4j.model.util.NodeRetriever;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.bioinfoxml.gexf.*;
-import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
-import com.era7.lib.bioinfoxml.gexf.viz.VizSizeXML;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.*;
-import org.jdom.Element;
+
+import org.jdom2.Element;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
+
+import com.ohnosequences.bio4j.neo4j.model.nodes.OrganismNode;
+import com.ohnosequences.bio4j.neo4j.model.nodes.ProteinNode;
+import com.ohnosequences.bio4j.neo4j.model.nodes.refseq.GenomeElementNode;
+import com.ohnosequences.bio4j.neo4j.model.relationships.protein.ProteinGenomeElementRel;
+import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
+import com.ohnosequences.bio4j.neo4j.model.util.NodeRetriever;
+import com.ohnosequences.util.Executable;
+import com.ohnosequences.xml.model.gexf.AttValueXML;
+import com.ohnosequences.xml.model.gexf.AttValuesXML;
+import com.ohnosequences.xml.model.gexf.AttributeXML;
+import com.ohnosequences.xml.model.gexf.AttributesXML;
+import com.ohnosequences.xml.model.gexf.EdgeXML;
+import com.ohnosequences.xml.model.gexf.GexfXML;
+import com.ohnosequences.xml.model.gexf.GraphXML;
+import com.ohnosequences.xml.model.gexf.NodeXML;
+import com.ohnosequences.xml.model.gexf.viz.VizColorXML;
+import com.ohnosequences.xml.model.gexf.viz.VizSizeXML;
 
 /**
  *

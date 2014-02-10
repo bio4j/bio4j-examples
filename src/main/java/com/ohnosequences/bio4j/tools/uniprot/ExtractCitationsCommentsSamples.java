@@ -14,14 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.uniprot;
+package com.ohnosequences.bio4j.tools.uniprot;
 
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
-import com.era7.lib.era7xmlapi.model.XMLElement;
+import com.ohnosequences.util.Executable;
+import com.ohnosequences.xml.api.model.XMLElement;
+
 import java.io.*;
 import java.util.*;
-import org.jdom.Element;
-import org.openide.util.Exceptions;
+
+import org.jdom2.Element;
 
 /**
  * 
@@ -119,12 +120,12 @@ public class ExtractCitationsCommentsSamples implements Executable{
                 System.out.println("Comments file created successfully!");
                 
             } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
+                e.xprintStackTrace();
             } finally {
                 try {
                     citationsOutBuff.close();
                 } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    ex.printStackTrace();
                 }
             }
 

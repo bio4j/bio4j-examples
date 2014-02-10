@@ -13,7 +13,8 @@ organization := "ohnosequences"
 bucketSuffix := "era7.com"
 
 libraryDependencies ++= Seq(
-  "ohnosequences" % "bio4j-neo4jdb" % "0.2.0-SNAPSHOT"
+  "ohnosequences" % "bio4j-neo4jdb" % "0.2.0-SNAPSHOT",
+  "org.gephi" % "gephi-toolkit" % "0.9-SNAPSHOT"
 )
 
 

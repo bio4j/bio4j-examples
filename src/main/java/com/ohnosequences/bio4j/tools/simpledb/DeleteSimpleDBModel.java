@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.era7.bioinfo.bio4j.tools.simpledb;
+package com.ohnosequences.bio4j.tools.simpledb;
 
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.DeleteDomainRequest;
-import com.era7.bioinfo.bioinfoaws.util.CredentialsRetriever;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
+import com.ohnosequences.util.Executable;
+
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,7 +32,7 @@ public class DeleteSimpleDBModel implements Executable{
     public static void main(String[] args) {
         try {
             
-            AmazonSimpleDBClient simpleDBClient = new AmazonSimpleDBClient(CredentialsRetriever.getBasicAWSCredentialsFromOurAMI());
+            AmazonSimpleDBClient simpleDBClient = new AmazonSimpleDBClient();
 
             System.out.println("Deleting domain (if existed)...");
             simpleDBClient.deleteDomain(new DeleteDomainRequest(BIO4J_DOMAIN));

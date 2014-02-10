@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.uniprot;
+package com.ohnosequences.bio4j.tools.uniprot;
 
-import com.era7.bioinfo.bio4j.CommonData;
 import java.io.*;
+
+import com.ohnosequences.bio4j.CommonData;
 
 /**
  *
@@ -76,6 +77,8 @@ public class SplitUniprotXmlFile {
                         }
                     }
                 }
+                
+                reader.close();
 
                 outBuff.close();
 

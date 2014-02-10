@@ -14,23 +14,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.uniprot;
+package com.ohnosequences.bio4j.tools.uniprot;
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.DatasetNode;
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.ProteinNode;
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.citation.ArticleNode;
-import com.era7.bioinfo.bio4j.neo4j.model.relationships.protein.ProteinDatasetRel;
-import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.bioinfo.bio4j.neo4j.model.util.NodeRetriever;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Relationship;
-import org.openide.util.Exceptions;
+
+import com.ohnosequences.bio4j.neo4j.model.nodes.DatasetNode;
+import com.ohnosequences.bio4j.neo4j.model.nodes.ProteinNode;
+import com.ohnosequences.bio4j.neo4j.model.nodes.citation.ArticleNode;
+import com.ohnosequences.bio4j.neo4j.model.relationships.protein.ProteinDatasetRel;
+import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
+import com.ohnosequences.bio4j.neo4j.model.util.NodeRetriever;
+import com.ohnosequences.util.Executable;
 
 /**
  *
@@ -124,12 +125,12 @@ public class FindArticlesAndJournalsFromSwissProtCitations implements Executable
                 System.out.println("Done! ;)");
 
             } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+                ex.printStackTrace();
             } finally {
                 try {
                     outBuff.close();
                 } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    ex.printStackTrace();
                 }
             }
         }
