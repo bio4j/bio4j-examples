@@ -4,7 +4,7 @@ Nice.javaProject
 
 Nice.fatArtifactSettings
 
-name := "bio4j-neo4jdb"
+name := "examples"
 
 description := "examples project"
 
