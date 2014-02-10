@@ -14,9 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools;
+package com.ohnosequences.bio4j.tools;
 
-import com.era7.lib.era7xmlapi.model.XMLElement;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jdom.Element;
+
+import org.jdom2.Element;
+
+import com.ohnosequences.xml.api.model.XMLElement;
 
 /**
  * 

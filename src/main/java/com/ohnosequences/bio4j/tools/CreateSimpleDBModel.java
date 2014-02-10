@@ -2,13 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.era7.bioinfo.bio4j.tools;
+package com.ohnosequences.bio4j.tools;
 
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.PutAttributesRequest;
 import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
-import com.era7.bioinfo.bioinfoaws.util.CredentialsRetriever;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -43,7 +42,7 @@ public class CreateSimpleDBModel {
 
         try {
 
-            AmazonSimpleDBClient simpleDBClient = new AmazonSimpleDBClient(CredentialsRetriever.getBasicAWSCredentialsFromOurAMI());
+            AmazonSimpleDBClient simpleDBClient = new AmazonSimpleDBClient();
 
             System.out.println("Creating domain...");
 

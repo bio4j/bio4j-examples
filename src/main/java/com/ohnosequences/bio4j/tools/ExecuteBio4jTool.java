@@ -16,7 +16,8 @@
  */
 package com.ohnosequences.bio4j.tools;
 
-import com.era7.lib.bioinfo.bioinfoutil.ExecuteFromFile;
+import com.ohnosequences.util.ExecuteFromFile;
+
 
 /**
  *

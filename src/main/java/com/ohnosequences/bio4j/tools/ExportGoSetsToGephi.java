@@ -2,26 +2,8 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.era7.bioinfo.bio4j.tools;
+package com.ohnosequences.bio4j.tools;
 
-import com.era7.bioinfo.bio4j.CommonData;
-import com.era7.bioinfo.bio4jmodel.nodes.GoTermNode;
-import com.era7.bioinfo.bio4jmodel.relationships.go.IsAGoRel;
-import com.era7.bioinfo.bio4jmodel.util.Bio4jManager;
-import com.era7.lib.bioinfoxml.gexf.AttValueXML;
-import com.era7.lib.bioinfoxml.gexf.AttValuesXML;
-import com.era7.lib.bioinfoxml.gexf.AttributeXML;
-import com.era7.lib.bioinfoxml.gexf.AttributesXML;
-import com.era7.lib.bioinfoxml.gexf.EdgeXML;
-import com.era7.lib.bioinfoxml.gexf.GexfXML;
-import com.era7.lib.bioinfoxml.gexf.GraphXML;
-import com.era7.lib.bioinfoxml.gexf.NodeXML;
-import com.era7.lib.bioinfoxml.gexf.viz.VizColorXML;
-import com.era7.lib.bioinfoxml.go.GOSlimXML;
-import com.era7.lib.bioinfoxml.go.GoAnnotationXML;
-import com.era7.lib.bioinfoxml.go.GoTermXML;
-import com.era7.lib.era7xmlapi.model.XMLElement;
-import com.era7.lib.era7xmlapi.model.XMLElementException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -33,12 +15,32 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.jdom.Element;
+
+import org.jdom2.Element;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.graphdb.index.RelationshipIndex;
+
+import com.ohnosequences.bio4j.CommonData;
+import com.ohnosequences.bio4j.neo4j.model.nodes.GoTermNode;
+import com.ohnosequences.bio4j.neo4j.model.relationships.go.IsAGoRel;
+import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
+import com.ohnosequences.xml.api.model.XMLElement;
+import com.ohnosequences.xml.api.model.XMLElementException;
+import com.ohnosequences.xml.model.gexf.AttValueXML;
+import com.ohnosequences.xml.model.gexf.AttValuesXML;
+import com.ohnosequences.xml.model.gexf.AttributeXML;
+import com.ohnosequences.xml.model.gexf.AttributesXML;
+import com.ohnosequences.xml.model.gexf.EdgeXML;
+import com.ohnosequences.xml.model.gexf.GexfXML;
+import com.ohnosequences.xml.model.gexf.GraphXML;
+import com.ohnosequences.xml.model.gexf.NodeXML;
+import com.ohnosequences.xml.model.gexf.viz.VizColorXML;
+import com.ohnosequences.xml.model.go.GOSlimXML;
+import com.ohnosequences.xml.model.go.GoAnnotationXML;
+import com.ohnosequences.xml.model.go.GoTermXML;
 
 /**
  *
