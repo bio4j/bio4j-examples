@@ -12,9 +12,13 @@ organization := "ohnosequences"
 
 bucketSuffix := "era7.com"
 
+resolvers ++= Seq(
+  "Gephi" at "http://nexus.gephi.org/nexus/content/repositories/releases/"
+)
+
 libraryDependencies ++= Seq(
-  "ohnosequences" % "bio4j-neo4jdb" % "0.2.0-SNAPSHOT",
-  "org.gephi" % "gephi-toolkit" % "0.9-SNAPSHOT"
+  "ohnosequences" % "bio4j-neo4jdb" % "0.1.0-SNAPSHOT",
+  "org.gephi" % "gephi-toolkit" % "0.8.2" classifier("all") intransitive
 )
 
 
