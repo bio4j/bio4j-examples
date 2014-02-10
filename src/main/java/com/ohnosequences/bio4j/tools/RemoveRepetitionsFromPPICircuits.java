@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools;
+package com.ohnosequences.bio4j.tools;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -113,7 +112,7 @@ public class RemoveRepetitionsFromPPICircuits {
                 System.out.println("done! ;)");
                 
             } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+                ex.printStackTrace();
             }       
             
             

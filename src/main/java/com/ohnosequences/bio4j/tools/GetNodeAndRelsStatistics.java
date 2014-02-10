@@ -59,7 +59,8 @@ import com.ohnosequences.bio4j.neo4j.model.nodes.refseq.rna.RRNANode;
 import com.ohnosequences.bio4j.neo4j.model.nodes.refseq.rna.TRNANode;
 import com.ohnosequences.bio4j.neo4j.model.nodes.refseq.rna.TmRNANode;
 import com.ohnosequences.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
+import com.ohnosequences.util.Executable;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -67,12 +68,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.index.IndexHits;
 import org.neo4j.helpers.collection.MapUtil;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -303,7 +304,7 @@ public class GetNodeAndRelsStatistics implements Executable {
 
 
             } catch (Exception e) {
-                Exceptions.printStackTrace(e);
+                e.printStackTrace();
             } finally {
 
                 manager.shutDown();
