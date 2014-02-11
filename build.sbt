@@ -4,16 +4,16 @@ Nice.javaProject
 
 Nice.fatArtifactSettings
 
+organization := "bio4j"
+
 name := "examples"
 
-description := "examples project"
-
-organization := "ohnosequences"
+description := "Bio4j examples project"
 
 bucketSuffix := "era7.com"
 
 resolvers ++= Seq(
-  "Gephi" at "http://nexus.gephi.org/nexus/content/repositories/releases/"
+  "Gephi releases" at "http://nexus.gephi.org/nexus/content/repositories/releases/"
 )
 
 libraryDependencies ++= Seq(
