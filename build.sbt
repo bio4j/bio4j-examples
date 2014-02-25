@@ -17,7 +17,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "bio4j" % "neo4jdb" % "0.1.0-SNAPSHOT",
+  "bio4j" % "neo4jdb" % "0.1.0",
   "org.gephi" % "gephi-toolkit" % "0.8.2" classifier("all") intransitive
 )
 
