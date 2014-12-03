@@ -2,23 +2,23 @@ import AssemblyKeys._
 
 Nice.javaProject
 
-Nice.fatArtifactSettings
-
-organization := "bio4j"
+fatArtifactSettings
 
 name := "examples"
-
+organization := "bio4j"
 description := "Bio4j examples project"
 
 bucketSuffix := "era7.com"
 
-resolvers ++= Seq(
-  "Gephi releases" at "http://nexus.gephi.org/nexus/content/repositories/releases/"
-)
+javaVersion := "1.8"
+
+// resolvers ++= Seq(
+//   "Gephi releases" at "http://nexus.gephi.org/nexus/content/repositories/releases/"
+// )
 
 libraryDependencies ++= Seq(
-  "bio4j" % "neo4jdb" % "0.1.0-SNAPSHOT",
-  "org.gephi" % "gephi-toolkit" % "0.8.2" classifier("all") intransitive
+  "bio4j" % "bio4j" % "0.12.0-SNAPSHOT"
+  // "org.gephi" % "gephi-toolkit" % "0.8.2" classifier("all") intransitive
 )
 
 

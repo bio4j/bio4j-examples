@@ -19,10 +19,3 @@ project/plugins/project/
 # st2
 *.sublime-project
 *.sublime-workspace
-
-# data folders
-data/in/
-data/out/
-
-credentials.sbt
-*credentials*
