@@ -18,6 +18,9 @@ package com.bio4j.examples.uniref;
 
 import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
 import com.bio4j.model.uniprot.vertices.Protein;
+import com.bio4j.model.uniref.vertices.UniRef100Cluster;
+import com.bio4j.model.uniref.vertices.UniRef50Cluster;
+import com.bio4j.model.uniref.vertices.UniRef90Cluster;
 import com.bio4j.titan.model.ncbiTaxonomy.TitanNCBITaxonomyGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
 import com.bio4j.titan.model.uniprot_ncbiTaxonomy.TitanUniProtNCBITaxonomyGraph;
@@ -38,6 +41,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -78,6 +83,7 @@ public class FindLCAOfUnirefCluster implements Executable{
 
 	        System.out.println("Creating the graph managers....");
 
+	        //====================================================================================
 	        TitanUniRefGraph titanUniRefGraph = new TitanUniRefGraph(defGraph);
 	        TitanUniProtGraph titanUniProtGraph = new TitanUniProtGraph(defGraph);
 	        TitanNCBITaxonomyGraph titanNCBITaxonomyGraph = new TitanNCBITaxonomyGraph(defGraph);
@@ -89,60 +95,58 @@ public class FindLCAOfUnirefCluster implements Executable{
 	        titanUniProtGraph.withUniProtUniRefGraph(titanUniProtUniRefGraph);
 	        titanUniProtGraph.withUniProtNCBITaxonomyGraph(titanUniprotNCBITaxonomyGraph);
 	        titanNCBITaxonomyGraph.withUniProtNCBITaxonomyGraph(titanUniprotNCBITaxonomyGraph);
+	        //====================================================================================
 
 	        System.out.println("Done!");
 
 
 	        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> representantOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(representantAccession);
-
-
             
             List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes = new LinkedList<>();
             
             if(representantOptional.isPresent()){
 
 	            Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> representant = representantOptional.get();
-	            
+	            Stream<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> membersStream = null;
 
-                if(clusterType.equals("100")){
-                    if(representantNode.isUniref100Representant()){
-                        
-                        Iterator<ProteinNode> iterator = representantNode.getUniref100ClusterThisProteinBelongsTo().iterator();
-                        while(iterator.hasNext()){
-                            nodes.add(nodeRetriever.getNCBITaxonByTaxId(iterator.next().getOrganism().getNcbiTaxonomyId()));
-                        }
+	            if(clusterType.equals("100")){
+
+	                Optional<UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef100ClusterOptional = representant.uniref100Representant_outV();
+
+	                if(uniRef100ClusterOptional.isPresent()){
+
+		                UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef100Cluster = uniRef100ClusterOptional.get();
+		                membersStream = uniRef100Cluster.uniRef100Member_inV();
                         
                     }else{
                         System.out.println("The protein " + representantAccession + " is not a Uniref 100 representant");
                     }
                 }else if(clusterType.equals("90")){
-                    if(representantNode.isUniref90Representant()){
-                        
-                        Iterator<ProteinNode> iterator = representantNode.getUniref90ClusterThisProteinBelongsTo().iterator();
-                        while(iterator.hasNext()){
-                            nodes.add(nodeRetriever.getNCBITaxonByTaxId(iterator.next().getOrganism().getNcbiTaxonomyId()));
-                        }
+
+		            Optional<UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef90ClusterOptional = representant.uniref90Representant_outV();
+
+                    if(uniRef90ClusterOptional.isPresent()){
+
+	                    UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef90Cluster = uniRef90ClusterOptional.get();
+	                    membersStream = uniRef90Cluster.uniRef90Member_inV();
                         
                     }else{
                         System.out.println("The protein " + representantAccession + " is not a Uniref 90 representant");
                     }
                 }else if(clusterType.equals("50")){
-                    if(representantNode.isUniref50Representant()){
-                        
-                        Iterator<ProteinNode> iterator = representantNode.getUniref50ClusterThisProteinBelongsTo().iterator();
-                        while(iterator.hasNext()){
-                            nodes.add(nodeRetriever.getNCBITaxonByTaxId(iterator.next().getOrganism().getNcbiTaxonomyId()));
-                        }
-                        
-                    }else{
-                        System.out.println("The protein " + representantAccession + " is not a Uniref 50 representant");
-                    }
+		            Optional<UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef50ClusterOptional = representant.uniref50Representant_outV();
+
+		            if(uniRef50ClusterOptional.isPresent()){
+
+			            UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef50Cluster = uniRef50ClusterOptional.get();
+			            membersStream = uniRef50Cluster.uniRef50Member_inV();
+
+		            }else{
+			            System.out.println("The protein " + representantAccession + " is not a Uniref 50 representant");
+		            }
                 }
-                
-                if(!nodes.isEmpty()){
-                    NCBITaxonNode lcaNode = TaxonomyAlgo.lowestCommonAncestor(nodes);
-                    System.out.println("The LCA node is: " + lcaNode.getScientificName() + " (tax_id = " + lcaNode.getTaxId() + " )");
-                }
+
+                List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = membersStream.collect(Collectors.toList());
             }
 
 	        System.out.println("Closing the database...");
