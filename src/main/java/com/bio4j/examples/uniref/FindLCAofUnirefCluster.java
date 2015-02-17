@@ -14,24 +14,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-package com.era7.bioinfo.bio4j.tools.uniref;
+package com.bio4j.examples.uniref;
 
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.ProteinNode;
-import com.era7.bioinfo.bio4j.neo4j.model.nodes.ncbi.NCBITaxonNode;
-import com.era7.bioinfo.bio4j.neo4j.model.util.Bio4jManager;
-import com.era7.bioinfo.bio4j.neo4j.model.util.NodeRetriever;
-import com.era7.bioinfo.bio4j.tools.algo.TaxonomyAlgo;
-import com.era7.lib.bioinfo.bioinfoutil.Executable;
+import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
+import com.bio4j.model.uniprot.vertices.Protein;
+import com.bio4j.titan.model.ncbiTaxonomy.TitanNCBITaxonomyGraph;
+import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
+import com.bio4j.titan.model.uniprot_ncbiTaxonomy.TitanUniProtNCBITaxonomyGraph;
+import com.bio4j.titan.model.uniprot_uniref.TitanUniProtUniRefGraph;
+import com.bio4j.titan.model.uniref.TitanUniRefGraph;
+import com.bio4j.titan.util.DefaultTitanGraph;
+import com.era7.bioinfo.bioinfoutil.Executable;
+import com.thinkaurelius.titan.core.TitanEdge;
+import com.thinkaurelius.titan.core.TitanFactory;
+import com.thinkaurelius.titan.core.TitanGraph;
+import com.thinkaurelius.titan.core.TitanVertex;
+import com.thinkaurelius.titan.core.schema.EdgeLabelMaker;
+import com.thinkaurelius.titan.core.schema.VertexLabelMaker;
+import org.apache.commons.configuration.BaseConfiguration;
+import org.apache.commons.configuration.Configuration;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class FindLCAofUnirefCluster implements Executable{
+public class FindLCAOfUnirefCluster implements Executable{
 
     @Override
     public void execute(ArrayList<String> array) {
@@ -51,19 +63,47 @@ public class FindLCAofUnirefCluster implements Executable{
                     + "3. Uniref representant uniprot accession");
         } else {
 
+	        String dbFolder = args[0];
+	        String clusterType = args[1];
+	        String representantAccession = args[2];
 
-            Bio4jManager manager = new Bio4jManager(args[0]);
-            String clusterType = args[1];
-            String representantAccession = args[2];
+	        //----------DB configuration------------------
+	        Configuration conf = new BaseConfiguration();
+	        conf.setProperty("storage.directory", dbFolder);
+	        conf.setProperty("storage.backend", "local");
+	        conf.setProperty("autotype", "none");
+	        //-------creating graph handlers---------------------
+	        TitanGraph titanGraph = TitanFactory.open(conf);
+	        DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
+
+	        System.out.println("Creating the graph managers....");
+
+	        TitanUniRefGraph titanUniRefGraph = new TitanUniRefGraph(defGraph);
+	        TitanUniProtGraph titanUniProtGraph = new TitanUniProtGraph(defGraph);
+	        TitanNCBITaxonomyGraph titanNCBITaxonomyGraph = new TitanNCBITaxonomyGraph(defGraph);
+
+	        TitanUniProtNCBITaxonomyGraph titanUniprotNCBITaxonomyGraph = new TitanUniProtNCBITaxonomyGraph(defGraph, titanUniProtGraph, titanNCBITaxonomyGraph);
+	        TitanUniProtUniRefGraph titanUniProtUniRefGraph = new TitanUniProtUniRefGraph(defGraph, titanUniProtGraph, titanUniRefGraph);
+
+	        titanUniRefGraph.withUniProtUniRefGraph(titanUniProtUniRefGraph);
+	        titanUniProtGraph.withUniProtUniRefGraph(titanUniProtUniRefGraph);
+	        titanUniProtGraph.withUniProtNCBITaxonomyGraph(titanUniprotNCBITaxonomyGraph);
+	        titanNCBITaxonomyGraph.withUniProtNCBITaxonomyGraph(titanUniprotNCBITaxonomyGraph);
+
+	        System.out.println("Done!");
 
 
-            NodeRetriever nodeRetriever = new NodeRetriever(manager);
+	        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> representantOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(representantAccession);
+
+
             
-            ProteinNode representantNode = nodeRetriever.getProteinNodeByAccession(representantAccession);
+            List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes = new LinkedList<>();
             
-            List<NCBITaxonNode> nodes = new LinkedList<NCBITaxonNode>();
-            
-            if(representantNode != null){
+            if(representantOptional.isPresent()){
+
+	            Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> representant = representantOptional.get();
+	            
+
                 if(clusterType.equals("100")){
                     if(representantNode.isUniref100Representant()){
                         
@@ -104,9 +144,9 @@ public class FindLCAofUnirefCluster implements Executable{
                     System.out.println("The LCA node is: " + lcaNode.getScientificName() + " (tax_id = " + lcaNode.getTaxId() + " )");
                 }
             }
-            
-            manager.shutDown();
-            
+
+	        System.out.println("Closing the database...");
+	        titanGraph.shutdown();
             System.out.println("Done ;)");
         }
 
