@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  *
  * @author Pablo Pareja Tobes <ppareja@era7.com>
  */
-public class FindLCAOfUnirefCluster implements Executable{
+public class FindLCAOfUniRefCluster implements Executable{
 
     @Override
     public void execute(ArrayList<String> array) {
