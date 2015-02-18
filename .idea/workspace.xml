@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b60dc62c-99b8-4e7b-b048-d9485e668c24" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/com/bio4j/examples/json/model/go/GOTerm.java" afterPath="$PROJECT_DIR$/src/main/java/com/bio4j/examples/json/model/go/GOTerm.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="b60dc62c-99b8-4e7b-b048-d9485e668c24" name="Default" comment="" />
     <ignored path="examples.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/project/project/target/" />
@@ -56,7 +53,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetGOAnnotation.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="1517" max-vertical-offset="2414">
-              <caret line="118" column="16" selection-start-line="118" selection-start-column="16" selection-end-line="121" selection-end-column="61" />
+              <caret line="118" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -64,11 +61,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GetCumulativeFrequenciesForGoSet.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GetCumulativeFrequenciesForGoSet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetCumulativeFrequenciesForGoSet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6670507" vertical-offset="1291" max-vertical-offset="2482">
-              <caret line="110" column="78" selection-start-line="110" selection-start-column="78" selection-end-line="110" selection-end-column="78" />
+            <state vertical-scroll-proportion="-20.551723" vertical-offset="730" max-vertical-offset="2482">
+              <caret line="78" column="16" selection-start-line="78" selection-start-column="16" selection-end-line="79" selection-end-column="65" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ExportGOJSONToCSV.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/ExportGOJSONToCSV.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.8294314" vertical-offset="140" max-vertical-offset="1173">
+              <caret line="52" column="75" selection-start-line="52" selection-start-column="75" selection-end-line="52" selection-end-column="75" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -129,6 +138,7 @@
         <option value="$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetGOAnnotation.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/bio4j/examples/json/model/go/GOTerm.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetCumulativeFrequenciesForGoSet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/ExportGOJSONToCSV.java" />
       </list>
     </option>
   </component>
@@ -1073,7 +1083,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetGOAnnotation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1517" max-vertical-offset="2414">
-          <caret line="118" column="16" selection-start-line="118" selection-start-column="16" selection-end-line="121" selection-end-column="61" />
+          <caret line="118" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="136" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1082,8 +1092,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/GetCumulativeFrequenciesForGoSet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6670507" vertical-offset="1291" max-vertical-offset="2482">
-          <caret line="110" column="78" selection-start-line="110" selection-start-column="78" selection-end-line="110" selection-end-column="78" />
+        <state vertical-scroll-proportion="-20.551723" vertical-offset="730" max-vertical-offset="2482">
+          <caret line="78" column="16" selection-start-line="78" selection-start-column="16" selection-end-line="79" selection-end-column="65" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/bio4j/examples/go/ExportGOJSONToCSV.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.8294314" vertical-offset="140" max-vertical-offset="1173">
+          <caret line="52" column="75" selection-start-line="52" selection-start-column="75" selection-end-line="52" selection-end-column="75" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
