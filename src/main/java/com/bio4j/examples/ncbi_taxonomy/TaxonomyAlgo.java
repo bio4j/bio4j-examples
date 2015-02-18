@@ -17,7 +17,7 @@ public class TaxonomyAlgo {
     
     
     public static NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor(List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes){
-             
+
         if(nodes.size() > 0){
 
 	        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> firstNode = nodes.get(0);

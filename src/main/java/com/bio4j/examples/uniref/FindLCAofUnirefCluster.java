@@ -1,5 +1,6 @@
 package com.bio4j.examples.uniref;
 
+import com.bio4j.examples.ncbi_taxonomy.TaxonomyAlgo;
 import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.model.uniref.vertices.UniRef100Cluster;
@@ -21,10 +22,7 @@ import com.thinkaurelius.titan.core.schema.VertexLabelMaker;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,6 +129,19 @@ public class FindLCAOfUniRefCluster implements Executable{
                 }
 
                 List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = membersStream.collect(Collectors.toList());
+	            Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
+
+	            for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein :proteinMembers ){
+		            Optional<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonOptional = protein.proteinNCBITaxon_outV();
+		            if(taxonOptional.isPresent()){
+			            taxons.add(taxonOptional.get());
+		            }
+	            }
+	            List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
+	            taxons.addAll(taxonList);
+	            NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
+
+	            System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
             }
 
 	        System.out.println("Closing the database...");
