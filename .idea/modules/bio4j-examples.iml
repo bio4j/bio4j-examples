@@ -91,5 +91,6 @@
     <orderEntry type="library" name="SBT: org.reflections:reflections:0.9.9-RC1:jar" level="project" />
     <orderEntry type="library" name="SBT: org.slf4j:slf4j-api:1.7.5:jar" level="project" />
     <orderEntry type="library" name="SBT: xml-apis:xml-apis:1.0.b2:jar" level="project" />
+    <orderEntry type="library" name="SBT: com.google.code.gson:gson:2.2.4:jar" level="project" />
   </component>
 </module>

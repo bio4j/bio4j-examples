@@ -17,7 +17,8 @@ javaVersion := "1.8"
 // )
 
 libraryDependencies ++= Seq(
-  "bio4j" % "bio4j-titan" % "0.4.0-SNAPSHOT"
+  "bio4j" % "bio4j-titan" % "0.4.0-SNAPSHOT",
+  "com.google.code.gson" % "gson" % "2.2.4"
   // "org.gephi" % "gephi-toolkit" % "0.8.2" classifier("all") intransitive
 )
 

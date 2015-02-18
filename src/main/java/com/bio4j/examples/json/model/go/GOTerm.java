@@ -10,6 +10,15 @@ public class GOTerm {
 	public String definition;
 	public String synonym;
 	public String comment;
+	public int termCount;
+
+	public int getTermCount() {
+		return termCount;
+	}
+
+	public void setTermCount(int termCount) {
+		this.termCount = termCount;
+	}
 
 	public GOTerm(String id, String name) {
 		this.id = id;
