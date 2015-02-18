@@ -1,4 +1,9 @@
 
+
+Class including utility methods around NCBI taxonomic units.
+
+
+
 ```java
 package com.bio4j.examples.ncbi_taxonomy;
 

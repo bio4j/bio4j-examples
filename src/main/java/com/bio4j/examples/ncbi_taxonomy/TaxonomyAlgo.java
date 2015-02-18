@@ -1,4 +1,8 @@
+/*
 
+Class including utility methods around NCBI taxonomic units.
+
+ */
 package com.bio4j.examples.ncbi_taxonomy;
 
 import java.util.LinkedList;
