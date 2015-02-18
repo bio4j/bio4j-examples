@@ -1,8 +1,11 @@
 This repository contains a set of example tools/utilities based on Bio4j.
 
 
-<del>
+
 ----------------------------------
+
+
+> 
 
 ### Algo package
 
@@ -65,4 +68,4 @@ This repository contains a set of example tools/utilities based on Bio4j.
 
 * [Get node and rels statistics](docs/Get-node-and-rels-statistics.md)   
   General statistics about the number of nodes/relationships and their types in a Bio4j DB.
-</del>
+
