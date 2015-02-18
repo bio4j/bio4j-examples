@@ -17,10 +17,7 @@ public class TaxonomyAlgo {
     
     
     public static NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor(List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes){
-     
-        
-        //NCBITaxonNode lowerCommonAncestor = null;
-        
+             
         if(nodes.size() > 0){
 
 	        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> firstNode = nodes.get(0);
@@ -32,15 +29,11 @@ public class TaxonomyAlgo {
                 lookForCommonAncestor(firstAncestors, currentNode);                
             }
             
-            
             if(!firstAncestors.isEmpty()){
                 return firstAncestors.get(0);
             }else{
 	            return null;
             }
-            
-            //------freeing space---------
-            firstAncestors.clear();
 
 
         }else{
@@ -75,16 +68,21 @@ public class TaxonomyAlgo {
         while(currentNode != null){
             
             for (int i = 0; i < commonAncestors.size(); i++) {
-                NCBITaxonNode nCBITaxonNode = commonAncestors.get(i);
-                if(nCBITaxonNode.getTaxId().equals(currentNode.getTaxId())){
+	            NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> taxonNode = commonAncestors.get(i);
+                if(taxonNode.id().equals(currentNode.id())){
                     for(int j=0; j<i; j++){
                         commonAncestors.pollFirst();
                     }
                     return;
                 }
             }
-            
-            currentNode = currentNode.getParent();
+
+	        if(currentNode.ncbiTaxonParent_inV().isPresent()){
+		        currentNode = currentNode.ncbiTaxonParent_inV().get();
+
+	        }else{
+		        currentNode = null;
+	        }
         }
         
     }
