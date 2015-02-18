@@ -1,3 +1,13 @@
+/*
+This program finds the Gene Ontology annotations for the proteins provided in the input TSV file.
+Annotations are exported in JSON format.
+The program expects the following parameters:
+
+1. Bio4j DB folder
+2. Input TSV file including UniProt accessions _(one accession per line)_
+3. Output JSON file including the GO annotation
+
+ */
 package com.bio4j.examples.go;
 
 import com.bio4j.examples.json.model.go.GOTerm;
@@ -41,7 +51,7 @@ public class GetGOAnnotation implements Executable{
 		if (args.length != 3) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
-					+ "2. Input TSV file including UniProt accessions\n"
+					+ "2. Input TSV file including UniProt accessions (one accession per line)\n"
 					+ "3. Output JSON file including the GO annotation");
 		} else {
 
