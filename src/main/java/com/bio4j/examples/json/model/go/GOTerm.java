@@ -11,6 +11,15 @@ public class GOTerm {
 	public String synonym;
 	public String comment;
 	public int termCount;
+	public int cumulativeCount;
+
+	public int getCumulativeCount() {
+		return cumulativeCount;
+	}
+
+	public void setCumulativeCount(int cumulativeCount) {
+		this.cumulativeCount = cumulativeCount;
+	}
 
 	public int getTermCount() {
 		return termCount;
