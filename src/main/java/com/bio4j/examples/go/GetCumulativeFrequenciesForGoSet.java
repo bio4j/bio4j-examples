@@ -1,5 +1,16 @@
-package com.bio4j.examples.go;
+/*
+This program calculates cumulative frequencies for the GoSet passed as a JSON input file.
+The output of the program is another JSON file with the cumulative values added to all terms.
 
+The program expects the following parameters:
+
+1. Bio4j DB folder
+2. Input JSON file including a GoSet
+3. Output JSON file including the GO annotation set with cumulative frequencies
+
+ */
+
+package com.bio4j.examples.go;
 
 import com.bio4j.examples.json.model.go.GOTerm;
 import com.bio4j.examples.json.model.go.GoSet;
@@ -42,7 +53,7 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
 					+ "2. Input JSON file including a GoSet\n"
-					+ "3. Output JSON file including the GO annotation with cumulative frequencies");
+					+ "3. Output JSON file including the GO annotation set with cumulative frequencies");
 		} else {
 
 			String dbFolder = args[0];
