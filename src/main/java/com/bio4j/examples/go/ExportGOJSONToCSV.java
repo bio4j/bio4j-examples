@@ -1,3 +1,11 @@
+/*
+This program simply exports a JSON file including a GoSet annotation to a CSV file.
+The program expects the following parameters:
+
+1. Input JSON GO anmnotation file
+2. Output CSV GO annotation file
+
+ */
 package com.bio4j.examples.go;
 
 import com.bio4j.examples.json.model.go.GOTerm;
