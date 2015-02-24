@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SBT: com.thinkaurelius.groovy-shaded-asm:groovy-shaded-asm:1.8.9:jar">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/com.thinkaurelius.groovy-shaded-asm/groovy-shaded-asm/jars/groovy-shaded-asm-1.8.9.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

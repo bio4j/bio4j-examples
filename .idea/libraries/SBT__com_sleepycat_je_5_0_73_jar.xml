@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SBT: com.sleepycat:je:5.0.73:jar">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/com.sleepycat/je/jars/je-5.0.73.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

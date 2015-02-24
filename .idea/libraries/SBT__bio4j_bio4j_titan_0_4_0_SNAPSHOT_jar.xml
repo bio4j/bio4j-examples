@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SBT: bio4j:bio4j-titan:0.4.0-SNAPSHOT:jar">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.ivy2/cache/bio4j/bio4j-titan/jars/bio4j-titan-0.4.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
