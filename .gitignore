@@ -1,4 +1,3 @@
-
 # sbt specific
 dist/*
 target/
@@ -10,7 +9,7 @@ project/plugins/project/
 
 # IntelliJ IDE specific
 .idea
-
+.idea/*
 # Scala-IDE specific
 .scala_dependencies
 .project
