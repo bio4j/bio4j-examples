@@ -1,6 +1,7 @@
 package com.bio4j.examples;
 
-import com.bio4j.angulillos.UntypedGraph;
+import com.bio4j.angulillos.*;
+import static com.bio4j.angulillos.conversions.*;
 import com.bio4j.model.go.vertices.GoTerm;
 import com.bio4j.model.uniprot.UniProtGraph;
 import com.bio4j.model.uniprot.vertices.Protein;
@@ -26,22 +27,26 @@ public abstract class BasicProteinManipulation<
 	}
 
 	// todo optionalStream to Stream
-//	public Optional<Stream<Optional<Stream<GoTerm<I, RV, RVT, RE, RET>>>>>
-//	goTermsFromTheClusterOf(Protein<I, RV, RVT, RE, RET> protein) {
-//
-//		return
-//				protein.uniref50Member_outV().map(
-//						UniRef50Cluster::uniRef50Member_inV
-//				).map(prts -> prts.map(
-//								Protein::goAnnotation_outV
-//						)
-//				);
-//	}
+	public Optional<Stream<Optional<Stream<GoTerm<I, RV, RVT, RE, RET>>>>>
+	goTermsFromTheClusterOf(Protein<I, RV, RVT, RE, RET> protein) {
 
-	// public Optional<Stream<GoTerm<I,RV,RVT,RE,RET>>> allTermsFromClusterOf(Protein<I,RV,RVT,RE,RET> protein) {
-	//   return (
-	//     goTermsFromTheClusterOf(protein).map(x -> any(x))
-	//   ).map( p -> flatten(p) );
-	// }
+		return
+				protein.uniref50Member_outV().map(
+						UniRef50Cluster::uniRef50Member_inV
+				).map(prts -> prts.map(
+								Protein::goAnnotation_outV
+						)
+				);
+	}
+
+	public Optional<Stream<GoTerm<I,RV,RVT,RE,RET>>> allTermsFromClusterOf(Protein<I,RV,RVT,RE,RET> protein) {
+	  
+	  return flatten(
+
+	  	goTermsFromTheClusterOf(protein).map( x -> any(x) ) // OOSS(GT)
+	  )
+	  .map( ss -> flatten(ss) );
+
+	}
 
 }
