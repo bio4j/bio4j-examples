@@ -21,4 +21,9 @@ public class GoSet {
 
 		this.goTerms = goTerms;
 	}
+
+
+	public void addGOTerm(GOTerm term){
+		goTerms.add(term);
+	}
 }
