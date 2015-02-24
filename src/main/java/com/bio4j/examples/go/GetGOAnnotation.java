@@ -111,6 +111,17 @@ public class GetGOAnnotation implements Executable{
 								if(goJson == null){
 									goJson = new GOTerm(goTerm.id(), goTerm.name());
 									goJson.setTermCount(0);
+									//----Finding parent IDs------------
+									goJson.setParentIds(new LinkedList<String>());
+									Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> parentsStreamOptional = goTerm.isA_outV();
+									if(parentsStreamOptional.isPresent()){
+										List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> parentTerms = parentsStreamOptional.get().collect((Collectors.toList()));
+										List<String> parentIds = goJson.getParentIds();
+										for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> tempTerm : parentTerms){
+											parentIds.add(tempTerm.id());
+										}
+									}
+									//----------------------------------
 								}
 								goJson.setTermCount(goJson.getTermCount() + 1);
 							}
