@@ -1,5 +1,7 @@
 package com.bio4j.examples.json.model.go;
 
+import java.util.List;
+
 /**
  * Created by ppareja on 2/18/2015.
  */
@@ -12,6 +14,7 @@ public class GOTerm {
 	public String comment;
 	public int termCount;
 	public int cumulativeCount;
+	public List<String> parentIds;
 
 	public int getCumulativeCount() {
 		return cumulativeCount;
@@ -81,6 +84,14 @@ public class GOTerm {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public List<String> getParentIds() {
+		return parentIds;
+	}
+
+	public void setParentIds(List<String> parentIds) {
+		this.parentIds = parentIds;
 	}
 
 	public String obsolete;

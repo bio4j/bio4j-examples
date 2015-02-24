@@ -32,7 +32,6 @@ public class ExportGOJSONToCSV implements Executable{
 
 	public static void main(String[] args){
 
-
 		if (args.length != 2) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Input JSON GO anmnotation file\n"
@@ -41,7 +40,6 @@ public class ExportGOJSONToCSV implements Executable{
 
 			String inputFileSt = args[0];
 			String outputFileSt = args[1];
-
 
 			try {
 
