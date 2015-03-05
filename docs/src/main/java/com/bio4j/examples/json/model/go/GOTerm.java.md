@@ -2,6 +2,9 @@
 ```java
 package com.bio4j.examples.json.model.go;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Created by ppareja on 2/18/2015.
  */
@@ -14,6 +17,23 @@ public class GOTerm {
 	public String comment;
 	public int termCount;
 	public int cumulativeCount;
+	public List<String> parentIds;
+	public List<GOTerm> childrenTerms;
+
+	public void addTermToChildren(GOTerm term){
+		if(childrenTerms == null){
+			childrenTerms = new LinkedList<>();
+		}
+		childrenTerms.add(term);
+	}
+
+	public List<GOTerm> getChildrenTerms() {
+		return childrenTerms;
+	}
+
+	public void setChildrenTerms(List<GOTerm> childrenTerms) {
+		this.childrenTerms = childrenTerms;
+	}
 
 	public int getCumulativeCount() {
 		return cumulativeCount;
@@ -85,6 +105,14 @@ public class GOTerm {
 		this.comment = comment;
 	}
 
+	public List<String> getParentIds() {
+		return parentIds;
+	}
+
+	public void setParentIds(List<String> parentIds) {
+		this.parentIds = parentIds;
+	}
+
 	public String obsolete;
 }
 
@@ -106,6 +134,7 @@ public class GOTerm {
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
               + [GetGOAnnotation.java][main\java\com\bio4j\examples\go\GetGOAnnotation.java]
+              + [TransformGOJSONtoHierarchicalJSON.java][main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]
             + json
               + model
                 + go
@@ -120,6 +149,7 @@ public class GOTerm {
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ..\..\..\go\ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: ..\..\..\go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: ..\..\..\go\GetGOAnnotation.java.md
+[main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]: ..\..\..\go\TransformGOJSONtoHierarchicalJSON.java.md
 [main\java\com\bio4j\examples\json\model\go\GoSet.java]: GoSet.java.md
 [main\java\com\bio4j\examples\json\model\go\GOTerm.java]: GOTerm.java.md
 [main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]: ..\..\..\ncbi_taxonomy\TaxonomyAlgo.java.md
