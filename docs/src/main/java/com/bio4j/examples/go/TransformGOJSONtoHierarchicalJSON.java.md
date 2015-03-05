@@ -1,5 +1,6 @@
 
-This program simply exports a JSON file including a GoSet annotation to a CSV file.
+This program simply exports a JSON file including a GoSet annotation to another JSON file but including the hierarchy
+of the terms, that's to say, children terms would be inside their pa terms  when they .
 The program expects the following parameters:
 
 1. Input JSON GO anmnotation file
@@ -19,9 +20,7 @@ import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.util.*;
 
-public class ExportGOJSONToCSV implements Executable{
-
-	public static final String HEADER = "ID,NAME,TERM_COUNT,TERM_CUMULATIVE_COUNT";
+public class TransformGOJSONtoHierarchicalJSON implements Executable{
 
 	@Override
 	public void execute(ArrayList<String> array) {
@@ -37,7 +36,7 @@ public class ExportGOJSONToCSV implements Executable{
 		if (args.length != 2) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Input JSON GO anmnotation file\n"
-					+ "2. Output CSV GO annotation file");
+					+ "2. Output JSOM GO annotation file (hierarchical)");
 		} else {
 
 			String inputFileSt = args[0];
@@ -47,15 +46,32 @@ public class ExportGOJSONToCSV implements Executable{
 
 				BufferedReader reader = new BufferedReader(new FileReader(new File(inputFileSt)));
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFileSt)));
-				writer.write(HEADER + "\n");
 
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				GoSet goSet = gson.fromJson(reader, GoSet.class);
 
-				for (GOTerm goTerm : goSet.getGoTerms()){
-					writer.write(goTerm.getId() + "," + goTerm.getName() + "," + goTerm.getTermCount() + "," + goTerm.getCumulativeCount() + "\n");
+				HashMap<String, GOTerm> termsMap = new HashMap<>();
+
+				for(GOTerm term : goSet.getGoTerms()){
+					termsMap.put(term.getId(), term);
 				}
 
+				Set<GOTerm> termsSet = goSet.getGoTerms();
+				GoSet newGoSet = new GoSet(new HashSet<GOTerm>());
+
+				for (GOTerm currentTerm : termsSet){
+					List<String> parentIdList = currentTerm.getParentIds();
+					for (String parentId : parentIdList){
+						GOTerm parentTerm = termsMap.get(parentId);
+						if(parentTerm == null){
+							newGoSet.addGOTerm(currentTerm);
+						}else{
+							parentTerm.addTermToChildren(currentTerm);
+						}
+					}
+				}
+
+				writer.write(gson.toJson(newGoSet));
 				System.out.println("Closing writer...");
 				writer.close();
 				System.out.println("Output file created successfully! :)");

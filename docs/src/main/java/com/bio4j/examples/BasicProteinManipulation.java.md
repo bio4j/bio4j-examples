@@ -2,7 +2,8 @@
 ```java
 package com.bio4j.examples;
 
-import com.bio4j.angulillos.UntypedGraph;
+import com.bio4j.angulillos.*;
+import static com.bio4j.angulillos.conversions.*;
 import com.bio4j.model.go.vertices.GoTerm;
 import com.bio4j.model.uniprot.UniProtGraph;
 import com.bio4j.model.uniprot.vertices.Protein;
@@ -19,15 +20,15 @@ public abstract class BasicProteinManipulation<
 		RE, RET
 		> {
 
-	protected abstract UniProtGraph<I, RV, RVT, RE, RET> graph();
-
-
-	public String getName(Protein<I, RV, RVT, RE, RET> p) {
-
-		return p.name();
-	}
-
-	// todo optionalStream to Stream
+//	protected abstract UniProtGraph<I, RV, RVT, RE, RET> graph();
+//
+//
+//	public String getName(Protein<I, RV, RVT, RE, RET> p) {
+//
+//		return p.name();
+//	}
+//
+//	// todo optionalStream to Stream
 //	public Optional<Stream<Optional<Stream<GoTerm<I, RV, RVT, RE, RET>>>>>
 //	goTermsFromTheClusterOf(Protein<I, RV, RVT, RE, RET> protein) {
 //
@@ -39,12 +40,16 @@ public abstract class BasicProteinManipulation<
 //						)
 //				);
 //	}
-
-	// public Optional<Stream<GoTerm<I,RV,RVT,RE,RET>>> allTermsFromClusterOf(Protein<I,RV,RVT,RE,RET> protein) {
-	//   return (
-	//     goTermsFromTheClusterOf(protein).map(x -> any(x))
-	//   ).map( p -> flatten(p) );
-	// }
+//
+//	public Optional<Stream<GoTerm<I,RV,RVT,RE,RET>>> allTermsFromClusterOf(Protein<I,RV,RVT,RE,RET> protein) {
+//
+//	  return flatten(
+//
+//	  	goTermsFromTheClusterOf(protein).map( x -> any(x) ) // OOSS(GT)
+//	  )
+//	  .map( ss -> flatten(ss) );
+//
+//	}
 
 }
 
@@ -66,6 +71,7 @@ public abstract class BasicProteinManipulation<
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
               + [GetGOAnnotation.java][main\java\com\bio4j\examples\go\GetGOAnnotation.java]
+              + [TransformGOJSONtoHierarchicalJSON.java][main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]
             + json
               + model
                 + go
@@ -80,6 +86,7 @@ public abstract class BasicProteinManipulation<
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: go\ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: go\GetGOAnnotation.java.md
+[main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]: go\TransformGOJSONtoHierarchicalJSON.java.md
 [main\java\com\bio4j\examples\json\model\go\GoSet.java]: json\model\go\GoSet.java.md
 [main\java\com\bio4j\examples\json\model\go\GOTerm.java]: json\model\go\GOTerm.java.md
 [main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]: ncbi_taxonomy\TaxonomyAlgo.java.md

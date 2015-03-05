@@ -48,16 +48,18 @@ public class GetGOAnnotation implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 3) {
+		if (args.length != 4) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
 					+ "2. Input TSV file including UniProt accessions (one accession per line)\n"
-					+ "3. Output JSON file including the GO annotation");
+					+ "3. Output JSON file including the GO annotation \n"
+					+ "4. Include intermediate terms (true/false)");
 		} else {
 
 			String dbFolder = args[0];
 			String inputFileSt = args[1];
 			String outputFileSt = args[2];
+			boolean includeIntermediateTerms = Boolean.parseBoolean(args[3]);
 
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
@@ -135,7 +137,19 @@ public class GetGOAnnotation implements Executable{
 				for(String goId : goTermMap.keySet()){
 					goTermSet.add(goTermMap.get(goId));
 				}
+
+				if(includeIntermediateTerms){
+					Set<String> termsToBeAdded = new HashSet<>();
+					for(String goId : goTermMap.keySet()){
+						Set<String> tempSetToBeAdded = new HashSet<>();
+						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
+						updateSetOfTermsToBeAdded(goTermMap, termsToBeAdded, currentTerm, titanGoGraph);
+					}
+
+				}
+
 				GoSet goSet = new GoSet(goTermSet);
+
 
 				System.out.println("Writing output file....");
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -151,6 +165,52 @@ public class GetGOAnnotation implements Executable{
 			System.out.println("Closing the database...");
 			titanGraph.shutdown();
 			System.out.println("Done ;)");
+		}
+
+	}
+
+	private static void updateSetOfTermsToBeAdded(Map<String, GOTerm>  existingTermsMap,
+	                                              Set<String> termsToBeAdded,
+	                                              GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm,
+	                                              TitanGoGraph titanGoGraph ){
+
+		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> parentsOptionalStream = currentTerm.isA_outV();
+		if(parentsOptionalStream.isPresent()){
+			List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> parents = parentsOptionalStream.get().collect(Collectors.toList());
+			for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> parent : parents){
+				if(existingTermsMap.containsKey(parent.id())){
+					//====================================================================================================
+					//if we already reached another term that was included in the initial set, it could mean that there are a set of intermediate terms
+					//that should be added to the main set
+					for(String termToBeAdded : termsToBeAdded){
+						Optional<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalTerm = titanGoGraph.goTermIdIndex().getVertex(termToBeAdded);
+						if(optionalTerm.isPresent()){
+							GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> goTerm = optionalTerm.get();
+							GOTerm goJson = new GOTerm(goTerm.id(), goTerm.name());
+							goJson.setTermCount(0);
+							goJson.setComment(goTerm.comment());
+							goJson.setSynonym(goTerm.synonym());
+							goJson.setDefinition(goTerm.definition());
+							//----Finding parent IDs------------
+							goJson.setParentIds(new LinkedList<String>());
+							Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> parentsStreamOptional = goTerm.isA_outV();
+							if(parentsStreamOptional.isPresent()){
+								List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> parentTerms = parentsStreamOptional.get().collect((Collectors.toList()));
+								List<String> parentIds = goJson.getParentIds();
+								for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> tempTerm : parentTerms){
+									parentIds.add(tempTerm.id());
+								}
+							}
+							//----------------------------------
+							existingTermsMap.put(goJson.getId(), goJson);
+						}
+					}
+					//====================================================================================================
+				}else{
+					termsToBeAdded.add(parent.id());
+					updateSetOfTermsToBeAdded(existingTermsMap, termsToBeAdded, parent,titanGoGraph);
+				}
+			}
 		}
 
 	}

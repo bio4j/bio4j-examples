@@ -2,7 +2,7 @@ Nice.javaProject
 
 fatArtifactSettings
 
-name := "examples"
+name := "bio4j-examples"
 organization := "bio4j"
 description := "Bio4j examples project"
 

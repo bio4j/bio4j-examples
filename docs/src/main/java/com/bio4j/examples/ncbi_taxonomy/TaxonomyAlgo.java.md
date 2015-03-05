@@ -113,6 +113,7 @@ public class TaxonomyAlgo {
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
               + [GetGOAnnotation.java][main\java\com\bio4j\examples\go\GetGOAnnotation.java]
+              + [TransformGOJSONtoHierarchicalJSON.java][main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]
             + json
               + model
                 + go
@@ -127,6 +128,7 @@ public class TaxonomyAlgo {
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ..\go\ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: ..\go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: ..\go\GetGOAnnotation.java.md
+[main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]: ..\go\TransformGOJSONtoHierarchicalJSON.java.md
 [main\java\com\bio4j\examples\json\model\go\GoSet.java]: ..\json\model\go\GoSet.java.md
 [main\java\com\bio4j\examples\json\model\go\GOTerm.java]: ..\json\model\go\GOTerm.java.md
 [main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]: TaxonomyAlgo.java.md

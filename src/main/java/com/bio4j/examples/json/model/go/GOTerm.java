@@ -1,5 +1,6 @@
 package com.bio4j.examples.json.model.go;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -15,6 +16,22 @@ public class GOTerm {
 	public int termCount;
 	public int cumulativeCount;
 	public List<String> parentIds;
+	public List<GOTerm> childrenTerms;
+
+	public void addTermToChildren(GOTerm term){
+		if(childrenTerms == null){
+			childrenTerms = new LinkedList<>();
+		}
+		childrenTerms.add(term);
+	}
+
+	public List<GOTerm> getChildrenTerms() {
+		return childrenTerms;
+	}
+
+	public void setChildrenTerms(List<GOTerm> childrenTerms) {
+		this.childrenTerms = childrenTerms;
+	}
 
 	public int getCumulativeCount() {
 		return cumulativeCount;
