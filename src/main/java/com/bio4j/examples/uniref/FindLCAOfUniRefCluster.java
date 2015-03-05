@@ -1,3 +1,8 @@
+/*
+
+This program finds the lowest common ancestor _(LCA)_
+
+ */
 package com.bio4j.examples.uniref;
 
 import com.bio4j.examples.ncbi_taxonomy.TaxonomyAlgo;
@@ -47,12 +52,12 @@ public class FindLCAOfUniRefCluster implements Executable{
             System.out.println("This program expects the following parameters:\n"
                     + "1. Bio4j DB folder\n"
                     + "2. Uniref cluster type (100,90,50)\n"
-                    + "3. Uniref representant uniprot accession");
+                    + "3. Uniref cluster ID");
         } else {
 
 	        String dbFolder = args[0];
 	        String clusterType = args[1];
-	        String representantAccession = args[2];
+	        String clusterId = args[2];
 
 	        //----------DB configuration------------------
 	        Configuration conf = new BaseConfiguration();
@@ -81,68 +86,70 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 	        System.out.println("Done!");
 
+	        String[] membersStringArray = null;
 
-	        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> representantOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(representantAccession);
-            
-            List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes = new LinkedList<>();
-            
-            if(representantOptional.isPresent()){
+	        if(clusterType.equals("100")){
 
-	            Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> representant = representantOptional.get();
-	            Stream<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> membersStream = null;
+		        Optional<UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef100ClusterOptional = titanUniRefGraph.uniRef100ClusterIdIndex().getVertex(clusterId);
 
-	            if(clusterType.equals("100")){
+		        if(uniRef100ClusterOptional.isPresent()){
 
-	                Optional<UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef100ClusterOptional = representant.uniref100Representant_outV();
+			        membersStringArray = uniRef100ClusterOptional.get().members();
 
-	                if(uniRef100ClusterOptional.isPresent()){
+		        }else{
+			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
+		        }
+	        }else if(clusterType.equals("90")){
 
-		                UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef100Cluster = uniRef100ClusterOptional.get();
-		                membersStream = uniRef100Cluster.uniRef100Member_inV();
-                        
-                    }else{
-                        System.out.println("The protein " + representantAccession + " is not a Uniref 100 representant");
-                    }
-                }else if(clusterType.equals("90")){
+		        Optional<UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef90ClusterOptional = titanUniRefGraph.uniRef90ClusterIdIndex().getVertex(clusterId);
 
-		            Optional<UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef90ClusterOptional = representant.uniref90Representant_outV();
+		        if(uniRef90ClusterOptional.isPresent()){
 
-                    if(uniRef90ClusterOptional.isPresent()){
+			        membersStringArray = uniRef90ClusterOptional.get().members();
 
-	                    UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef90Cluster = uniRef90ClusterOptional.get();
-	                    membersStream = uniRef90Cluster.uniRef90Member_inV();
-                        
-                    }else{
-                        System.out.println("The protein " + representantAccession + " is not a Uniref 90 representant");
-                    }
-                }else if(clusterType.equals("50")){
-		            Optional<UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef50ClusterOptional = representant.uniref50Representant_outV();
+		        }else{
+			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
+		        }
+	        }else if(clusterType.equals("50")){
 
-		            if(uniRef50ClusterOptional.isPresent()){
+		        Optional<UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> uniRef50ClusterOptional = titanUniRefGraph.uniRef50ClusterIdIndex().getVertex(clusterId);
 
-			            UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> uniRef50Cluster = uniRef50ClusterOptional.get();
-			            membersStream = uniRef50Cluster.uniRef50Member_inV();
+		        if(uniRef50ClusterOptional.isPresent()){
 
-		            }else{
-			            System.out.println("The protein " + representantAccession + " is not a Uniref 50 representant");
-		            }
-                }
+			        membersStringArray = uniRef50ClusterOptional.get().members();
 
-                List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = membersStream.collect(Collectors.toList());
-	            Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
+		        }else{
+			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
+		        }
+	        }
 
-	            for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein :proteinMembers ){
-		            Optional<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonOptional = protein.proteinNCBITaxon_outV();
-		            if(taxonOptional.isPresent()){
-			            taxons.add(taxonOptional.get());
-		            }
-	            }
-	            List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
-	            taxons.addAll(taxonList);
-	            NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
+	        if(membersStringArray != null){
 
-	            System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
-            }
+		        List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = new LinkedList<>();
+
+		        for (String proteinId : membersStringArray){
+			        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(proteinId);
+			        proteinMembers.add(proteinOptional.get());
+		        }
+
+		        Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
+
+		        for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein :proteinMembers ){
+			        Optional<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonOptional = protein.proteinNCBITaxon_outV();
+			        if(taxonOptional.isPresent()){
+				        taxons.add(taxonOptional.get());
+			        }
+		        }
+		        List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
+		        taxons.addAll(taxonList);
+		        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
+
+		        System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
+
+	        }else{
+		        System.out.println("There were no members found for the cluster provided... :|");
+	        }
+
 
 	        System.out.println("Closing the database...");
 	        titanGraph.shutdown();
