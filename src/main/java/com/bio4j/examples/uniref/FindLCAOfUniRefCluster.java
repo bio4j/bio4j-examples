@@ -1,6 +1,13 @@
 /*
 
-This program finds the lowest common ancestor _(LCA)_
+This program finds the lowest common ancestor _(LCA)_ for taxonomy associated to the protein members of the UniRef
+cluster provided.
+
+It expects the following parameters:
+
+1. Bio4j DB folder
+2. UniRef cluster type (100/90/50)
+3. UniRef cluster ID
 
  */
 package com.bio4j.examples.uniref;
@@ -28,13 +35,7 @@ import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-/**
- *
- * @author Pablo Pareja Tobes <ppareja@era7.com>
- */
 public class FindLCAOfUniRefCluster implements Executable{
 
     @Override
@@ -51,8 +52,8 @@ public class FindLCAOfUniRefCluster implements Executable{
         if (args.length != 3) {
             System.out.println("This program expects the following parameters:\n"
                     + "1. Bio4j DB folder\n"
-                    + "2. Uniref cluster type (100,90,50)\n"
-                    + "3. Uniref cluster ID");
+                    + "2. UniRef cluster type (100,90,50)\n"
+                    + "3. UniRef cluster ID");
         } else {
 
 	        String dbFolder = args[0];
