@@ -1,0 +1,10 @@
+<scheduled_executions>
+	<execution>
+		<class_full_name>com.bio4j.examples.uniref.FindLCAOfUniRefCluster</class_full_name>
+		<arguments>      
+			<argument>bio4j</argument>
+			<argument>100</argument>
+			<argument>UniRef100_Q6GZX4</argument>
+		</arguments>
+	</execution> 
+</scheduled_executions>
