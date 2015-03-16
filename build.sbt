@@ -27,7 +27,7 @@ dependencyOverrides ++= Set(
 
 
 // fat jar assembly settings
-mainClass in assembly := Some("com.ohnosequences.bio4j.tools.ExecuteBio4jTool")
+mainClass in assembly := Some("com.bio4j.examples.ExecuteBio4jExample")
 
 assemblyOption in assembly ~= { _.copy(includeScala = false) }
 
