@@ -135,17 +135,28 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
 
+		        System.out.println("Fetching taxonomy associated to proteins...");
 		        for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein :proteinMembers ){
+			        System.out.println("Current protein: " + protein.accession());
 			        Optional<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonOptional = protein.proteinNCBITaxon_outV();
 			        if(taxonOptional.isPresent()){
-				        taxons.add(taxonOptional.get());
+				        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> taxon = taxonOptional.get();
+				        taxons.add(taxon);
+				        System.out.println("NCBI taxon found: " + taxon.id() + ":" + taxon.name());
 			        }
 		        }
+		        System.out.println("Done!");
 		        List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
 		        taxons.addAll(taxonList);
+		        System.out.println("Looking for the lowest common ancestor...");
 		        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
 
-		        System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
+		        if(lowestCommonAncestor != null){
+			        System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
+		        }else{
+			        System.out.println("There was no lower common ancestor found...");
+		        }
+
 
 	        }else{
 		        System.out.println("There were no members found for the cluster provided... :|");

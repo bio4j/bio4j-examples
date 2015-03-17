@@ -22,11 +22,15 @@ public class TaxonomyAlgo {
     
     public static NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor(List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes){
 
+	    System.out.println("nodes.size() = " + nodes.size());
+
         if(nodes.size() > 0){
 
 	        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> firstNode = nodes.get(0);
-            
-            LinkedList<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> firstAncestors = getAncestorsPlusSelf(firstNode);
+
+	        System.out.println("firstNode.id() = " + firstNode.id());
+
+	        LinkedList<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> firstAncestors = getAncestorsPlusSelf(firstNode);
             
             for (int i = 1; i < nodes.size() && !firstAncestors.isEmpty(); i++) {
 	            NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentNode = nodes.get(i);
