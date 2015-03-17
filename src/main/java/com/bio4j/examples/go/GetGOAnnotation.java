@@ -64,8 +64,8 @@ public class GetGOAnnotation implements Executable{
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
 			conf.setProperty("storage.directory", dbFolder);
-			conf.setProperty("storage.backend", "local");
-			conf.setProperty("autotype", "none");
+			conf.setProperty("storage.backend", "berkeleyje");
+			conf.setProperty("storage.batch-loading", "true");
 			//-------creating graph handlers---------------------
 			TitanGraph titanGraph = TitanFactory.open(conf);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
