@@ -118,6 +118,7 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFileSt)));
 				writer.write(gson.toJson(goSet));
 				System.out.println("Closing output file...");
+				writer.close();
 
 				System.out.println("The output file was created successfully!!");
 
