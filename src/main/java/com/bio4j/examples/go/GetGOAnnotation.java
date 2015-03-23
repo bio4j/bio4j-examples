@@ -105,10 +105,17 @@ public class GetGOAnnotation implements Executable{
 				for (String accession : proteinAcessions){
 					Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalProtein = titanUniProtGraph.proteinAccessionIndex().getVertex(accession);
 					if(optionalProtein.isPresent()){
-						Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> goTermStreamOptional = optionalProtein.get().goAnnotation_outV();
+
+						Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein = optionalProtein.get();
+
+						System.out.println("protein.accession() = " + protein.accession());
+
+						Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> goTermStreamOptional = protein.goAnnotation_outV();
+
 						if(goTermStreamOptional.isPresent()){
 							List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermList = goTermStreamOptional.get().collect(Collectors.toList());
 							for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> goTerm : goTermList){
+								System.out.println("goTerm.id() = " + goTerm.id());
 								GOTerm goJson = goTermMap.get(goTerm.id());
 								if(goJson == null){
 									goJson = new GOTerm(goTerm.id(), goTerm.name());
@@ -124,6 +131,7 @@ public class GetGOAnnotation implements Executable{
 										}
 									}
 									//----------------------------------
+									goTermMap.put(goTerm.id(), goJson);
 								}
 								goJson.setTermCount(goJson.getTermCount() + 1);
 							}
@@ -139,6 +147,9 @@ public class GetGOAnnotation implements Executable{
 				}
 
 				if(includeIntermediateTerms){
+
+					System.out.println("Looking for intermediate GO terms...");
+
 					Set<String> termsToBeAdded = new HashSet<>();
 					for(String goId : goTermMap.keySet()){
 						Set<String> tempSetToBeAdded = new HashSet<>();
@@ -146,10 +157,11 @@ public class GetGOAnnotation implements Executable{
 						updateSetOfTermsToBeAdded(goTermMap, termsToBeAdded, currentTerm, titanGoGraph);
 					}
 
+					System.out.println("Done! :)");
+
 				}
 
 				GoSet goSet = new GoSet(goTermSet);
-
 
 				System.out.println("Writing output file....");
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();

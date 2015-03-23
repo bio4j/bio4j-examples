@@ -1,4 +1,5 @@
 <scheduled_executions>
+	<!--
 	<execution>
 		<class_full_name>com.bio4j.examples.uniref.FindLCAOfUniRefCluster</class_full_name>
 		<arguments>      
@@ -7,4 +8,14 @@
 			<argument>UniRef100_Q6GZX1</argument>
 		</arguments>
 	</execution> 
+	-->
+	<execution>
+		<class_full_name>com.bio4j.examples.go.GetGOAnnotation</class_full_name>
+		<arguments>      
+			<argument>bio4j</argument>
+			<argument>uniprotIds.txt</argument>
+			<argument>go_annotation.json</argument>
+			<argument>false</argument>
+		</arguments>
+	</execution>
 </scheduled_executions>
