@@ -151,7 +151,10 @@ public class GetGOAnnotation implements Executable{
 					System.out.println("Looking for intermediate GO terms...");
 
 					Set<String> termsToBeAdded = new HashSet<>();
-					for(String goId : goTermMap.keySet()){
+
+					String[] goTermMapArray = goTermMap.keySet().toArray(new String[goTermMap.size()]);
+					for(int i=0; i<goTermMapArray.length;i++){
+						String goId = goTermMapArray[i];
 						Set<String> tempSetToBeAdded = new HashSet<>();
 						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
 						updateSetOfTermsToBeAdded(goTermMap, termsToBeAdded, currentTerm, titanGoGraph);
