@@ -95,7 +95,11 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef100ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef100ClusterOptional.get().members();
+			        UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef100ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -106,7 +110,12 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef90ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef90ClusterOptional.get().members();
+			        UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef90ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -117,7 +126,12 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef50ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef50ClusterOptional.get().members();
+			        UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef50ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -128,9 +142,14 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = new LinkedList<>();
 
+		        System.out.println("Retrieving protein members...");
+		        System.out.println("membersStringArray.length = " + membersStringArray.length);
+
 		        for (String proteinId : membersStringArray){
 			        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(proteinId);
-			        proteinMembers.add(proteinOptional.get());
+			        Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein = proteinOptional.get();
+			        System.out.println("protein.accession() = " + protein.accession());
+			        proteinMembers.add(protein);
 		        }
 
 		        Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
@@ -142,12 +161,12 @@ public class FindLCAOfUniRefCluster implements Executable{
 			        if(taxonOptional.isPresent()){
 				        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> taxon = taxonOptional.get();
 				        taxons.add(taxon);
-				        System.out.println("NCBI taxon found: " + taxon.id() + ":" + taxon.name());
+				        System.out.println("NCBI taxon found: " + taxon.id() + ":" + taxon.scientificName());
 			        }
 		        }
 		        System.out.println("Done!");
 		        List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
-		        taxons.addAll(taxonList);
+		        taxonList.addAll(taxons);
 		        System.out.println("Looking for the lowest common ancestor...");
 		        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
 

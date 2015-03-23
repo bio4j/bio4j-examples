@@ -4,7 +4,7 @@
 		<arguments>      
 			<argument>bio4j</argument>
 			<argument>100</argument>
-			<argument>UniRef100_Q6GZX4</argument>
+			<argument>UniRef100_Q6GZX1</argument>
 		</arguments>
 	</execution> 
 </scheduled_executions>
