@@ -6,6 +6,8 @@ The program expects the following parameters:
 1. Bio4j DB folder
 2. Input TSV file including UniProt accessions _(one accession per line)_
 3. Output JSON file including the GO annotation
+4. Include intermediate terms (true/false)
+5. Include all ancestors (true/false)
 
  */
 package com.bio4j.examples.go;
@@ -48,18 +50,20 @@ public class GetGOAnnotation implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 4) {
+		if (args.length != 5) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
 					+ "2. Input TSV file including UniProt accessions (one accession per line)\n"
 					+ "3. Output JSON file including the GO annotation \n"
-					+ "4. Include intermediate terms (true/false)");
+					+ "4. Include intermediate terms (true/false) \n"
+					+ "5. Include all ancestors (true/false)");
 		} else {
 
 			String dbFolder = args[0];
 			String inputFileSt = args[1];
 			String outputFileSt = args[2];
 			boolean includeIntermediateTerms = Boolean.parseBoolean(args[3]);
+			boolean includeAllAncestors = Boolean.parseBoolean(args[4]);
 
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
@@ -141,27 +145,69 @@ public class GetGOAnnotation implements Executable{
 				}
 				System.out.println("Done!");
 
+				if(includeAllAncestors){
+
+					System.out.println("Retrieving all ancestors...");
+
+					Set<String> termsToBeAdded = new HashSet<>();
+					String[] goIds = goTermMap.keySet().toArray(new String[goTermMap.size()]);
+					for(int i=0; i< goIds.length;i++){
+						String goId = goIds[i];
+						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
+						includeAllAncestorsOfTerm(termsToBeAdded, currentTerm, titanGoGraph);
+					}
+
+					for(String termToBeAdded : termsToBeAdded){
+						Optional<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalTerm = titanGoGraph.goTermIdIndex().getVertex(termToBeAdded);
+						if(optionalTerm.isPresent()){
+							GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> goTerm = optionalTerm.get();
+							GOTerm goJson = new GOTerm(goTerm.id(), goTerm.name());
+							goJson.setTermCount(0);
+							goJson.setComment(goTerm.comment());
+							goJson.setSynonym(goTerm.synonym());
+							goJson.setDefinition(goTerm.definition());
+							//----Finding parent IDs------------
+							goJson.setParentIds(new LinkedList<String>());
+							Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> parentsStreamOptional = goTerm.isA_outV();
+							if(parentsStreamOptional.isPresent()){
+								List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> parentTerms = parentsStreamOptional.get().collect((Collectors.toList()));
+								List<String> parentIds = goJson.getParentIds();
+								for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> tempTerm : parentTerms){
+									parentIds.add(tempTerm.id());
+								}
+							}
+							//----------------------------------
+							goTermMap.put(goJson.getId(), goJson);
+						}
+					}
+
+					System.out.println("Done! :D");
+
+				}else{
+
+					if(includeIntermediateTerms){
+
+						System.out.println("Looking for intermediate GO terms...");
+
+						Set<String> termsToBeAdded = new HashSet<>();
+
+						String[] goTermMapArray = goTermMap.keySet().toArray(new String[goTermMap.size()]);
+						for(int i=0; i<goTermMapArray.length;i++){
+							String goId = goTermMapArray[i];
+							Set<String> tempSetToBeAdded = new HashSet<>();
+							GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
+							addIntermediateTermsToTermMap(goTermMap, termsToBeAdded, currentTerm, titanGoGraph);
+						}
+
+						System.out.println("Done! :)");
+
+					}
+				}
+
+
 				Set<GOTerm> goTermSet = new HashSet<>();
 				for(String goId : goTermMap.keySet()){
 					goTermSet.add(goTermMap.get(goId));
-				}
-
-				if(includeIntermediateTerms){
-
-					System.out.println("Looking for intermediate GO terms...");
-
-					Set<String> termsToBeAdded = new HashSet<>();
-
-					String[] goTermMapArray = goTermMap.keySet().toArray(new String[goTermMap.size()]);
-					for(int i=0; i<goTermMapArray.length;i++){
-						String goId = goTermMapArray[i];
-						Set<String> tempSetToBeAdded = new HashSet<>();
-						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
-						updateSetOfTermsToBeAdded(goTermMap, termsToBeAdded, currentTerm, titanGoGraph);
-					}
-
-					System.out.println("Done! :)");
-
 				}
 
 				GoSet goSet = new GoSet(goTermSet);
@@ -184,7 +230,7 @@ public class GetGOAnnotation implements Executable{
 
 	}
 
-	private static void updateSetOfTermsToBeAdded(Map<String, GOTerm>  existingTermsMap,
+	private static void addIntermediateTermsToTermMap(Map<String, GOTerm>  existingTermsMap,
 	                                              Set<String> termsToBeAdded,
 	                                              GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm,
 	                                              TitanGoGraph titanGoGraph ){
@@ -223,8 +269,23 @@ public class GetGOAnnotation implements Executable{
 					//====================================================================================================
 				}else{
 					termsToBeAdded.add(parent.id());
-					updateSetOfTermsToBeAdded(existingTermsMap, termsToBeAdded, parent,titanGoGraph);
+					addIntermediateTermsToTermMap(existingTermsMap, termsToBeAdded, parent, titanGoGraph);
 				}
+			}
+		}
+
+	}
+
+	private static void includeAllAncestorsOfTerm(Set<String> terms,
+	                                              GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm,
+	                                              TitanGoGraph titanGoGraph){
+
+		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> optionalStreamParents = currentTerm.isA_inV();
+		if(optionalStreamParents.isPresent()){
+			List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermParentsList = optionalStreamParents.get().collect((Collectors.toList()));
+			for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> parentTerm : goTermParentsList){
+				terms.add(parentTerm.id());
+				includeAllAncestorsOfTerm(terms, parentTerm, titanGoGraph);
 			}
 		}
 
