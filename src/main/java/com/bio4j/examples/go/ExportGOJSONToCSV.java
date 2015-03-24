@@ -51,7 +51,7 @@ public class ExportGOJSONToCSV implements Executable{
 				GoSet goSet = gson.fromJson(reader, GoSet.class);
 
 				for (GOTerm goTerm : goSet.getGoTerms()){
-					writer.write(goTerm.getId() + "," + goTerm.getName() + "," + goTerm.getTermCount() + "," + goTerm.getCumulativeCount() + "\n");
+					writer.write(goTerm.getId() + ",\"" + goTerm.getName() + "\"," + goTerm.getTermCount() + "," + goTerm.getCumulativeCount() + "\n");
 				}
 
 				System.out.println("Closing writer...");

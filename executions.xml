@@ -8,7 +8,7 @@
 			<argument>UniRef100_Q6GZX1</argument>
 		</arguments>
 	</execution> 
-		-->
+		
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetGOAnnotation</class_full_name>
 		<arguments>      
@@ -18,6 +18,7 @@
 			<argument>true</argument>
 		</arguments>
 	</execution>
+	-->
 	<!--
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetCumulativeFrequenciesForGoSet</class_full_name>
@@ -37,4 +38,11 @@
 		</arguments>
 	</execution>
 -->
+	<execution>
+		<class_full_name>com.bio4j.examples.go.ExportGOJSONToCSV</class_full_name>
+		<arguments>      			
+			<argument>go_annotation_including_cumulative_values.json</argument>
+			<argument>go_annotation_including_cumulative_values.csv</argument>
+		</arguments>
+	</execution>
 </scheduled_executions>
