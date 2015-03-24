@@ -65,8 +65,8 @@ public class FindLCAOfUniRefCluster implements Executable{
 	        //----------DB configuration------------------
 	        Configuration conf = new BaseConfiguration();
 	        conf.setProperty("storage.directory", dbFolder);
-	        conf.setProperty("storage.backend", "local");
-	        conf.setProperty("autotype", "none");
+	        conf.setProperty("storage.backend", "berkeleyje");
+	        conf.setProperty("storage.batch-loading", "true");
 	        //-------creating graph handlers---------------------
 	        TitanGraph titanGraph = TitanFactory.open(conf);
 	        DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
@@ -97,7 +97,11 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef100ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef100ClusterOptional.get().members();
+			        UniRef100Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef100ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -108,7 +112,12 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef90ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef90ClusterOptional.get().members();
+			        UniRef90Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef90ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -119,7 +128,12 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        if(uniRef50ClusterOptional.isPresent()){
 
-			        membersStringArray = uniRef50ClusterOptional.get().members();
+			        UniRef50Cluster<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> cluster = uniRef50ClusterOptional.get();
+			        System.out.println("cluster.id() = " + cluster.id());
+			        System.out.println("cluster.name() = " + cluster.name());
+			        System.out.println("cluster.updatedDate() = " + cluster.updatedDate());
+
+			        membersStringArray = cluster.members();
 
 		        }else{
 			        System.out.println("The cluster ID: " + clusterId + " was not found... :(");
@@ -130,24 +144,40 @@ public class FindLCAOfUniRefCluster implements Executable{
 
 		        List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinMembers = new LinkedList<>();
 
+		        System.out.println("Retrieving protein members...");
+		        System.out.println("membersStringArray.length = " + membersStringArray.length);
+
 		        for (String proteinId : membersStringArray){
 			        Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(proteinId);
-			        proteinMembers.add(proteinOptional.get());
+			        Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein = proteinOptional.get();
+			        System.out.println("protein.accession() = " + protein.accession());
+			        proteinMembers.add(protein);
 		        }
 
 		        Set<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxons = new HashSet<>();
 
+		        System.out.println("Fetching taxonomy associated to proteins...");
 		        for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein :proteinMembers ){
+			        System.out.println("Current protein: " + protein.accession());
 			        Optional<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonOptional = protein.proteinNCBITaxon_outV();
 			        if(taxonOptional.isPresent()){
-				        taxons.add(taxonOptional.get());
+				        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> taxon = taxonOptional.get();
+				        taxons.add(taxon);
+				        System.out.println("NCBI taxon found: " + taxon.id() + ":" + taxon.scientificName());
 			        }
 		        }
+		        System.out.println("Done!");
 		        List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> taxonList = new LinkedList<>();
-		        taxons.addAll(taxonList);
+		        taxonList.addAll(taxons);
+		        System.out.println("Looking for the lowest common ancestor...");
 		        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor = TaxonomyAlgo.lowestCommonAncestor(taxonList);
 
-		        System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
+		        if(lowestCommonAncestor != null){
+			        System.out.println("The lowest common ancestor is: " + lowestCommonAncestor.scientificName());
+		        }else{
+			        System.out.println("There was no lower common ancestor found...");
+		        }
+
 
 	        }else{
 		        System.out.println("There were no members found for the cluster provided... :|");
@@ -176,6 +206,7 @@ public class FindLCAOfUniRefCluster implements Executable{
         + bio4j
           + examples
             + [BasicProteinManipulation.java][main\java\com\bio4j\examples\BasicProteinManipulation.java]
+            + [ExecuteBio4jExample.java][main\java\com\bio4j\examples\ExecuteBio4jExample.java]
             + go
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
@@ -192,6 +223,7 @@ public class FindLCAOfUniRefCluster implements Executable{
               + [FindLCAOfUniRefCluster.java][main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]
 
 [main\java\com\bio4j\examples\BasicProteinManipulation.java]: ..\BasicProteinManipulation.java.md
+[main\java\com\bio4j\examples\ExecuteBio4jExample.java]: ..\ExecuteBio4jExample.java.md
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ..\go\ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: ..\go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: ..\go\GetGOAnnotation.java.md

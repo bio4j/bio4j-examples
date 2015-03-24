@@ -64,8 +64,8 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
 			conf.setProperty("storage.directory", dbFolder);
-			conf.setProperty("storage.backend", "local");
-			conf.setProperty("autotype", "none");
+			conf.setProperty("storage.backend", "berkeleyje");
+			conf.setProperty("storage.batch-loading", "true");
 			//-------creating graph handlers---------------------
 			TitanGraph titanGraph = TitanFactory.open(conf);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
@@ -119,6 +119,7 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFileSt)));
 				writer.write(gson.toJson(goSet));
 				System.out.println("Closing output file...");
+				writer.close();
 
 				System.out.println("The output file was created successfully!!");
 
@@ -165,6 +166,7 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
         + bio4j
           + examples
             + [BasicProteinManipulation.java][main\java\com\bio4j\examples\BasicProteinManipulation.java]
+            + [ExecuteBio4jExample.java][main\java\com\bio4j\examples\ExecuteBio4jExample.java]
             + go
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
@@ -181,6 +183,7 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
               + [FindLCAOfUniRefCluster.java][main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]
 
 [main\java\com\bio4j\examples\BasicProteinManipulation.java]: ..\BasicProteinManipulation.java.md
+[main\java\com\bio4j\examples\ExecuteBio4jExample.java]: ..\ExecuteBio4jExample.java.md
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: GetGOAnnotation.java.md

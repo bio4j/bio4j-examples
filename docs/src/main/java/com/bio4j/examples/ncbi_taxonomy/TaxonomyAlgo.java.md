@@ -24,11 +24,15 @@ public class TaxonomyAlgo {
     
     public static NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> lowestCommonAncestor(List<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> nodes){
 
+	    System.out.println("nodes.size() = " + nodes.size());
+
         if(nodes.size() > 0){
 
 	        NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> firstNode = nodes.get(0);
-            
-            LinkedList<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> firstAncestors = getAncestorsPlusSelf(firstNode);
+
+	        System.out.println("firstNode.id() = " + firstNode.id());
+
+	        LinkedList<NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> firstAncestors = getAncestorsPlusSelf(firstNode);
             
             for (int i = 1; i < nodes.size() && !firstAncestors.isEmpty(); i++) {
 	            NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentNode = nodes.get(i);
@@ -109,6 +113,7 @@ public class TaxonomyAlgo {
         + bio4j
           + examples
             + [BasicProteinManipulation.java][main\java\com\bio4j\examples\BasicProteinManipulation.java]
+            + [ExecuteBio4jExample.java][main\java\com\bio4j\examples\ExecuteBio4jExample.java]
             + go
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
@@ -125,6 +130,7 @@ public class TaxonomyAlgo {
               + [FindLCAOfUniRefCluster.java][main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]
 
 [main\java\com\bio4j\examples\BasicProteinManipulation.java]: ..\BasicProteinManipulation.java.md
+[main\java\com\bio4j\examples\ExecuteBio4jExample.java]: ..\ExecuteBio4jExample.java.md
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ..\go\ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: ..\go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: ..\go\GetGOAnnotation.java.md
