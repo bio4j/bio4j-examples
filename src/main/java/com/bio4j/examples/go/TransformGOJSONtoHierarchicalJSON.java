@@ -57,7 +57,12 @@ public class TransformGOJSONtoHierarchicalJSON implements Executable{
 				Set<GOTerm> termsSet = goSet.getGoTerms();
 				GoSet newGoSet = new GoSet(new HashSet<GOTerm>());
 
+				List<String> childrenTerms = new LinkedList<>();
+
 				for (GOTerm currentTerm : termsSet){
+
+					System.out.println("currentTerm.id = " + currentTerm.id);
+
 					List<String> parentIdList = currentTerm.getParentIds();
 					for (String parentId : parentIdList){
 						GOTerm parentTerm = termsMap.get(parentId);
@@ -65,7 +70,14 @@ public class TransformGOJSONtoHierarchicalJSON implements Executable{
 							newGoSet.addGOTerm(currentTerm);
 						}else{
 							parentTerm.addTermToChildren(currentTerm);
+							childrenTerms.add(currentTerm.id);
 						}
+					}
+				}
+
+				for (GOTerm currentTerm : termsSet){
+					if(!childrenTerms.contains(currentTerm.id)){
+						newGoSet.addGOTerm(currentTerm);
 					}
 				}
 
