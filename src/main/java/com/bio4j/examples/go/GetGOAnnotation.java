@@ -149,6 +149,7 @@ public class GetGOAnnotation implements Executable{
 
 					System.out.println("Retrieving all ancestors...");
 
+					//-----------------Retrieving ancestors of all terms with protein annotations---------------------
 					Set<String> termsToBeAdded = new HashSet<>();
 					String[] goIds = goTermMap.keySet().toArray(new String[goTermMap.size()]);
 					for(int i=0; i< goIds.length;i++){
@@ -156,6 +157,15 @@ public class GetGOAnnotation implements Executable{
 						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
 						includeAllAncestorsOfTerm(termsToBeAdded, currentTerm, titanGoGraph);
 					}
+					//-----------------------------------------------------------------------------------------------
+
+					//----removing duplicated terms so that counts are not overwritten with zero values----
+					for(String key : goTermMap.keySet()){
+						if(termsToBeAdded.contains(key)){
+							termsToBeAdded.remove(key);
+						}
+					}
+					//---------------------------------------------------------------------------------------
 
 					for(String termToBeAdded : termsToBeAdded){
 						Optional<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalTerm = titanGoGraph.goTermIdIndex().getVertex(termToBeAdded);
@@ -280,7 +290,7 @@ public class GetGOAnnotation implements Executable{
 	                                              GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm,
 	                                              TitanGoGraph titanGoGraph){
 
-		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> optionalStreamParents = currentTerm.isA_inV();
+		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> optionalStreamParents = currentTerm.isA_outV();
 		if(optionalStreamParents.isPresent()){
 			List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermParentsList = optionalStreamParents.get().collect((Collectors.toList()));
 			for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> parentTerm : goTermParentsList){

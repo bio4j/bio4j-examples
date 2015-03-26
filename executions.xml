@@ -16,10 +16,11 @@
 			<argument>uniprotIds.txt</argument>
 			<argument>go_annotation.json</argument>
 			<argument>true</argument>
+			<argument>true</argument>
 		</arguments>
 	</execution>
-	-->
-	<!--
+	
+	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetCumulativeFrequenciesForGoSet</class_full_name>
 		<arguments>      
@@ -28,7 +29,7 @@
 			<argument>go_annotation_including_cumulative_values.json</argument>
 		</arguments>
 	</execution>
-	
+	-->
 	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.TransformGOJSONtoHierarchicalJSON</class_full_name>
@@ -37,7 +38,7 @@
 			<argument>go_annotation_including_cumulative_values_hierarchical.json</argument>
 		</arguments>
 	</execution>
--->
+<!--
 	<execution>
 		<class_full_name>com.bio4j.examples.go.ExportGOJSONToCSV</class_full_name>
 		<arguments>      			
@@ -45,4 +46,5 @@
 			<argument>go_annotation_including_cumulative_values.csv</argument>
 		</arguments>
 	</execution>
+	-->
 </scheduled_executions>
