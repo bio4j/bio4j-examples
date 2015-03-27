@@ -15,6 +15,7 @@ package com.bio4j.examples.go;
 import com.bio4j.examples.json.model.go.GOTerm;
 import com.bio4j.examples.json.model.go.GoSet;
 import com.bio4j.model.go.vertices.GoTerm;
+import com.bio4j.model.uniprot.vertices.GeneName;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.titan.model.go.TitanGoGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
@@ -109,6 +110,7 @@ public class GetGOAnnotation implements Executable{
 				System.out.println("Finding GO annotations....");
 
 				for (String accession : proteinAcessions){
+
 					Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalProtein = titanUniProtGraph.proteinAccessionIndex().getVertex(accession);
 					if(optionalProtein.isPresent()){
 
@@ -119,11 +121,15 @@ public class GetGOAnnotation implements Executable{
 						Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> goTermStreamOptional = protein.goAnnotation_outV();
 
 						if(goTermStreamOptional.isPresent()){
+
 							List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermList = goTermStreamOptional.get().collect(Collectors.toList());
 							for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> goTerm : goTermList){
+
 								System.out.println("goTerm.id() = " + goTerm.id());
 								GOTerm goJson = goTermMap.get(goTerm.id());
+
 								if(goJson == null){
+
 									goJson = new GOTerm(goTerm.id(), goTerm.name());
 									goJson.setTermCount(0);
 									//----Finding parent IDs------------
@@ -140,6 +146,21 @@ public class GetGOAnnotation implements Executable{
 									goTermMap.put(goTerm.id(), goJson);
 								}
 								goJson.setTermCount(goJson.getTermCount() + 1);
+
+								if(includeProteinInformation){
+									com.bio4j.examples.json.model.uniprot.Protein proteinJSON = new com.bio4j.examples.json.model.uniprot.Protein();
+									proteinJSON.setAccession(protein.accession());
+									proteinJSON.setFullName(protein.fullName());
+									proteinJSON.setName(protein.name());
+									Optional<Stream<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> geneNamesStreamOptional = protein.proteinGeneName_outV();
+									List<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> geneNames = geneNamesStreamOptional.get().collect((Collectors.toList()));
+									List<String> geneNamesStList = new LinkedList<>();
+									for (GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> geneName : geneNames){
+										geneNamesStList.add(geneName.name());
+									}
+									proteinJSON.setGeneNames(geneNamesStList);
+									goJson.addProteinToAnnotatedProteins(proteinJSON);
+								}
 							}
 						}
 
