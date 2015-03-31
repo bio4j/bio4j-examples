@@ -10,9 +10,11 @@ package com.bio4j.examples.go;
 
 import com.bio4j.examples.json.model.go.GOTerm;
 import com.bio4j.examples.json.model.go.GoSet;
+import com.bio4j.examples.json.model.uniprot.Protein;
 import com.era7.bioinfo.bioinfoutil.Executable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.io.*;
 import java.util.*;
@@ -32,14 +34,16 @@ public class ExportGOJSONToCSV implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 2) {
+		if (args.length != 3) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Input JSON GO anmnotation file\n"
-					+ "2. Output CSV GO annotation file");
+					+ "2. Output CSV GO annotation file\n"
+					+ "3. Include annotated proteins (true/false)");
 		} else {
 
 			String inputFileSt = args[0];
 			String outputFileSt = args[1];
+			boolean includeAnnotatedProteins = Boolean.parseBoolean(args[2]);
 
 			try {
 
@@ -51,7 +55,22 @@ public class ExportGOJSONToCSV implements Executable{
 				GoSet goSet = gson.fromJson(reader, GoSet.class);
 
 				for (GOTerm goTerm : goSet.getGoTerms()){
-					writer.write(goTerm.getId() + ",\"" + goTerm.getName() + "\"," + goTerm.getTermCount() + "," + goTerm.getCumulativeCount() + "\n");
+
+					String tempSt = goTerm.getId() + ",\"" + goTerm.getName() + "\"," + goTerm.getTermCount() + "," + goTerm.getCumulativeCount();
+
+					if(includeAnnotatedProteins){
+						List<Protein> annotatedProteins = goTerm.getAnnotatedProteins();
+						String proteinsSt = ",[";
+
+						for (Protein protein : annotatedProteins){
+							proteinsSt += protein.getAccession() + ":" + protein.getFullName() + ",";
+						}
+						proteinsSt = proteinsSt.substring(0, proteinsSt.length() - 1);
+						proteinsSt += "]";
+						tempSt += proteinsSt;
+					}
+					tempSt += "\n";
+					writer.write(tempSt);
 				}
 
 				System.out.println("Closing writer...");

@@ -35,6 +35,14 @@ public class GOTerm {
 		annotatedProteins.add(protein);
 	}
 
+	public List<Protein> getAnnotatedProteins() {
+		return annotatedProteins;
+	}
+
+	public void setAnnotatedProteins(List<Protein> annotatedProteins) {
+		this.annotatedProteins = annotatedProteins;
+	}
+
 	public List<GOTerm> getChildrenTerms() {
 		return childrenTerms;
 	}

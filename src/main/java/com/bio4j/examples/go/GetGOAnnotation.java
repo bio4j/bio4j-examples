@@ -152,6 +152,7 @@ public class GetGOAnnotation implements Executable{
 									proteinJSON.setAccession(protein.accession());
 									proteinJSON.setFullName(protein.fullName());
 									proteinJSON.setName(protein.name());
+									proteinJSON.setShortName(protein.shortName());
 									Optional<Stream<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> geneNamesStreamOptional = protein.proteinGeneName_outV();
 									List<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> geneNames = geneNamesStreamOptional.get().collect((Collectors.toList()));
 									List<String> geneNamesStList = new LinkedList<>();
@@ -209,6 +210,7 @@ public class GetGOAnnotation implements Executable{
 									parentIds.add(tempTerm.id());
 								}
 							}
+
 							//----------------------------------
 							goTermMap.put(goJson.getId(), goJson);
 						}
