@@ -1,5 +1,8 @@
 package com.bio4j.examples.json.model.uniprot;
 
+import com.bio4j.examples.json.model.go.GOTerm;
+
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -12,6 +15,22 @@ public class Protein {
 	public String shortName;
 	public String fullName;
 	public List<String> geneNames;
+	public List<GOTerm> annotatedByGOTerms;
+
+	public List<GOTerm> getAnnotatedByGOTerms() {
+		return annotatedByGOTerms;
+	}
+
+	public void setAnnotatedByGOTerms(List<GOTerm> annotatedByGOTerms) {
+		this.annotatedByGOTerms = annotatedByGOTerms;
+	}
+
+	public void addAnnotatedByGOTerm(GOTerm term){
+		if(annotatedByGOTerms == null){
+			annotatedByGOTerms = new LinkedList<>();
+		}
+		annotatedByGOTerms.add(term);
+	}
 
 	public List<String> getGeneNames() {
 		return geneNames;

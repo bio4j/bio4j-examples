@@ -22,6 +22,7 @@ import java.util.*;
 public class ExportGOJSONToCSV implements Executable{
 
 	public static final String HEADER = "ID,NAME,TERM_COUNT,TERM_CUMULATIVE_COUNT";
+	public static final String ANNOTATED_PROTEINS_HEADER = "ACCESSION,NAME,FULL_NAME,SHORT_NAME,GENE_NAMES,ANNOTATED_BY_GO_TERMS,ANNOTATED_BY_GO_TERMS_COUNT";
 
 	@Override
 	public void execute(ArrayList<String> array) {
@@ -34,16 +35,21 @@ public class ExportGOJSONToCSV implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 3) {
+		if (args.length != 4) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Input JSON GO anmnotation file\n"
 					+ "2. Output CSV GO annotation file\n"
-					+ "3. Include annotated proteins (true/false)");
+					+ "3. Include annotated proteins (true/false)"
+					+ "4. Generate annotated proteins CSV data file (true/false)");
 		} else {
 
 			String inputFileSt = args[0];
 			String outputFileSt = args[1];
 			boolean includeAnnotatedProteins = Boolean.parseBoolean(args[2]);
+			boolean generateAnnotatedProteinsFile = Boolean.parseBoolean(args[3]);
+
+			String annotatedProteinsFileSt = "annotatedProteins.csv";
+			File annotatedProteinsFile = new File(annotatedProteinsFileSt);
 
 			try {
 
@@ -51,8 +57,16 @@ public class ExportGOJSONToCSV implements Executable{
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFileSt)));
 				writer.write(HEADER + "\n");
 
+				BufferedWriter annotatedProteinsWriter = new BufferedWriter(new FileWriter(new File(outputFileSt)));
+
+				if(generateAnnotatedProteinsFile){
+					annotatedProteinsWriter.write(ANNOTATED_PROTEINS_HEADER + "\n");
+				}
+
+
 				Gson gson = new GsonBuilder().setPrettyPrinting().create();
 				GoSet goSet = gson.fromJson(reader, GoSet.class);
+				HashMap<String, Protein> proteinsMap = new HashMap<>();
 
 				for (GOTerm goTerm : goSet.getGoTerms()){
 
@@ -71,12 +85,20 @@ public class ExportGOJSONToCSV implements Executable{
 					}
 					tempSt += "\n";
 					writer.write(tempSt);
+
+					if(generateAnnotatedProteinsFile){
+
+					}
 				}
 
 				System.out.println("Closing writer...");
 				writer.close();
 				System.out.println("Output file created successfully! :)");
 
+				if(generateAnnotatedProteinsFile){
+					annotatedProteinsWriter.close();
+					System.out.println("Annotated proteins file created successfully! :)");
+				}
 
 			} catch (IOException e) {
 				e.printStackTrace();
