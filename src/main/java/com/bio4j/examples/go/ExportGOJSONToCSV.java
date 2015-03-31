@@ -88,6 +88,25 @@ public class ExportGOJSONToCSV implements Executable{
 
 					if(generateAnnotatedProteinsFile){
 
+						List<Protein> annotatedProteins = goTerm.getAnnotatedProteins();
+						for (Protein protein : annotatedProteins){
+
+							Protein mapProtein = proteinsMap.get(protein.getAccession());
+
+							if(mapProtein == null){
+								Protein tempProtein = new Protein();
+								tempProtein.setAccession(protein.getAccession());
+								tempProtein.setName(protein.getName());
+								tempProtein.setShortName(protein.getShortName());
+								tempProtein.setFullName(protein.getFullName());
+								tempProtein.setGeneNames(protein.getGeneNames());
+								proteinsMap.put(tempProtein.getAccession(), tempProtein);
+								mapProtein = tempProtein;
+							}
+
+							mapProtein.addAnnotatedByGOTerm(goTerm);
+
+						}
 					}
 				}
 
@@ -96,6 +115,29 @@ public class ExportGOJSONToCSV implements Executable{
 				System.out.println("Output file created successfully! :)");
 
 				if(generateAnnotatedProteinsFile){
+
+					Set<String> keySet = proteinsMap.keySet();
+					for (String proteinAccession : keySet){
+						Protein protein = proteinsMap.get(keySet);
+
+						String geneNamesSt = "[";
+						for(String geneName : protein.getGeneNames()){
+							geneNamesSt += geneName + "|";
+						}
+						geneNamesSt = geneNamesSt.substring(0,geneNamesSt.length() - 1);
+						geneNamesSt += "]";
+
+						String goTermsSt = "[";
+						for(GOTerm goTerm : protein.getAnnotatedByGOTerms()){
+							goTermsSt += goTerm.getId() + "|";
+						}
+						goTermsSt = goTermsSt.substring(0,goTermsSt.length() - 1);
+						goTermsSt += "]";
+
+						annotatedProteinsWriter.write(protein.getAccession() + "," + protein.getName() + "," + protein.getFullName() + "," +
+								protein.getShortName() + "," + geneNamesSt + "," + goTermsSt + "," + protein.getAnnotatedByGOTerms().size() + "\n");
+					}
+
 					annotatedProteinsWriter.close();
 					System.out.println("Annotated proteins file created successfully! :)");
 				}
