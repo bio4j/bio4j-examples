@@ -64,7 +64,6 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 			Configuration conf = new BaseConfiguration();
 			conf.setProperty("storage.directory", dbFolder);
 			conf.setProperty("storage.backend", "berkeleyje");
-			conf.setProperty("storage.batch-loading", "true");
 			//-------creating graph handlers---------------------
 			TitanGraph titanGraph = TitanFactory.open(conf);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
