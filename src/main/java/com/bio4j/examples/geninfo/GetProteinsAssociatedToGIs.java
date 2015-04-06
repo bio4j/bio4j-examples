@@ -12,6 +12,7 @@ The program expects the following parameters:
  */
 package com.bio4j.examples.geninfo;
 
+import com.bio4j.examples.json.model.uniprot.ProteinSet;
 import com.bio4j.model.enzymedb.vertices.Enzyme;
 import com.bio4j.model.geninfo.vertices.GenInfo;
 import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
@@ -24,6 +25,8 @@ import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
 import com.bio4j.titan.model.uniprot_ncbiTaxonomy.TitanUniProtNCBITaxonomyGraph;
 import com.bio4j.titan.util.DefaultTitanGraph;
 import com.era7.bioinfo.bioinfoutil.Executable;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.thinkaurelius.titan.core.TitanEdge;
 import com.thinkaurelius.titan.core.TitanFactory;
 import com.thinkaurelius.titan.core.TitanGraph;
@@ -130,6 +133,18 @@ public class GetProteinsAssociatedToGIs implements Executable{
 					}
 				}
 
+				System.out.println("Done!");
+
+				ProteinSet proteinSet = new ProteinSet();
+				for (String key : proteinHashMap.keySet()){
+					com.bio4j.examples.json.model.uniprot.Protein proteinJSON = proteinHashMap.get(key);
+					proteinSet.addProtein(proteinJSON);
+				}
+
+				System.out.println("Writing output file....");
+				Gson gson = new GsonBuilder().setPrettyPrinting().create();
+				writer.write(gson.toJson(proteinSet));
+				System.out.println("Closing output file...");
 
 			} catch (IOException e) {
 				e.printStackTrace();

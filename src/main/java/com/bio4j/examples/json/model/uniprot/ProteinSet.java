@@ -21,6 +21,8 @@ public class ProteinSet {
 
 		this.proteins = proteins;
 	}
+	public ProteinSet() {
+	}
 
 
 	public void addProtein(Protein protein){
