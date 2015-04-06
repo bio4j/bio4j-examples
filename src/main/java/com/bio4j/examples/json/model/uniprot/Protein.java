@@ -21,6 +21,17 @@ public class Protein {
 		return annotatedByGOTerms;
 	}
 
+	public Protein(){
+
+	}
+
+	public Protein(com.bio4j.model.uniprot.vertices.Protein protein){
+		this.accession = protein.accession();
+		this.name = protein.name();
+		this.shortName = protein.shortName();
+		this.fullName = protein.fullName();
+	}
+
 	public void setAnnotatedByGOTerms(List<GOTerm> annotatedByGOTerms) {
 		this.annotatedByGOTerms = annotatedByGOTerms;
 	}

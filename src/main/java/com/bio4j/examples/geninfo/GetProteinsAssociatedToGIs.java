@@ -99,6 +99,7 @@ public class GetProteinsAssociatedToGIs implements Executable{
 
 				String line;
 				LinkedList<String> giList = new LinkedList<>();
+				HashMap<String, com.bio4j.examples.json.model.uniprot.Protein> proteinHashMap = new HashMap<>();
 
 				System.out.println("Reading GI list...");
 				while((line = reader.readLine()) != null){
@@ -117,6 +118,14 @@ public class GetProteinsAssociatedToGIs implements Executable{
 						Optional<Stream<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> proteinStreamOptional = ncbiTaxon.proteinNCBITaxon_inV();
 						if(proteinStreamOptional.isPresent()){
 							List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteins = proteinStreamOptional.get().collect((Collectors.toList()));
+							for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein : proteins){
+								com.bio4j.examples.json.model.uniprot.Protein proteinJSON = proteinHashMap.get(protein.accession());
+								if(proteinJSON == null){
+									proteinJSON = new com.bio4j.examples.json.model.uniprot.Protein(protein);
+									proteinHashMap.put(protein.accession(), proteinJSON);
+								}
+							}
+
 						}
 					}
 				}
