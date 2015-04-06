@@ -1,19 +1,25 @@
 /*
 
-This program simply outputs the enzymes related to the protein provided
+This program retrieves the list of proteins that are associated to the set of GIs provided as a parameter.
+The selection of the proteins is carried out by means of the NCBI taxons linked to the respective GIs.
 
-It expects the following parameters:
+The program expects the following parameters:
 
 1. Bio4j DB folder
-2. UniProt protein accession
+2. Input TXT file including a list of GIs (one per line)
+3. Output JSON file including a set of UniProt proteins
 
  */
-package com.bio4j.examples.enzyme;
+package com.bio4j.examples.geninfo;
 
 import com.bio4j.model.enzymedb.vertices.Enzyme;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.titan.model.enzyme.TitanEnzymeDBGraph;
+import com.bio4j.titan.model.geninfo.TitanGenInfoGraph;
+import com.bio4j.titan.model.ncbiTaxonomy.TitanNCBITaxonomyGraph;
+import com.bio4j.titan.model.ncbiTaxonomy_geninfo.TitanNCBITaxonomyGenInfoGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
+import com.bio4j.titan.model.uniprot_ncbiTaxonomy.TitanUniProtNCBITaxonomyGraph;
 import com.bio4j.titan.util.DefaultTitanGraph;
 import com.era7.bioinfo.bioinfoutil.Executable;
 import com.thinkaurelius.titan.core.TitanEdge;
@@ -29,7 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GetProteinEnzymaticActivity implements Executable{
+public class GetProteinsAssociatedToGIs implements Executable{
 
 	@Override
 	public void execute(ArrayList<String> array) {
@@ -42,14 +48,17 @@ public class GetProteinEnzymaticActivity implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 2) {
+		if (args.length != 3) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
-					+ "2. UniProt protein accession");
+					+ "2. Input TXT file including a list of GIs (one per line)\n"
+					+ "3. Output JSON file including a set of UniProt proteins"
+			);
 		} else {
 
 			String dbFolder = args[0];
-			String proteinAccession = args[1];
+			String inputFileSt = args[1];
+			String outputFileSt = args[2];
 
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
@@ -62,13 +71,17 @@ public class GetProteinEnzymaticActivity implements Executable{
 			System.out.println("Creating the graph managers....");
 
 			//====================================================================================
-			TitanEnzymeDBGraph titanEnzymeDBGraph = new TitanEnzymeDBGraph(defGraph);
+			TitanGenInfoGraph titanGenInfoGraph = new TitanGenInfoGraph(defGraph);
 			TitanUniProtGraph titanUniProtGraph = new TitanUniProtGraph(defGraph);
+			TitanNCBITaxonomyGraph titanNCBITaxonomyGraph = new TitanNCBITaxonomyGraph(defGraph);
 
-			TitanUniProtEnzymeGraph titanUniProtEnzymeGraph = new TitanUniProtEnzymeGraph(defGraph, titanUniProtGraph, titanEnzymeDBGraph);
+			TitanNCBITaxonomyGenInfoGraph titanNCBITaxonomyGenInfoGraph = new TitanNCBITaxonomyGenInfoGraph(defGraph, titanNCBITaxonomyGraph, titanGenInfoGraph);
+			TitanUniProtNCBITaxonomyGraph titanUniProtNCBITaxonomyGraph = new TitanUniProtNCBITaxonomyGraph(defGraph, titanUniProtGraph, titanNCBITaxonomyGraph);
 
-			titanEnzymeDBGraph.withUniProtEnzymeGraph(titanUniProtEnzymeGraph);
-			titanUniProtGraph.withUniProtEnzymeGraph(titanUniProtEnzymeGraph);
+			titanGenInfoGraph.withNCBITaxonomyGenInfoGraph(titanNCBITaxonomyGenInfoGraph);
+			titanUniProtGraph.withUniProtNCBITaxonomyGraph(titanUniProtNCBITaxonomyGraph);
+			titanNCBITaxonomyGraph.withNCBITaxonomyGenInfoGraph(titanNCBITaxonomyGenInfoGraph);
+			titanNCBITaxonomyGraph.withUniProtNCBITaxonomyGraph(titanUniProtNCBITaxonomyGraph);
 			//====================================================================================
 
 			System.out.println("Done!");
