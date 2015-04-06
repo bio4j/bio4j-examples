@@ -52,11 +52,14 @@ public class GetProteinEnzymaticActivity implements Executable{
 			String dbFolder = args[0];
 			String proteinAccession = args[1];
 
+			System.out.println("Initializing the configuration for the database...");
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
 			conf.setProperty("storage.directory", dbFolder);
 			conf.setProperty("storage.backend", "berkeleyje");
 			//-------creating graph handlers---------------------
+			System.out.println("done!");
+			System.out.println("Opening the DB...");
 			TitanGraph titanGraph = TitanFactory.open(conf);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
 

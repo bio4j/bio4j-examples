@@ -13,11 +13,9 @@ The program expects the following parameters:
 package com.bio4j.examples.geninfo;
 
 import com.bio4j.examples.json.model.uniprot.ProteinSet;
-import com.bio4j.model.enzymedb.vertices.Enzyme;
 import com.bio4j.model.geninfo.vertices.GenInfo;
 import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
 import com.bio4j.model.uniprot.vertices.Protein;
-import com.bio4j.titan.model.enzyme.TitanEnzymeDBGraph;
 import com.bio4j.titan.model.geninfo.TitanGenInfoGraph;
 import com.bio4j.titan.model.ncbiTaxonomy.TitanNCBITaxonomyGraph;
 import com.bio4j.titan.model.ncbiTaxonomy_geninfo.TitanNCBITaxonomyGenInfoGraph;

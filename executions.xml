@@ -8,7 +8,7 @@
 			<argument>UniRef100_Q6GZX1</argument>
 		</arguments>
 	</execution> 
-		-->
+		
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetGOAnnotation</class_full_name>
 		<arguments>      
@@ -20,7 +20,7 @@
 			<argument>true</argument>
 		</arguments>
 	</execution>
-	
+	-->
 	<!--
 	
 	<execution>
@@ -50,5 +50,21 @@
 			<argument>go_annotation_including_cumulative_values.csv</argument>
 		</arguments>
 	</execution>
+	
+	<execution>
+		<class_full_name>com.bio4j.examples.geninfo.GetProteinsAssociatedToGIs</class_full_name>
+		<arguments>      			
+			<argument>bio4j</argument>
+			<argument>giIds.txt</argument>
+			<argument>proteinsAssociatedToGIs.json</argument>
+		</arguments>
+	</execution>
 	-->
+	<execution>
+		<class_full_name>com.bio4j.examples.enzyme.GetProteinEnzymaticActivity</class_full_name>
+		<arguments>      			
+			<argument>bio4j</argument>
+			<argument>P03554</argument>
+		</arguments>
+	</execution>
 </scheduled_executions>
