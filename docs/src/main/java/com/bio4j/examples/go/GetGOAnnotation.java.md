@@ -17,6 +17,7 @@ package com.bio4j.examples.go;
 import com.bio4j.examples.json.model.go.GOTerm;
 import com.bio4j.examples.json.model.go.GoSet;
 import com.bio4j.model.go.vertices.GoTerm;
+import com.bio4j.model.uniprot.vertices.GeneName;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.titan.model.go.TitanGoGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
@@ -52,13 +53,14 @@ public class GetGOAnnotation implements Executable{
 
 	public static void main(String[] args){
 
-		if (args.length != 5) {
+		if (args.length != 6) {
 			System.out.println("This program expects the following parameters:\n"
 					+ "1. Bio4j DB folder\n"
 					+ "2. Input TSV file including UniProt accessions (one accession per line)\n"
 					+ "3. Output JSON file including the GO annotation \n"
 					+ "4. Include intermediate terms (true/false) \n"
-					+ "5. Include all ancestors (true/false)");
+					+ "5. Include all ancestors (true/false) \n"
+					+ "6. Include protein information (true/false)");
 		} else {
 
 			String dbFolder = args[0];
@@ -66,12 +68,12 @@ public class GetGOAnnotation implements Executable{
 			String outputFileSt = args[2];
 			boolean includeIntermediateTerms = Boolean.parseBoolean(args[3]);
 			boolean includeAllAncestors = Boolean.parseBoolean(args[4]);
+			boolean includeProteinInformation = Boolean.parseBoolean(args[5]);
 
 			//----------DB configuration------------------
 			Configuration conf = new BaseConfiguration();
 			conf.setProperty("storage.directory", dbFolder);
 			conf.setProperty("storage.backend", "berkeleyje");
-			conf.setProperty("storage.batch-loading", "true");
 			//-------creating graph handlers---------------------
 			TitanGraph titanGraph = TitanFactory.open(conf);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
@@ -109,6 +111,7 @@ public class GetGOAnnotation implements Executable{
 				System.out.println("Finding GO annotations....");
 
 				for (String accession : proteinAcessions){
+
 					Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalProtein = titanUniProtGraph.proteinAccessionIndex().getVertex(accession);
 					if(optionalProtein.isPresent()){
 
@@ -119,11 +122,15 @@ public class GetGOAnnotation implements Executable{
 						Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> goTermStreamOptional = protein.goAnnotation_outV();
 
 						if(goTermStreamOptional.isPresent()){
+
 							List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermList = goTermStreamOptional.get().collect(Collectors.toList());
 							for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> goTerm : goTermList){
+
 								System.out.println("goTerm.id() = " + goTerm.id());
 								GOTerm goJson = goTermMap.get(goTerm.id());
+
 								if(goJson == null){
+
 									goJson = new GOTerm(goTerm.id(), goTerm.name());
 									goJson.setTermCount(0);
 									//----Finding parent IDs------------
@@ -140,6 +147,22 @@ public class GetGOAnnotation implements Executable{
 									goTermMap.put(goTerm.id(), goJson);
 								}
 								goJson.setTermCount(goJson.getTermCount() + 1);
+
+								if(includeProteinInformation){
+									com.bio4j.examples.json.model.uniprot.Protein proteinJSON = new com.bio4j.examples.json.model.uniprot.Protein();
+									proteinJSON.setAccession(protein.accession());
+									proteinJSON.setFullName(protein.fullName());
+									proteinJSON.setName(protein.name());
+									proteinJSON.setShortName(protein.shortName());
+									Optional<Stream<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> geneNamesStreamOptional = protein.proteinGeneName_outV();
+									List<GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> geneNames = geneNamesStreamOptional.get().collect((Collectors.toList()));
+									List<String> geneNamesStList = new LinkedList<>();
+									for (GeneName<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> geneName : geneNames){
+										geneNamesStList.add(geneName.name());
+									}
+									proteinJSON.setGeneNames(geneNamesStList);
+									goJson.addProteinToAnnotatedProteins(proteinJSON);
+								}
 							}
 						}
 
@@ -151,6 +174,7 @@ public class GetGOAnnotation implements Executable{
 
 					System.out.println("Retrieving all ancestors...");
 
+					//-----------------Retrieving ancestors of all terms with protein annotations---------------------
 					Set<String> termsToBeAdded = new HashSet<>();
 					String[] goIds = goTermMap.keySet().toArray(new String[goTermMap.size()]);
 					for(int i=0; i< goIds.length;i++){
@@ -158,6 +182,15 @@ public class GetGOAnnotation implements Executable{
 						GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm = titanGoGraph.goTermIdIndex().getVertex(goId).get();
 						includeAllAncestorsOfTerm(termsToBeAdded, currentTerm, titanGoGraph);
 					}
+					//-----------------------------------------------------------------------------------------------
+
+					//----removing duplicated terms so that counts are not overwritten with zero values----
+					for(String key : goTermMap.keySet()){
+						if(termsToBeAdded.contains(key)){
+							termsToBeAdded.remove(key);
+						}
+					}
+					//---------------------------------------------------------------------------------------
 
 					for(String termToBeAdded : termsToBeAdded){
 						Optional<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> optionalTerm = titanGoGraph.goTermIdIndex().getVertex(termToBeAdded);
@@ -178,6 +211,7 @@ public class GetGOAnnotation implements Executable{
 									parentIds.add(tempTerm.id());
 								}
 							}
+
 							//----------------------------------
 							goTermMap.put(goJson.getId(), goJson);
 						}
@@ -282,7 +316,7 @@ public class GetGOAnnotation implements Executable{
 	                                              GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> currentTerm,
 	                                              TitanGoGraph titanGoGraph){
 
-		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> optionalStreamParents = currentTerm.isA_inV();
+		Optional<Stream<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> optionalStreamParents = currentTerm.isA_outV();
 		if(optionalStreamParents.isPresent()){
 			List<GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> goTermParentsList = optionalStreamParents.get().collect((Collectors.toList()));
 			for (GoTerm<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> parentTerm : goTermParentsList){
@@ -308,7 +342,11 @@ public class GetGOAnnotation implements Executable{
         + bio4j
           + examples
             + [BasicProteinManipulation.java][main\java\com\bio4j\examples\BasicProteinManipulation.java]
+            + enzyme
+              + [GetProteinEnzymaticActivity.java][main\java\com\bio4j\examples\enzyme\GetProteinEnzymaticActivity.java]
             + [ExecuteBio4jExample.java][main\java\com\bio4j\examples\ExecuteBio4jExample.java]
+            + geninfo
+              + [GetProteinsAssociatedToGIs.java][main\java\com\bio4j\examples\geninfo\GetProteinsAssociatedToGIs.java]
             + go
               + [ExportGOJSONToCSV.java][main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]
               + [GetCumulativeFrequenciesForGoSet.java][main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]
@@ -319,18 +357,25 @@ public class GetGOAnnotation implements Executable{
                 + go
                   + [GoSet.java][main\java\com\bio4j\examples\json\model\go\GoSet.java]
                   + [GOTerm.java][main\java\com\bio4j\examples\json\model\go\GOTerm.java]
+                + uniprot
+                  + [Protein.java][main\java\com\bio4j\examples\json\model\uniprot\Protein.java]
+                  + [ProteinSet.java][main\java\com\bio4j\examples\json\model\uniprot\ProteinSet.java]
             + ncbi_taxonomy
               + [TaxonomyAlgo.java][main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]
             + uniref
               + [FindLCAOfUniRefCluster.java][main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]
 
 [main\java\com\bio4j\examples\BasicProteinManipulation.java]: ..\BasicProteinManipulation.java.md
+[main\java\com\bio4j\examples\enzyme\GetProteinEnzymaticActivity.java]: ..\enzyme\GetProteinEnzymaticActivity.java.md
 [main\java\com\bio4j\examples\ExecuteBio4jExample.java]: ..\ExecuteBio4jExample.java.md
+[main\java\com\bio4j\examples\geninfo\GetProteinsAssociatedToGIs.java]: ..\geninfo\GetProteinsAssociatedToGIs.java.md
 [main\java\com\bio4j\examples\go\ExportGOJSONToCSV.java]: ExportGOJSONToCSV.java.md
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: GetGOAnnotation.java.md
 [main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]: TransformGOJSONtoHierarchicalJSON.java.md
 [main\java\com\bio4j\examples\json\model\go\GoSet.java]: ..\json\model\go\GoSet.java.md
 [main\java\com\bio4j\examples\json\model\go\GOTerm.java]: ..\json\model\go\GOTerm.java.md
+[main\java\com\bio4j\examples\json\model\uniprot\Protein.java]: ..\json\model\uniprot\Protein.java.md
+[main\java\com\bio4j\examples\json\model\uniprot\ProteinSet.java]: ..\json\model\uniprot\ProteinSet.java.md
 [main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]: ..\ncbi_taxonomy\TaxonomyAlgo.java.md
 [main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]: ..\uniref\FindLCAOfUniRefCluster.java.md

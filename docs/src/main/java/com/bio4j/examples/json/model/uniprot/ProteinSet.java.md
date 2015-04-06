@@ -1,32 +1,34 @@
 
 ```java
-package com.bio4j.examples.json.model.go;
+package com.bio4j.examples.json.model.uniprot;
 
 import java.util.Set;
 
 /**
  * Created by ppareja on 2/18/2015.
  */
-public class GoSet {
+public class ProteinSet {
 
-	public Set<GOTerm> goTerms;
+	public Set<Protein> proteins;
 
-	public Set<GOTerm> getGoTerms() {
-		return goTerms;
+	public Set<Protein> getProteins() {
+		return proteins;
 	}
 
-	public void setGoTerms(Set<GOTerm> goTerms) {
-		this.goTerms = goTerms;
+	public void setProteins(Set<Protein> proteins) {
+		this.proteins = proteins;
 	}
 
-	public GoSet(Set<GOTerm> goTerms) {
+	public ProteinSet(Set<Protein> proteins) {
 
-		this.goTerms = goTerms;
+		this.proteins = proteins;
+	}
+	public ProteinSet() {
 	}
 
 
-	public void addGOTerm(GOTerm term){
-		goTerms.add(term);
+	public void addProtein(Protein protein){
+		proteins.add(protein);
 	}
 }
 
@@ -75,9 +77,9 @@ public class GoSet {
 [main\java\com\bio4j\examples\go\GetCumulativeFrequenciesForGoSet.java]: ..\..\..\go\GetCumulativeFrequenciesForGoSet.java.md
 [main\java\com\bio4j\examples\go\GetGOAnnotation.java]: ..\..\..\go\GetGOAnnotation.java.md
 [main\java\com\bio4j\examples\go\TransformGOJSONtoHierarchicalJSON.java]: ..\..\..\go\TransformGOJSONtoHierarchicalJSON.java.md
-[main\java\com\bio4j\examples\json\model\go\GoSet.java]: GoSet.java.md
-[main\java\com\bio4j\examples\json\model\go\GOTerm.java]: GOTerm.java.md
-[main\java\com\bio4j\examples\json\model\uniprot\Protein.java]: ..\uniprot\Protein.java.md
-[main\java\com\bio4j\examples\json\model\uniprot\ProteinSet.java]: ..\uniprot\ProteinSet.java.md
+[main\java\com\bio4j\examples\json\model\go\GoSet.java]: ..\go\GoSet.java.md
+[main\java\com\bio4j\examples\json\model\go\GOTerm.java]: ..\go\GOTerm.java.md
+[main\java\com\bio4j\examples\json\model\uniprot\Protein.java]: Protein.java.md
+[main\java\com\bio4j\examples\json\model\uniprot\ProteinSet.java]: ProteinSet.java.md
 [main\java\com\bio4j\examples\ncbi_taxonomy\TaxonomyAlgo.java]: ..\..\..\ncbi_taxonomy\TaxonomyAlgo.java.md
 [main\java\com\bio4j\examples\uniref\FindLCAOfUniRefCluster.java]: ..\..\..\uniref\FindLCAOfUniRefCluster.java.md
