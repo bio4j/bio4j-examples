@@ -45,22 +45,15 @@ public class GetProteinEnzymaticActivity implements Executable{
 
 		if (args.length != 2) {
 			System.out.println("This program expects the following parameters:\n"
-					+ "1. Bio4j DB folder\n"
+					+ "1. Titan properties file (.properties)\n"
 					+ "2. UniProt protein accession");
 		} else {
 
-			String dbFolder = args[0];
+			String propertiesFileName = args[0];
 			String proteinAccession = args[1];
 
-			System.out.println("Initializing the configuration for the database...");
-			//----------DB configuration------------------
-			Configuration conf = new BaseConfiguration();
-			conf.setProperty("storage.directory", dbFolder);
-			conf.setProperty("storage.backend", "berkeleyje");
-			//-------creating graph handlers---------------------
-			System.out.println("done!");
-			System.out.println("Opening the DB...");
-			TitanGraph titanGraph = TitanFactory.open(conf);
+			System.out.println("Opening the database...");
+			TitanGraph titanGraph = TitanFactory.open(propertiesFileName);
 			DefaultTitanGraph defGraph = new DefaultTitanGraph(titanGraph);
 
 			System.out.println("Creating the graph managers....");
