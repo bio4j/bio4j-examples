@@ -13,6 +13,8 @@ The program expects the following parameters:
 package com.bio4j.examples.geninfo;
 
 import com.bio4j.model.enzymedb.vertices.Enzyme;
+import com.bio4j.model.geninfo.vertices.GenInfo;
+import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.titan.model.enzyme.TitanEnzymeDBGraph;
 import com.bio4j.titan.model.geninfo.TitanGenInfoGraph;
@@ -31,6 +33,7 @@ import com.thinkaurelius.titan.core.schema.VertexLabelMaker;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
 
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -86,22 +89,42 @@ public class GetProteinsAssociatedToGIs implements Executable{
 
 			System.out.println("Done!");
 
-			Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(proteinAccession);
-			if(proteinOptional.isPresent()){
-				System.out.println("There was no protein found for the accession provided: " + proteinAccession);
-			}else{
-				Optional<Stream<Enzyme<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> enzymesOptionalStream = proteinOptional.get().enzymaticActivity_outV();
-				if(enzymesOptionalStream.isPresent()){
-					List<Enzyme<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> enzymeList = enzymesOptionalStream.get().collect((Collectors.toList()));
-					System.out.println("The following enzymes were found to be related to the protein provided: ");
-					for (Enzyme<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> enzyme : enzymeList){
-						System.out.println(enzyme.id() + " : " + enzyme.officialName());
-					}
-				}else{
-					System.out.println("The protein provided does not have any enzymatic acitivy associated... :|");
-				}
-			}
+			File inputFile = new File(inputFileSt);
+			File outputFile = new File(outputFileSt);
 
+			try {
+
+				BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+				BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+				String line;
+				LinkedList<String> giList = new LinkedList<>();
+
+				System.out.println("Reading GI list...");
+				while((line = reader.readLine()) != null){
+					giList.add(line.trim());
+				}
+				reader.close();
+				System.out.println("Done!");
+
+				System.out.println("Looking for NCBI taxons associated...");
+
+				for (String giSt : giList){
+					Optional<GenInfo<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> genInfoOptional = titanGenInfoGraph.genInfoIdIndex().getVertex(giSt);
+					if(genInfoOptional.isPresent()){
+						GenInfo<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> genInfo = genInfoOptional.get();
+						NCBITaxon<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> ncbiTaxon = genInfo.genInfoNCBITaxon_outV();
+						Optional<Stream<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> proteinStreamOptional = ncbiTaxon.proteinNCBITaxon_inV();
+						if(proteinStreamOptional.isPresent()){
+							List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteins = proteinStreamOptional.get().collect((Collectors.toList()));
+						}
+					}
+				}
+
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 			System.out.println("Closing the database...");
 			titanGraph.shutdown();
