@@ -14,6 +14,7 @@ import com.bio4j.model.enzymedb.vertices.Enzyme;
 import com.bio4j.model.uniprot.vertices.Protein;
 import com.bio4j.titan.model.enzyme.TitanEnzymeDBGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;
+import com.bio4j.titan.model.uniprot_enzyme.TitanUniProtEnzymeGraph;
 import com.bio4j.titan.util.DefaultTitanGraph;
 import com.era7.bioinfo.bioinfoutil.Executable;
 import com.thinkaurelius.titan.core.TitanEdge;
