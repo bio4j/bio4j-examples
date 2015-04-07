@@ -71,7 +71,7 @@ public class GetProteinEnzymaticActivity implements Executable{
 			System.out.println("Done!");
 
 			Optional<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteinOptional = titanUniProtGraph.proteinAccessionIndex().getVertex(proteinAccession);
-			if(proteinOptional.isPresent()){
+			if(!proteinOptional.isPresent()){
 				System.out.println("There was no protein found for the accession provided: " + proteinAccession);
 			}else{
 				Optional<Stream<Enzyme<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>>> enzymesOptionalStream = proteinOptional.get().enzymaticActivity_outV();

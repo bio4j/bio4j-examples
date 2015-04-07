@@ -63,7 +63,7 @@
 	<execution>
 		<class_full_name>com.bio4j.examples.enzyme.GetProteinEnzymaticActivity</class_full_name>
 		<arguments>      			
-			<argument>bio4j</argument>
+			<argument>getProteinEnzymaticActivity.properties</argument>
 			<argument>P03554</argument>
 		</arguments>
 	</execution>
