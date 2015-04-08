@@ -20,9 +20,9 @@
 			<argument>true</argument>
 		</arguments>
 	</execution>
-	-->
-	<!--
 	
+	
+	-->
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetCumulativeFrequenciesForGoSet</class_full_name>
 		<arguments>      
@@ -32,7 +32,7 @@
 		</arguments>
 	</execution>
 	
-	
+	<!--
 	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.TransformGOJSONtoHierarchicalJSON</class_full_name>
@@ -43,6 +43,7 @@
 	</execution>
 	
 
+	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.ExportGOJSONToCSV</class_full_name>
 		<arguments>      			
@@ -59,12 +60,13 @@
 			<argument>proteinsAssociatedToGIs.json</argument>
 		</arguments>
 	</execution>
-	-->
+	
 	<execution>
 		<class_full_name>com.bio4j.examples.enzyme.GetProteinEnzymaticActivity</class_full_name>
 		<arguments>      			
 			<argument>getProteinEnzymaticActivity.properties</argument>
-			<argument>P03554</argument>
+			<argument>P07647</argument>
 		</arguments>
 	</execution>
+	-->
 </scheduled_executions>

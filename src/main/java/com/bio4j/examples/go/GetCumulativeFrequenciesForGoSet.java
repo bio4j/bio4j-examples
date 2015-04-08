@@ -109,6 +109,10 @@ public class GetCumulativeFrequenciesForGoSet implements Executable {
 				}
 				System.out.println("Done! :D");
 
+				System.out.println("Closing the database...");
+				titanGraph.shutdown();
+				System.out.println("Done!");
+
 				for (GOTerm goTerm : goTermSet){
 					goTerm.setCumulativeCount(goCumulativeFrequencies.get(goTerm.getId()));
 				}
