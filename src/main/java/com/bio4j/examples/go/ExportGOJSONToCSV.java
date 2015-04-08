@@ -57,7 +57,7 @@ public class ExportGOJSONToCSV implements Executable{
 				BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputFileSt)));
 				writer.write(HEADER + "\n");
 
-				BufferedWriter annotatedProteinsWriter = new BufferedWriter(new FileWriter(new File(outputFileSt)));
+				BufferedWriter annotatedProteinsWriter = new BufferedWriter(new FileWriter(new File(annotatedProteinsFileSt)));
 
 				if(generateAnnotatedProteinsFile){
 					annotatedProteinsWriter.write(ANNOTATED_PROTEINS_HEADER + "\n");
