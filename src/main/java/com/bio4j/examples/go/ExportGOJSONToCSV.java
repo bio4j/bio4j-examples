@@ -125,10 +125,14 @@ public class ExportGOJSONToCSV implements Executable{
 						Protein protein = proteinsMap.get(keySet);
 
 						String geneNamesSt = "[";
-						for(String geneName : protein.getGeneNames()){
-							geneNamesSt += geneName + "|";
+
+						if(protein.getGeneNames() != null){
+							for(String geneName : protein.getGeneNames()){
+								geneNamesSt += geneName + "|";
+							}
+							geneNamesSt = geneNamesSt.substring(0,geneNamesSt.length() - 1);
 						}
-						geneNamesSt = geneNamesSt.substring(0,geneNamesSt.length() - 1);
+
 						geneNamesSt += "]";
 
 						String goTermsSt = "[";
