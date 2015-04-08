@@ -122,7 +122,7 @@ public class ExportGOJSONToCSV implements Executable{
 
 					Set<String> keySet = proteinsMap.keySet();
 					for (String proteinAccession : keySet){
-						Protein protein = proteinsMap.get(keySet);
+						Protein protein = proteinsMap.get(proteinAccession);
 
 						String geneNamesSt = "[";
 
