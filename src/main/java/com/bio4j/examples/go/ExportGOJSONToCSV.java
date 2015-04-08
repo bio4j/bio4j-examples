@@ -91,23 +91,25 @@ public class ExportGOJSONToCSV implements Executable{
 					if(generateAnnotatedProteinsFile){
 
 						List<Protein> annotatedProteins = goTerm.getAnnotatedProteins();
-						for (Protein protein : annotatedProteins){
+						if(annotatedProteins != null){
+							for (Protein protein : annotatedProteins){
 
-							Protein mapProtein = proteinsMap.get(protein.getAccession());
+								Protein mapProtein = proteinsMap.get(protein.getAccession());
 
-							if(mapProtein == null){
-								Protein tempProtein = new Protein();
-								tempProtein.setAccession(protein.getAccession());
-								tempProtein.setName(protein.getName());
-								tempProtein.setShortName(protein.getShortName());
-								tempProtein.setFullName(protein.getFullName());
-								tempProtein.setGeneNames(protein.getGeneNames());
-								proteinsMap.put(tempProtein.getAccession(), tempProtein);
-								mapProtein = tempProtein;
+								if(mapProtein == null){
+									Protein tempProtein = new Protein();
+									tempProtein.setAccession(protein.getAccession());
+									tempProtein.setName(protein.getName());
+									tempProtein.setShortName(protein.getShortName());
+									tempProtein.setFullName(protein.getFullName());
+									tempProtein.setGeneNames(protein.getGeneNames());
+									proteinsMap.put(tempProtein.getAccession(), tempProtein);
+									mapProtein = tempProtein;
+								}
+
+								mapProtein.addAnnotatedByGOTerm(goTerm);
+
 							}
-
-							mapProtein.addAnnotatedByGOTerm(goTerm);
-
 						}
 					}
 				}
