@@ -22,7 +22,7 @@
 	</execution>
 	
 	
-	-->
+	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.GetCumulativeFrequenciesForGoSet</class_full_name>
 		<arguments>      
@@ -32,7 +32,7 @@
 		</arguments>
 	</execution>
 	
-	<!--
+	
 	
 	<execution>
 		<class_full_name>com.bio4j.examples.go.TransformGOJSONtoHierarchicalJSON</class_full_name>
@@ -43,15 +43,17 @@
 	</execution>
 	
 
-	
+	-->
 	<execution>
 		<class_full_name>com.bio4j.examples.go.ExportGOJSONToCSV</class_full_name>
 		<arguments>      			
 			<argument>go_annotation_including_cumulative_values.json</argument>
 			<argument>go_annotation_including_cumulative_values.csv</argument>
+			<argument>true</argument>
+			<argument>true</argument>
 		</arguments>
 	</execution>
-	
+	<!--
 	<execution>
 		<class_full_name>com.bio4j.examples.geninfo.GetProteinsAssociatedToGIs</class_full_name>
 		<arguments>      			

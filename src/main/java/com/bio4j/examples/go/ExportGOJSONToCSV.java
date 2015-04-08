@@ -74,14 +74,16 @@ public class ExportGOJSONToCSV implements Executable{
 
 					if(includeAnnotatedProteins){
 						List<Protein> annotatedProteins = goTerm.getAnnotatedProteins();
-						String proteinsSt = ",[";
+						if(annotatedProteins != null){
+							String proteinsSt = ",[";
 
-						for (Protein protein : annotatedProteins){
-							proteinsSt += protein.getAccession() + ":" + protein.getFullName() + ",";
+							for (Protein protein : annotatedProteins){
+								proteinsSt += protein.getAccession() + ":" + protein.getFullName() + ",";
+							}
+							proteinsSt = proteinsSt.substring(0, proteinsSt.length() - 1);
+							proteinsSt += "]";
+							tempSt += proteinsSt;
 						}
-						proteinsSt = proteinsSt.substring(0, proteinsSt.length() - 1);
-						proteinsSt += "]";
-						tempSt += proteinsSt;
 					}
 					tempSt += "\n";
 					writer.write(tempSt);
