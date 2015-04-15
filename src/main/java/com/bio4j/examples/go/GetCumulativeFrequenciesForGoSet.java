@@ -12,8 +12,8 @@ The program expects the following parameters:
 
 package com.bio4j.examples.go;
 
-import com.bio4j.examples.json.model.go.GOTerm;
-import com.bio4j.examples.json.model.go.GoSet;
+import com.bio4j.json.go.GOTerm;
+import com.bio4j.json.go.GoSet;
 import com.bio4j.model.go.vertices.GoTerm;
 import com.bio4j.titan.model.go.TitanGoGraph;
 import com.bio4j.titan.model.uniprot.TitanUniProtGraph;

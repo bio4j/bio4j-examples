@@ -12,8 +12,8 @@ The program expects the following parameters:
  */
 package com.bio4j.examples.go;
 
-import com.bio4j.examples.json.model.go.GOTerm;
-import com.bio4j.examples.json.model.go.GoSet;
+import com.bio4j.json.go.GOTerm;
+import com.bio4j.json.go.GoSet;
 import com.bio4j.model.go.vertices.GoTerm;
 import com.bio4j.model.uniprot.vertices.GeneName;
 import com.bio4j.model.uniprot.vertices.Protein;
@@ -147,7 +147,7 @@ public class GetGOAnnotation implements Executable{
 								goJson.setTermCount(goJson.getTermCount() + 1);
 
 								if(includeProteinInformation){
-									com.bio4j.examples.json.model.uniprot.Protein proteinJSON = new com.bio4j.examples.json.model.uniprot.Protein();
+									com.bio4j.json.uniprot.Protein proteinJSON = new com.bio4j.json.uniprot.Protein();
 									proteinJSON.setAccession(protein.accession());
 									proteinJSON.setFullName(protein.fullName());
 									proteinJSON.setName(protein.name());

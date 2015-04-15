@@ -12,7 +12,6 @@ The program expects the following parameters:
  */
 package com.bio4j.examples.geninfo;
 
-import com.bio4j.examples.json.model.uniprot.ProteinSet;
 import com.bio4j.model.geninfo.vertices.GenInfo;
 import com.bio4j.model.ncbiTaxonomy.vertices.NCBITaxon;
 import com.bio4j.model.uniprot.vertices.Protein;
@@ -33,6 +32,7 @@ import com.thinkaurelius.titan.core.schema.EdgeLabelMaker;
 import com.thinkaurelius.titan.core.schema.VertexLabelMaker;
 import org.apache.commons.configuration.BaseConfiguration;
 import org.apache.commons.configuration.Configuration;
+import com.bio4j.json.uniprot.ProteinSet;
 
 import java.io.*;
 import java.util.*;
@@ -100,7 +100,7 @@ public class GetProteinsAssociatedToGIs implements Executable{
 
 				String line;
 				LinkedList<String> giList = new LinkedList<>();
-				HashMap<String, com.bio4j.examples.json.model.uniprot.Protein> proteinHashMap = new HashMap<>();
+				HashMap<String, com.bio4j.json.uniprot.Protein> proteinHashMap = new HashMap<>();
 
 				System.out.println("Reading GI list...");
 				while((line = reader.readLine()) != null){
@@ -120,9 +120,9 @@ public class GetProteinsAssociatedToGIs implements Executable{
 						if(proteinStreamOptional.isPresent()){
 							List<Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker>> proteins = proteinStreamOptional.get().collect((Collectors.toList()));
 							for (Protein<DefaultTitanGraph, TitanVertex, VertexLabelMaker, TitanEdge, EdgeLabelMaker> protein : proteins){
-								com.bio4j.examples.json.model.uniprot.Protein proteinJSON = proteinHashMap.get(protein.accession());
+								com.bio4j.json.uniprot.Protein proteinJSON = proteinHashMap.get(protein.accession());
 								if(proteinJSON == null){
-									proteinJSON = new com.bio4j.examples.json.model.uniprot.Protein(protein);
+									proteinJSON = new com.bio4j.json.uniprot.Protein(protein);
 									proteinHashMap.put(protein.accession(), proteinJSON);
 								}
 							}
@@ -135,7 +135,7 @@ public class GetProteinsAssociatedToGIs implements Executable{
 
 				ProteinSet proteinSet = new ProteinSet();
 				for (String key : proteinHashMap.keySet()){
-					com.bio4j.examples.json.model.uniprot.Protein proteinJSON = proteinHashMap.get(key);
+					com.bio4j.json.uniprot.Protein proteinJSON = proteinHashMap.get(key);
 					proteinSet.addProtein(proteinJSON);
 				}
 

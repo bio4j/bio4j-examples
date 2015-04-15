@@ -8,13 +8,12 @@ The program expects the following parameters:
  */
 package com.bio4j.examples.go;
 
-import com.bio4j.examples.json.model.go.GOTerm;
-import com.bio4j.examples.json.model.go.GoSet;
-import com.bio4j.examples.json.model.uniprot.Protein;
 import com.era7.bioinfo.bioinfoutil.Executable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.bio4j.json.go.GOTerm;
+import com.bio4j.json.go.GoSet;
+import com.bio4j.json.uniprot.Protein;
 
 import java.io.*;
 import java.util.*;
