@@ -13,6 +13,7 @@ javaVersion := "1.8"
 libraryDependencies ++= Seq(
   "bio4j" % "bio4j-titan" % "0.4.0-SNAPSHOT",
   "ohnosequences" % "bioinfo-util" % "1.4.2",
+  "bio4j" % "bio4j-json" % "0.1.0-SNAPSHOT",
   "com.google.code.gson" % "gson" % "2.2.4"
 )
 
