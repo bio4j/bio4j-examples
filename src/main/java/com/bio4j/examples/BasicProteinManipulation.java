@@ -31,22 +31,20 @@ public abstract class BasicProteinManipulation<
 	goTermsFromTheClusterOf(Protein<I, RV, RVT, RE, RET> protein) {
 
 		return
-				protein.uniref50Member_outV().map(
-						UniRef50Cluster::uniRef50Member_inV
-				).map(prts -> prts.map(
-								Protein::goAnnotation_outV
-						)
-				);
+			protein.uniref50Member_outV().map(
+				UniRef50Cluster::uniRef50Member_inV
+			).map(prts -> prts.map(
+					Protein::goAnnotation_outV
+				)
+			);
 	}
 
 	public Optional<Stream<GoTerm<I,RV,RVT,RE,RET>>> allTermsFromClusterOf(Protein<I,RV,RVT,RE,RET> protein) {
 
 	  return flatten(
-
 	  	goTermsFromTheClusterOf(protein).map( x -> any(x) )
 	  )
 	  .map( ss -> flatten(ss) );
-
 	}
 
 }
